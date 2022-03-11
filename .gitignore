@@ -1,3 +1,6 @@
+# IDE config
+.idea
+
 # iCloud file
 .DS_Store
 
