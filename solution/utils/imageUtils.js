@@ -3,6 +3,8 @@
  * @author Mingze Ma
  */
 
+const fs = require('fs');
+
 /**
  * Convert image to base64 code string
  * @param url image URL
