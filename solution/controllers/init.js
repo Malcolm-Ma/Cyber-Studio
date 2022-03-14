@@ -29,7 +29,7 @@ exports.init = async function () {
   await asset.save()
     .then((results) => {
       photoId = results._id;
-      console.log("Asset" + "object created in init: " + JSON.stringify(results));
+      console.log("Asset " + "object created in init: " + JSON.stringify(results));
     })
     .catch((error) => {
       console.log(JSON.stringify(error));
@@ -44,7 +44,7 @@ exports.init = async function () {
 
   await story.save()
     .then ((results) => {
-      console.log("Story" + "object created in init: "+ JSON.stringify(results));
+      console.log("Story " + "object created in init: "+ JSON.stringify(results));
     })
     .catch ((error) => {
       console.log(JSON.stringify(error));
