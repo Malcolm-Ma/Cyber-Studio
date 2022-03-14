@@ -4,9 +4,14 @@ const MONGODB = 'mongodb://localhost:27017/secret-agent';
 
 mongoose.Promise = global.Promise;
 
-try {
-  const connection = mongoose.createConnection(MONGODB);
-  console.log("connection to mongodb worked!");
-} catch (e) {
-  console.log('error in db connection: ' + e.message)
-}
+connection = mongoose.connect(MONGODB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  checkServerIdentity: false,
+})
+  .then(() => {
+    console.log('connection to mongodb worked!');
+  })
+  .catch((error) => {
+    console.log('connection to mongodb did not work! ' + JSON.stringify(error));
+  });
