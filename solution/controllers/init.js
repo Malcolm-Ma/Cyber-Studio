@@ -1,9 +1,14 @@
+/**
+ * @file Init data in MongoDB
+ * @author Mingze Ma
+ */
+
 const fs = require('fs');
 
 const Story = require('../models/stories');
 const Asset = require('../models/assets');
 
-exports.init = async function () {
+exports.init = async () => {
   // uncomment if you need to drop the database
   Story.remove({}, (err) => {
      console.log('collection removed')
@@ -13,13 +18,12 @@ exports.init = async function () {
   });
 
   const base64Demo = (() => {
-    console.log();
     const bitmap = fs.readFileSync('assets/demo.jpg');
     // base64 encode
     return Buffer.from(bitmap, 'binary').toString('base64');
   })();
 
-  let asset = new Asset({
+  const asset = new Asset({
     file_name: 'demo.jpg',
     base64: base64Demo
   });
@@ -35,7 +39,7 @@ exports.init = async function () {
       console.log(JSON.stringify(error));
     });
 
-  let story = new Story({
+  const story = new Story({
     title: 'Demo of MongoDB',
     author_name: 'Malcolm Ma',
     description: 'This is a demo for testing MongoDB connection',
@@ -49,4 +53,4 @@ exports.init = async function () {
     .catch ((error) => {
       console.log(JSON.stringify(error));
     });
-}
+};
