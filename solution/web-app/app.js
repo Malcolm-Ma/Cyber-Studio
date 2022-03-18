@@ -10,7 +10,6 @@ var http = require('http')
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var storyRouter = require('./routes/story_detail')
-
 var app = express();
 
 // http setup
