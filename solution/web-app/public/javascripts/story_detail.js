@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-18 11:37:39
+ * @Last Modified time: 2022-03-19 13:29:56
  */
 
 window.addEventListener("load", () => {
@@ -10,8 +10,9 @@ window.addEventListener("load", () => {
   const ctx = canvas.getContext('2d')
 
 
-  canvas.height = window.innerHeight
-  canvas.width = window.innerWidth
+  canvas.height = 500
+  canvas.width = 800
+  canvas.style.border = "1px solid"
 
   let painting = false
 
@@ -43,3 +44,5 @@ window.addEventListener("load", () => {
   canvas.addEventListener('mousemove', draw)
 
 })
+
+
