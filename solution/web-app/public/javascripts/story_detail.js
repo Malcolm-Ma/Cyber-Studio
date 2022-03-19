@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-19 14:29:53
+ * @Last Modified time: 2022-03-19 20:05:31
  */
 
 window.addEventListener("load", () => {
@@ -43,6 +43,14 @@ window.addEventListener("load", () => {
   canvas.addEventListener('mouseup', finishPosition)
   canvas.addEventListener('mousemove', draw)
 
+})
+
+const socket = io()
+
+socket.emit('joinRoom', 123)
+
+socket.on('message', message=>{
+  console.log(message)
 })
 
 

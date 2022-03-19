@@ -4,7 +4,7 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var http = require('http')
-const { Server } = require('socket.io')
+const socketio = require('socket.io')
 
 
 var indexRouter = require('./routes/index');
@@ -13,7 +13,9 @@ var storyRouter = require('./routes/story_detail')
 
 var app = express();
 var server = http.createServer(app)
-const io = new Server(server)
+
+
+const io = socketio(server)
 
 
 // view engine setup
@@ -45,4 +47,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+module.exports = { app: app, server: server };
