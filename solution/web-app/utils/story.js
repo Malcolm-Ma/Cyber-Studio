@@ -1,3 +1,9 @@
+/*
+ * @Author: Jipu Li 
+ * @Date: 2022-03-19 13:58:11 
+ * @Last Modified by: Jipu Li
+ * @Last Modified time: 2022-03-19 14:31:04
+ */
 
 const stories = [
   {
@@ -27,3 +33,18 @@ const stories = [
 ]
 
 
+function getStories() {
+  return stories
+}
+
+function getStory(id) {
+  return stories.find(story => story.id === id)
+}
+
+function createStory(id, title, photo, author, content, date) {
+  const story = { id, title, photo, author, content, date }
+  stories.push(story)
+  return stories
+}
+
+module.exports = { getStories, getStory, createStory }

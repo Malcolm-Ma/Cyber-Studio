@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-19 13:29:56
+ * @Last Modified time: 2022-03-19 14:29:53
  */
 
 window.addEventListener("load", () => {
@@ -17,26 +17,26 @@ window.addEventListener("load", () => {
   let painting = false
 
   function startPosition(e) {
-      painting = true
-      draw(e)
+    painting = true
+    draw(e)
   }
 
   function finishPosition() {
-      painting = false
-      ctx.beginPath()
+    painting = false
+    ctx.beginPath()
   }
 
   function draw(e) {
-      if (!painting) return
+    if (!painting) return
 
-      ctx.lineWidth = 5;
-      ctx.lineCap = 'round'
-      ctx.strokeStyle = 'red'
+    ctx.lineWidth = 5;
+    ctx.lineCap = 'round'
+    ctx.strokeStyle = 'red'
 
-      ctx.lineTo(e.clientX, e.clientY)
-      ctx.stroke()
-      ctx.beginPath()
-      ctx.moveTo(e.clientX, e.clientY)
+    ctx.lineTo(e.clientX, e.clientY)
+    ctx.stroke()
+    ctx.beginPath()
+    ctx.moveTo(e.clientX, e.clientY)
   }
 
   canvas.addEventListener('mousedown', startPosition)
@@ -44,5 +44,7 @@ window.addEventListener("load", () => {
   canvas.addEventListener('mousemove', draw)
 
 })
+
+
 
 
