@@ -24,7 +24,9 @@
 
   <div class="container">
     <div class="card">
-      <h2 class="card-title text-center">Title</h2>
+      <h2 class="card-title text-center">
+        <%=story.title%> <small class="text-muted"> -- <%= story.author %> - <%= story.date %> </small>
+      </h2>
       <div class="card-body">
         <canvas id="canvas" style="height: 500;"></canvas>
       </div>
@@ -34,17 +36,6 @@
     <div class="card">
       <div class="card-body" style="height: 500px; overflow: auto;">
         <ul id="message-list" class="list-group">
-          <li class="list-group-item border-0">
-            <span class="fs-6 text-success">Name :</span>
-            <span class="fs-5">Content...... </span><br>
-            <span>time</span>
-          </li>
-          <li class="list-group-item border-0">
-            <span class="fs-6 text-success">Name: </span>
-            <span class="fs-5">Content...... </span><br>
-            <span>time</span>
-          </li>
-          
         </ul>
       </div>
       <div class="card-footer bg-white">

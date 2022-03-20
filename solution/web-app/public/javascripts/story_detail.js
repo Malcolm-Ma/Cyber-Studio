@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-20 00:19:12
+ * @Last Modified time: 2022-03-20 11:58:50
  */
 
 
@@ -72,7 +72,7 @@ function outputMessage(message) {
   li.classList.add('border-0')
   li.innerHTML = `<span class="fs-6 text-success">${message.name} : </span>
                   <span class="fs-5">${message.text}</span><br>
-                  <span>${message.tiem}</span>`
+                  <span>${message.time}</span>`
 
   document.getElementById('message-list').appendChild(li)
 }

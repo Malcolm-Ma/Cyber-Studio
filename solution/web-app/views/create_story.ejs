@@ -7,6 +7,17 @@
 </head>
 
 <body>
+  <nav class="navbar navbar-expand-md navbar-light fix-top border-bottom">
+    <div class="container-xxl">
+      <a class="navbar-brand">
+        <span class="fw-bold text-success">
+          Cyber Studio
+        </span>
+      </a>
+      <a href="/create" id="btn_create_story" class="btn btn-success">Create Story</a>
+    </div>
+  </nav>
+
   <div class="container">
     <div class="row-10">
       <form action="/blogs" method="POST" class="col-10 mt-10">
@@ -16,14 +27,14 @@
         </div>
 
         <div class="mb-3">
-          <label for="author" class="form-label">Authro</label>
+          <label for="author" class="form-label">Author</label>
           <input class="form-control" type="text" id="author" name="author" required>
         </div>
 
-        <!-- <div class="mb-3">
+        <div class="mb-3">
           <label for="formFile" class="form-label">Select a photo</label>
           <input class="form-control" type="file" id="formFile">
-        </div> -->
+        </div>
 
         <div class="mb-3">
           <label for="content" class="form-label">Content</label>
@@ -31,8 +42,8 @@
         </div>
 
         <div class="mb-3">
-          <button class="btn btn-success">Submit</button>
-          <a class="btn btn-warning" href="/">Cancel</a>
+          <button class="btn btn-success m-2">Submit</button>
+          <a class="btn btn-warning m-2" href="/">Cancel</a>
         </div>
       </form>
     </div>

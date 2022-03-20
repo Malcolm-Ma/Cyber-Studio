@@ -8,7 +8,7 @@ const socketio = require('socket.io')
 
 
 var indexRouter = require('./routes/index');
-var storyRouter = require('./routes/story_detail')
+var storyRouter = require('./routes/storyDetail')
 
 var formatMessage = require('./utils/messages')
 
