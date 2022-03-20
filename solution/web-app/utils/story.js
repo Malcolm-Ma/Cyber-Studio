@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-19 13:58:11 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-20 15:01:35
+ * @Last Modified time: 2022-03-20 23:38:54
  */
 
 const stories = [
@@ -28,6 +28,14 @@ const stories = [
     photo: 'this is photo path',
     content: 'this is story content',
     author: 'Park',
+    date: '2022/4/1'
+  },
+  {
+    id: 4,
+    title: 'this is a story title',
+    photo: 'this is photo path',
+    content: 'this is story content',
+    author: 'Lee',
     date: '2022/4/1'
   }
 ]
