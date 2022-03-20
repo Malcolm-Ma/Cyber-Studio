@@ -2,17 +2,14 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-19 20:05:31
+ * @Last Modified time: 2022-03-20 00:19:12
  */
+
+
 
 window.addEventListener("load", () => {
   const canvas = document.querySelector('#canvas')
   const ctx = canvas.getContext('2d')
-
-
-  canvas.height = 500
-  canvas.width = 800
-  canvas.style.border = "1px solid"
 
   let painting = false
 
@@ -47,12 +44,37 @@ window.addEventListener("load", () => {
 
 const socket = io()
 
+const sentMsg = document.getElementById('send_msg')
+const comment = document.getElementById('comment')
+
 socket.emit('joinRoom', 123)
 
-socket.on('message', message=>{
-  console.log(message)
+socket.on('message', message => {
+  outputMessage(message)
 })
 
 
+sentMsg.addEventListener('click', (e) => {
+  e.preventDefault()
+
+  const message = comment.value
+
+  socket.emit('chatMessage', message)
+
+  comment.value = ''
+  comment.focus()
+})
+
+function outputMessage(message) {
+  console.log('message add')
+  const li = document.createElement('li')
+  li.classList.add('list-group-item')
+  li.classList.add('border-0')
+  li.innerHTML = `<span class="fs-6 text-success">${message.name} : </span>
+                  <span class="fs-5">${message.text}</span><br>
+                  <span>${message.tiem}</span>`
+
+  document.getElementById('message-list').appendChild(li)
+}
 
 

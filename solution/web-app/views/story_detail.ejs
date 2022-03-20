@@ -11,11 +11,29 @@
 </head>
 
 <body>
-  <canvas id="canvas"></canvas>
+  <nav class="navbar navbar-expand-md navbar-light fix-top border-bottom">
+    <div class="container-xxl">
+      <a class="navbar-brand">
+        <span class="fw-bold text-success">
+          Cyber Studio
+        </span>
+      </a>
+      <a href="/create" id="btn_create_story" class="btn btn-success">Create Story</a>
+    </div>
+  </nav>
+
   <div class="container">
     <div class="card">
-      <div class="card-body" data-bs-spy="scroll">
-        <ul class="list-group">
+      <h2 class="card-title text-center">Title</h2>
+      <div class="card-body">
+        <canvas id="canvas" style="height: 500;"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="container">
+    <div class="card">
+      <div class="card-body" style="height: 500px; overflow: auto;">
+        <ul id="message-list" class="list-group">
           <li class="list-group-item border-0">
             <span class="fs-6 text-success">Name :</span>
             <span class="fs-5">Content...... </span><br>
@@ -26,6 +44,7 @@
             <span class="fs-5">Content...... </span><br>
             <span>time</span>
           </li>
+          
         </ul>
       </div>
       <div class="card-footer bg-white">
@@ -35,13 +54,12 @@
               placeholder="Write a message...">
           </div>
           <div class="col-2">
-            <button type="submit" class="btn btn-primary">Send</button>
+            <button id="send_msg" type="submit" class="btn btn-primary">Send Message</button>
           </div>
         </div>
       </div>
     </div>
   </div>
-
 
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
     integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
