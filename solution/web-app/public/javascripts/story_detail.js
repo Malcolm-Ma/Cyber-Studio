@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-20 11:58:50
+ * @Last Modified time: 2022-03-20 17:50:38
  */
 
 
@@ -42,12 +42,17 @@ window.addEventListener("load", () => {
 
 })
 
+const params = window.location.pathname
+const regex = /[0-9]+/
+const roomId = params.match(regex)[0]
+
 const socket = io()
 
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
 
-socket.emit('joinRoom', 123)
+socket.emit('joinRoom', roomId)
+
 
 socket.on('message', message => {
   outputMessage(message)
