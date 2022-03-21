@@ -4,7 +4,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var http = require('http')
+var bodyParser = require('body-parser')
 const socketio = require('socket.io')
+
 
 
 var indexRouter = require('./routes/index');
@@ -29,6 +31,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
+
+// parse application/json
+app.use(bodyParser.json())
+
 
 app.use('/', indexRouter);
 app.use('/story', storyRouter)
@@ -70,4 +79,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = { app: app, server: server};
+module.exports = { app: app, server: server };

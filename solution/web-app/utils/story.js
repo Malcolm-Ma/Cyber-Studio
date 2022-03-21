@@ -2,8 +2,11 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-19 13:58:11 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-20 23:38:54
+ * @Last Modified time: 2022-03-21 23:32:40
  */
+
+const {v1:uuidv1} = require('uuid')
+const moment = require('moment')
 
 const stories = [
   {
@@ -49,7 +52,9 @@ function getStory(id) {
   return stories.find(story => story.id === id)
 }
 
-function createStory(id, title, photo, author, content, date) {
+function createStory(title, author, photo, content) {
+  const id = uuidv1()
+  const date = moment().format('h:mm a')
   const story = { id, title, photo, author, content, date }
   stories.push(story)
   return stories

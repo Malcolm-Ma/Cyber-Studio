@@ -20,11 +20,11 @@
 
   <section>
     <div class="container">
-      <div class="row">
+      <div class="row g-3">
         <% if(stories.length > 0){ %>
           <% stories.forEach(story=> { %>
             <div class="col-sm-12 col-6 col-lg-4">
-            <div class="card m-1" id="card">
+            <div class="card h-100" id="card">
                 <img src="/images/landmark01.jpeg" class="card-img-top" alt="...">
                 <div class="card-body">
                   <h3 class="card-title"><%= story.title %><small class="text-muted">-<%= story.author %> - <%= story.date %> - </small><small id="storyId"><%= story.id %> </small></h3>
