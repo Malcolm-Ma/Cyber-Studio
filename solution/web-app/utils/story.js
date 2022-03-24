@@ -2,62 +2,50 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-19 13:58:11 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-21 23:32:40
+ * @Last Modified time: 2022-03-24 00:02:26
  */
 
-const {v1:uuidv1} = require('uuid')
+const { v1: uuidv1 } = require('uuid')
 const moment = require('moment')
+const axios = require('axios');
 
-const stories = [
-  {
-    id: 1,
-    title: 'this is a story title',
-    photo: 'this is photo path',
-    content: 'this is story content',
-    author: 'John',
-    date: '2022/4/1'
-  },
-  {
-    id: 2,
-    title: 'this is a story title',
-    photo: 'this is photo path',
-    content: 'this is story content',
-    author: 'Kim',
-    date: '2022/4/1'
-  },
-  {
-    id: 3,
-    title: 'this is a story title',
-    photo: 'this is photo path',
-    content: 'this is story content',
-    author: 'Park',
-    date: '2022/4/1'
-  },
-  {
-    id: 4,
-    title: 'this is a story title',
-    photo: 'this is photo path',
-    content: 'this is story content',
-    author: 'Lee',
-    date: '2022/4/1'
-  }
-]
 
+let url = 'http://localhost:3000/stories'
+var stories = getStories()
+var story = []
 
 function getStories() {
+  axios.get(url).then(function (response) {
+    stories = response.data
+  }).catch(function (err) {
+    console.log(err)
+  })
   return stories
 }
 
 function getStory(id) {
-  return stories.find(story => story.id === id)
+  axios.get(url + "/"+id).then(function (response) {
+    story = response.data
+  }).catch(err => {
+    console.log(err)
+  })
+  return story
 }
 
 function createStory(title, author, photo, content) {
-  const id = uuidv1()
   const date = moment().format('h:mm a')
-  const story = { id, title, photo, author, content, date }
-  stories.push(story)
-  return stories
+  const story = { title, photo, author, content, date }
+  
+  axios({
+    method: 'post',
+    url: url,
+    data: story,
+    headers: {'Content-Type': 'application/json'}
+  }).then(function (response) {
+    console.log(response.data)
+  }).catch(err=>{
+    console.log(err)
+  })
 }
 
 module.exports = { getStories, getStory, createStory }

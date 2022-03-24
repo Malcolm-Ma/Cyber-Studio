@@ -21,14 +21,14 @@
   <section>
     <div class="container">
       <div class="row g-3">
-        <% if(stories.length > 0){ %>
+        <% if(stories){ %>
           <% stories.forEach(story=> { %>
             <div class="col-sm-12 col-6 col-lg-4">
             <div class="card h-100" id="card">
                 <img src="/images/landmark01.jpeg" class="card-img-top" alt="...">
                 <div class="card-body">
                   <h3 class="card-title"><%= story.title %><small class="text-muted">-<%= story.author %> - <%= story.date %> - </small><small id="storyId"><%= story.id %> </small></h3>
-                  <p class="card-text"><%= story.content %></p>
+                  <p class="card-text"><%= story.content.slice(0,200) %></p>
                 </div>
                 <div class="card-footer bg-white border-0">
                   <a href="/story/<%= story.id %>" class="btn stretched-link"></a>

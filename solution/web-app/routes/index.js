@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-21 23:05:19 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-21 23:44:12
+ * @Last Modified time: 2022-03-24 00:04:01
  */
 
 var express = require('express');
@@ -14,9 +14,10 @@ const { getStories, getStory, createStory } = require('../utils/story')
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  const stories = getStories()
-  console.log(stories.length)
+  var stories = getStories()
+  console.log("this is ", stories)
   res.render('index', { stories });
+
 });
 
 router.get('/create', (req, res, next) => {
@@ -30,10 +31,9 @@ router.post('/create', (req, res, next) => {
       next(err);
       return;
     }
-    const stories = createStory(fields.title, fields.author, files.photo.filepath, fields.content)
-    console.log("1+",stories.length)
-    res.render('index', {stories})
-    return 
+    createStory(fields.title, fields.author, files.photo.filepath, fields.content)
+    res.redirect('/')
+    
   });
 });
 
