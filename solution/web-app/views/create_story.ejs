@@ -20,7 +20,7 @@
 
   <div class="container">
     <div class="row-10">
-      <form action="/blogs" method="POST" class="col-10 mt-10">
+      <form action="/create" method="POST" enctype="multipart/form-data" class="col-10 mt-10">
         <div class="mb-3 mt-5">
           <label for="title" class="form-label">Title: </label>
           <input type="text" id="title" name="title" class="form-control" required>
@@ -33,12 +33,12 @@
 
         <div class="mb-3">
           <label for="formFile" class="form-label">Select a photo</label>
-          <input class="form-control" type="file" id="formFile">
+          <input class="form-control" type="file" id="formFile" name="photo" required>
         </div>
 
         <div class="mb-3">
           <label for="content" class="form-label">Content</label>
-          <input type="text" id="content" name="content" class="form-control" required>
+          <input type="text" id="content" name="content" class="form-control">
         </div>
 
         <div class="mb-3">

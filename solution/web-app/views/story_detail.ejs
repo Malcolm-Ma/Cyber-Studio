@@ -21,14 +21,24 @@
       <a href="/create" id="btn_create_story" class="btn btn-success">Create Story</a>
     </div>
   </nav>
+  
+  <div class="row">
+    <div class="col">
+      <canvas id="canvas" style="border:1px solid #d3d3d3;"></canvas>
+    </div>
+    <div class="col">
+      <div>
+        <h2>here is linked infomations</h2>
+      </div>
+    </div>
+  </div>
 
   <div class="container">
     <div class="card">
       <h2 class="card-title text-center">
-        <%=story.title%> <small class="text-muted"> -- <%= story.author %> - <%= story.date %> </small>
+          <a href="/" class="btn btn-warning">Back</a>
       </h2>
       <div class="card-body">
-        <canvas id="canvas" style="height: 500;"></canvas>
       </div>
     </div>
   </div>
