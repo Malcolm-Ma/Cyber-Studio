@@ -2,10 +2,9 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-19 13:58:11 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-24 00:02:26
+ * @Last Modified time: 2022-03-24 13:34:55
  */
 
-const { v1: uuidv1 } = require('uuid')
 const moment = require('moment')
 const axios = require('axios');
 
@@ -24,7 +23,7 @@ function getStories() {
 }
 
 function getStory(id) {
-  axios.get(url + "/"+id).then(function (response) {
+  axios.get(url + "/" + id).then(function (response) {
     story = response.data
   }).catch(err => {
     console.log(err)
@@ -35,15 +34,16 @@ function getStory(id) {
 function createStory(title, author, photo, content) {
   const date = moment().format('h:mm a')
   const story = { title, photo, author, content, date }
-  
+
+
   axios({
     method: 'post',
     url: url,
     data: story,
-    headers: {'Content-Type': 'application/json'}
+    headers: { 'Content-Type': 'application/json' }
   }).then(function (response) {
     console.log(response.data)
-  }).catch(err=>{
+  }).catch(err => {
     console.log(err)
   })
 }

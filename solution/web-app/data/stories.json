@@ -55,6 +55,31 @@
       "content": "qwdqwdqw",
       "date": "12:05 am",
       "id": 7
+    },
+    {
+      "title": "ch has cha",
+      "photo": "/Users/khalillee/Documents/UniversitySheffield/Semaster02/IntelligentWeb/TeamProj/Cyber-Studio/solution/web-app/public/images/951829e424552c7a36d915400",
+      "author": "bdqyuwb",
+      "content": "casf",
+      "date": "11:19 am",
+      "id": 8
     }
+  ],
+  "room":[
+    {
+      "roomid":1,
+      "messageId": 2
+    }
+  ],
+  "roomToStroy":[
+    {
+      "roomid":"1",
+      "storyId": "1"
+    },
+    {
+      "roomid":"1",
+      "storyId": "2"
+    }
+
   ]
 }

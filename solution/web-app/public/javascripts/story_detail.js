@@ -2,14 +2,24 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-20 17:50:38
+ * @Last Modified time: 2022-03-26 16:07:37
  */
 
+const canvas = document.querySelector('#canvas')
+const ctx = canvas.getContext('2d')
 
+canvas.height = window.innerHeight/2
+canvas.width = window.innerWidth/2
 
-window.addEventListener("load", () => {
-  const canvas = document.querySelector('#canvas')
-  const ctx = canvas.getContext('2d')
+var img = new Image()
+img.onload = function () {
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+}
+img.src = '/images/landmark01.jpeg'
+
+window.addEventListener("load", (e) => {
+  e.preventDefault()
+
 
   let painting = false
 
@@ -26,14 +36,16 @@ window.addEventListener("load", () => {
   function draw(e) {
     if (!painting) return
 
+    console.log('draw start')
+
     ctx.lineWidth = 5;
     ctx.lineCap = 'round'
     ctx.strokeStyle = 'red'
 
-    ctx.lineTo(e.clientX, e.clientY)
+    ctx.lineTo(e.clientX, e.clientY-60)
     ctx.stroke()
     ctx.beginPath()
-    ctx.moveTo(e.clientX, e.clientY)
+    ctx.moveTo(e.clientX, e.clientY-60)
   }
 
   canvas.addEventListener('mousedown', startPosition)
