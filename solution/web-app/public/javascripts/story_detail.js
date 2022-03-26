@@ -2,14 +2,27 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-26 16:07:37
+ * @Last Modified time: 2022-03-26 17:29:08
  */
 
 const canvas = document.querySelector('#canvas')
 const ctx = canvas.getContext('2d')
 
-canvas.height = window.innerHeight/2
-canvas.width = window.innerWidth/2
+const socket = io()
+
+const params = window.location.pathname
+const regex = /[0-9]+/
+const roomId = params.match(regex)[0]
+
+socket.emit('joinRoom', roomId)
+
+canvas.height = window.innerHeight / 2
+canvas.width = window.innerWidth / 2
+
+var data = {
+  x: 0,
+  y: 0
+}
 
 var img = new Image()
 img.onload = function () {
@@ -17,58 +30,72 @@ img.onload = function () {
 }
 img.src = '/images/landmark01.jpeg'
 
-window.addEventListener("load", (e) => {
-  e.preventDefault()
+
+let painting = false
+
+function startPosition(e) {
+  painting = true
+  draw(e)
+}
+
+function finishPosition() {
+  painting = false
+  ctx.beginPath()
+}
 
 
-  let painting = false
+function draw(e) {
+  if (!painting) return
 
-  function startPosition(e) {
-    painting = true
-    draw(e)
-  }
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round'
+  ctx.strokeStyle = 'red'
 
-  function finishPosition() {
-    painting = false
-    ctx.beginPath()
-  }
+  var mouseX = e.clientX
+  var mouseY = e.clientY - 60
 
-  function draw(e) {
-    if (!painting) return
+  ctx.lineTo(mouseX, mouseY)
+  ctx.stroke()
+  ctx.beginPath()
+  ctx.moveTo(mouseX, mouseY)
+  data.x = mouseX
+  data.y = mouseY
 
-    console.log('draw start')
+  socket.emit('mouse', data)
+}
 
-    ctx.lineWidth = 5;
-    ctx.lineCap = 'round'
-    ctx.strokeStyle = 'red'
+function drawBySocketIo(data) {
+  ctx.lineWidth = 5;
+  ctx.lineCap = 'round'
+  ctx.strokeStyle = 'green'
 
-    ctx.lineTo(e.clientX, e.clientY-60)
-    ctx.stroke()
-    ctx.beginPath()
-    ctx.moveTo(e.clientX, e.clientY-60)
-  }
+  var mouseX = data.x
+  var mouseY = data.y
 
-  canvas.addEventListener('mousedown', startPosition)
-  canvas.addEventListener('mouseup', finishPosition)
-  canvas.addEventListener('mousemove', draw)
+  ctx.lineTo(mouseX, mouseY)
+  ctx.stroke()
+  ctx.beginPath()
+  ctx.moveTo(mouseX, mouseY)
+}
 
+canvas.addEventListener('mousedown', startPosition)
+canvas.addEventListener('mouseup', finishPosition)
+canvas.addEventListener('mousemove', draw)
+
+socket.on('mouseDraw', newDraw => {
+  console.log(newDraw)
+  drawBySocketIo(newDraw)
 })
 
-const params = window.location.pathname
-const regex = /[0-9]+/
-const roomId = params.match(regex)[0]
-
-const socket = io()
 
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
-
-socket.emit('joinRoom', roomId)
 
 
 socket.on('message', message => {
   outputMessage(message)
 })
+
 
 
 sentMsg.addEventListener('click', (e) => {

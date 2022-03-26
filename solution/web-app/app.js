@@ -59,6 +59,10 @@ io.on('connection', socket => {
     socket.on('chatMessage', msg => {
       io.to(room).emit('message', formatMessage(randName, msg))
     })
+
+    socket.on('mouse', newDraw=>{
+      socket.broadcast.to(room).emit('mouseDraw', newDraw)
+    })
   })
 })
 
