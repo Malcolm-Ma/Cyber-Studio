@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-26 17:29:08
+ * @Last Modified time: 2022-03-26 17:50:57
  */
 
 const canvas = document.querySelector('#canvas')
@@ -42,7 +42,6 @@ function finishPosition() {
   painting = false
   ctx.beginPath()
 }
-
 
 function draw(e) {
   if (!painting) return
