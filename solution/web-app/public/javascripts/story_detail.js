@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-26 17:50:57
+ * @Last Modified time: 2022-03-28 22:03:30
  */
 
 const canvas = document.querySelector('#canvas')
@@ -16,8 +16,7 @@ const roomId = params.match(regex)[0]
 
 socket.emit('joinRoom', roomId)
 
-canvas.height = window.innerHeight / 2
-canvas.width = window.innerWidth / 2
+
 
 var data = {
   x: 0,
@@ -30,6 +29,8 @@ img.onload = function () {
 }
 img.src = '/images/landmark01.jpeg'
 
+canvas.height = window.innerHeight / 2.3
+canvas.width = window.innerWidth / 2.3
 
 let painting = false
 
@@ -50,8 +51,8 @@ function draw(e) {
   ctx.lineCap = 'round'
   ctx.strokeStyle = 'red'
 
-  var mouseX = e.clientX
-  var mouseY = e.clientY - 60
+  var mouseX = e.clientX - 60
+  var mouseY = e.clientY - 55
 
   ctx.lineTo(mouseX, mouseY)
   ctx.stroke()

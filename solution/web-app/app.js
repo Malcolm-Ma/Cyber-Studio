@@ -42,7 +42,7 @@ app.use(bodyParser.json())
 app.use('/', indexRouter);
 app.use('/story', storyRouter)
 
-const randName = '007'
+const randName = 'anonymity'
 
 io.on('connection', socket => {
   socket.on('joinRoom', room => {
