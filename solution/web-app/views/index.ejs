@@ -68,10 +68,10 @@
                         <%= story.title %>
                       </strong> </p>
                     <label>please enter a room id: </label>
-                    <input type="text" placeholder="ex: R123456">
+                    <input id="createRoomId" type="text" placeholder="ex: R123456">
                   </div>
                   <div class="modal-footer">
-                    <a type="button" class="btn btn-primary">Confirm</a>
+                    <a id="createRoomBtn" type="button" class="btn btn-primary">Confirm</a>
                   </div>
                 </div>
               </div>
@@ -91,7 +91,7 @@
                         <%= story.title %>
                       </strong> </p>
                     <label>please enter a room id: </label>
-                    <input type="text" placeholder="ex: R123456">
+                    <input id="joinRoomId" type="text" placeholder="ex: R123456">
                   </div>
                   <div class="modal-footer">
                     <a href="/story/<%= story.id %>" type="button" class="btn btn-primary">Confirm</a>
@@ -104,6 +104,7 @@
       </div>
     </div>
   </section>
+
   <script src="/javascripts/index.js"></script>
 </body>
 
