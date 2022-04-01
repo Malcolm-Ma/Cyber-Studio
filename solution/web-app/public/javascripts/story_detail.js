@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-28 22:03:30
+ * @Last Modified time: 2022-04-01 12:54:47
  */
 
 const canvas = document.querySelector('#canvas')
@@ -27,10 +27,23 @@ var img = new Image()
 img.onload = function () {
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
 }
+
+const rect = canvas.getBoundingClientRect()
+const bodyRect = document.body.getBoundingClientRect()
+console.log(bodyRect)
+console.log(rect)
+
+const offsetY = bodyRect.y + rect.y
+const offsetX = bodyRect.x + rect.x
+
+
+
 img.src = '/images/landmark01.jpeg'
 
 canvas.height = window.innerHeight / 2.3
 canvas.width = window.innerWidth / 2.3
+
+
 
 let painting = false
 
@@ -51,13 +64,14 @@ function draw(e) {
   ctx.lineCap = 'round'
   ctx.strokeStyle = 'red'
 
-  var mouseX = e.clientX - 60
-  var mouseY = e.clientY - 55
+  var mouseX = e.clientX - offsetX
+  var mouseY = e.clientY - offsetY
 
   ctx.lineTo(mouseX, mouseY)
   ctx.stroke()
   ctx.beginPath()
   ctx.moveTo(mouseX, mouseY)
+
   data.x = mouseX
   data.y = mouseY
 
@@ -82,6 +96,7 @@ canvas.addEventListener('mousedown', startPosition)
 canvas.addEventListener('mouseup', finishPosition)
 canvas.addEventListener('mousemove', draw)
 
+
 socket.on('mouseDraw', newDraw => {
   console.log(newDraw)
   drawBySocketIo(newDraw)
@@ -95,8 +110,6 @@ const comment = document.getElementById('comment')
 socket.on('message', message => {
   outputMessage(message)
 })
-
-
 
 sentMsg.addEventListener('click', (e) => {
   e.preventDefault()
