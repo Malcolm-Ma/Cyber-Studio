@@ -7,10 +7,7 @@ var http = require('http')
 var bodyParser = require('body-parser')
 const socketio = require('socket.io')
 
-
-
-var indexRouter = require('./routes/index');
-var storyRouter = require('./routes/storyDetail')
+var storyRouter = require('./routes/storyRoutes')
 
 var formatMessage = require('./utils/messages')
 
@@ -18,9 +15,7 @@ var formatMessage = require('./utils/messages')
 var app = express();
 var server = http.createServer(app)
 
-
 const io = socketio(server)
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,8 +34,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-app.use('/', indexRouter);
-app.use('/story', storyRouter)
+app.use('/', storyRouter)
 
 const randName = 'anonymity'
 
@@ -60,7 +54,7 @@ io.on('connection', socket => {
       io.to(room).emit('message', formatMessage(randName, msg))
     })
 
-    socket.on('mouse', data=>{
+    socket.on('mouse', data => {
       socket.broadcast.to(room).emit('sendmouse', data)
     })
   })
