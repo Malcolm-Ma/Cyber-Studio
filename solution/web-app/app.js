@@ -60,8 +60,8 @@ io.on('connection', socket => {
       io.to(room).emit('message', formatMessage(randName, msg))
     })
 
-    socket.on('mouse', newDraw=>{
-      socket.broadcast.to(room).emit('mouseDraw', newDraw)
+    socket.on('mouse', data=>{
+      socket.broadcast.to(room).emit('sendmouse', data)
     })
   })
 })

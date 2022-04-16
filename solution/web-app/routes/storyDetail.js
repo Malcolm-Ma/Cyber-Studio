@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 13:42:49 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-03-26 16:10:46
+ * @Last Modified time: 2022-04-16 01:44:50
  */
 
 var express = require('express')
@@ -19,6 +19,10 @@ router.get('/:id', (req, res) => {
   } else {
     console.log('can not find story')
   }
+})
+
+router.get('/color', (req, res) => {
+  
 })
 
 module.exports = router;
