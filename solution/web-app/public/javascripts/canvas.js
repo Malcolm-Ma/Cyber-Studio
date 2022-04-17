@@ -3,7 +3,7 @@
  */
 let room;
 let userId;
-let color = 'red', thickness = 4;
+let color = null, thickness = 4;
 
 /**
  * it inits the image canvas to draw on. It sets up the events to respond to (click, mouse on, etc.)
@@ -21,6 +21,7 @@ function initCanvas(sckt, imageUrl) {
   let ctx = cvx.getContext('2d');
   img.src = imageUrl;
 
+  
   // event on the canvas when the mouse is on it
   canvas.on('mousemove mousedown mouseup mouseout', function (e) {
     prevX = currX;
@@ -100,6 +101,7 @@ function initCanvas(sckt, imageUrl) {
       }
     }, 10);
   });
+
 }
 
 /**
@@ -154,4 +156,12 @@ function drawOnCanvas(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY
   ctx.closePath();
 }
 
-
+async function getColor() {
+  await fetch('/color')
+    .then((response) => {
+      return response.json()
+    })
+    .then(function(data) {
+      console.log(data)
+    })
+}

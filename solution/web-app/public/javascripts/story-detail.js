@@ -2,8 +2,9 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-16 17:15:35
+ * @Last Modified time: 2022-04-17 13:59:46
  */
+
 
 let socket = io()
 let roomNo = null
@@ -17,8 +18,7 @@ const roomId = params.match(regex)[0]
 socket.emit('joinRoom', roomId)
 // get color from server
 
-
-function init(){
+function init() {
   initCanvas(socket, imgUrl)
 }
 

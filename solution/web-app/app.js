@@ -9,9 +9,6 @@ const socketio = require('socket.io')
 
 var storyRouter = require('./routes/storyRoutes')
 
-var formatMessage = require('./utils/messages')
-
-
 var app = express();
 var server = http.createServer(app)
 
@@ -35,31 +32,6 @@ app.use(bodyParser.json())
 
 
 app.use('/', storyRouter)
-
-const randName = 'anonymity'
-
-io.on('connection', socket => {
-  socket.on('joinRoom', room => {
-    socket.join(room)
-
-    socket.emit('message', formatMessage(randName, 'welcome to the chat'))
-
-    socket.broadcast.to(room).emit('message', formatMessage(randName, 'an agent has join the chat'))
-
-    socket.on('disconnect', () => {
-      io.to(room).emit('message', formatMessage(randName, 'an agent left chat'))
-    })
-
-    socket.on('chatMessage', msg => {
-      io.to(room).emit('message', formatMessage(randName, msg))
-    })
-
-    socket.on('mouse', data => {
-      socket.broadcast.to(room).emit('sendmouse', data)
-    })
-  })
-})
-
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
