@@ -13,14 +13,10 @@ let db;
 // Define the names of databases and object stores
 const MSG_DB_NAME= 'db_msg';
 const MSG_STORE_NAME= 'store_msg';
-const STORY_STORE_NAME= 'store_story';
-const ROOM_TO_STORY_NAME= 'store_room_to_story';
 
 // Export to the window namespace
 window.MSG_DB_NAME = MSG_DB_NAME;
 window.MSG_STORE_NAME = MSG_STORE_NAME;
-window.STORY_STORE_NAME = STORY_STORE_NAME;
-window.ROOM_TO_STORY_NAME = ROOM_TO_STORY_NAME;
 
 // the database receives from the server the following structure
 const messageData = [
@@ -63,7 +59,7 @@ window.initMessageDB= initMessageDB;
 /**
  * it saves the message into the database
  * if the database is not supported, it will use localstorage
- * @param msgObject: it contains { roomId, isSelf, msgNum, content }
+ * @param msgObject: it contains { roomId, username, isSelf, msgNum, content, time}
  */
 async function storeMessage(msgObject) {
     console.log('Inserting item into indexedDB: ' + JSON.stringify(msgObject));
@@ -88,7 +84,7 @@ window.storeMessage= storeMessage;
  * it retrieves all the messages that have sent in the roomNum
  * if the database is not supported, it will use localstorage
  * @param roomNum: a number
- * @returns objects like { roomId, isSelf, msgNum, content }
+ * @returns a list of message items
  */
 async function getMessageList(roomNum) {
     let searchResult = []; // return the message list of roomNum
@@ -130,10 +126,9 @@ async function getMessageList(roomNum) {
 window.getMessageList= getMessageList;
 
 /**
- * it retrieves all the messages that have sent in the roomNum
- * if the database is not supported, it will use localstorage
- * @param roomNum: a number
- * @returns objects like { roomId, isSelf, msgNum, content }
+ * it checks the number of history messages in roomNum
+ * @param roomNum: id of room
+ * @returns a number
  */
 async function getMsgNum(roomNum) {
     if (!db)

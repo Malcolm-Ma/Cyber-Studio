@@ -3,8 +3,8 @@
  *
  */
 
-//import * as idb from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
-import * as idb from './idb/index.js';
+import * as idb from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
+//import * as idb from './idb/index.js';
 
 
 ////////////////// DATABASE //////////////////
@@ -24,7 +24,7 @@ const storyData = [
 ];
 
 /**
- * it inits the message database and creates an index for the roomId field
+ * it inits the story database and set key path
  */
 async function initStoryDB(){
     if (!db) {
@@ -46,9 +46,9 @@ async function initStoryDB(){
 window.initStoryDB= initStoryDB;
 
 /**
- * it saves the message into the database
+ * it saves a new story into the database
  * if the database is not supported, it will use localstorage
- * @param storyObject: it contains { roomId, isSelf, msgNum, content }
+ * @param storyObject
  */
 async function storeStory(storyObject) {
     console.log('inserting: '+JSON.stringify(storyObject));
@@ -70,10 +70,10 @@ async function storeStory(storyObject) {
 window.storeStory= storeStory;
 
 /**
- * it retrieves all the messages that have sent in the roomNum
+ * it retrieves all the information of story
  * if the database is not supported, it will use localstorage
- * @param storyNum: a number
- * @returns objects like { roomId, isSelf, msgNum, content }
+ * @param storyNum: id of story
+ * @returns data item of story
  */
 async function getStory(storyNum) {
     let searchResult = []; // return all information about story
