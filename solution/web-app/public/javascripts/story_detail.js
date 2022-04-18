@@ -6,7 +6,6 @@
  */
 
 
-
 window.addEventListener("load", () => {
   const canvas = document.querySelector('#canvas')
   const ctx = canvas.getContext('2d')
@@ -72,6 +71,11 @@ sentMsg.addEventListener('click', (e) => {
 
 function outputMessage(message) {
   console.log('message add')
+
+  storeItem({ roomId: 1, isSelf: true, msgNum: 1, content: message }, window.MSG_STORE_NAME)
+      .then(response => console.log('inserting worked!!'))
+      .catch(error => console.log("error  inserting: "+ JSON.stringify(error)))
+
   const li = document.createElement('li')
   li.classList.add('list-group-item')
   li.classList.add('border-0')
