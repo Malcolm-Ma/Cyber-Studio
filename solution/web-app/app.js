@@ -7,20 +7,12 @@ var http = require('http')
 var bodyParser = require('body-parser')
 const socketio = require('socket.io')
 
-
-
-var indexRouter = require('./routes/index');
-var storyRouter = require('./routes/storyDetail')
-
-var formatMessage = require('./utils/messages')
-
+var storyRouter = require('./routes/storyRoutes')
 
 var app = express();
 var server = http.createServer(app)
 
-
 const io = socketio(server)
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,33 +31,7 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 
-app.use('/', indexRouter);
-app.use('/story', storyRouter)
-
-const randName = '007'
-
-io.on('connection', socket => {
-  socket.on('joinRoom', room => {
-    socket.join(room)
-
-    socket.emit('message', formatMessage(randName, 'welcome to the chat'))
-
-    socket.broadcast.to(room).emit('message', formatMessage(randName, 'an agent has join the chat'))
-
-    socket.on('disconnect', () => {
-      io.to(room).emit('message', formatMessage(randName, 'an agent left chat'))
-    })
-
-    socket.on('chatMessage', msg => {
-      io.to(room).emit('message', formatMessage(randName, msg))
-    })
-
-    socket.on('mouse', newDraw=>{
-      socket.broadcast.to(room).emit('mouseDraw', newDraw)
-    })
-  })
-})
-
+app.use('/', storyRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
