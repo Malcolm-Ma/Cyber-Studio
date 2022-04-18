@@ -4,21 +4,15 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 var http = require('http')
+var bodyParser = require('body-parser')
 const socketio = require('socket.io')
 
-
-var indexRouter = require('./routes/index');
-var storyRouter = require('./routes/storyDetail')
-
-var formatMessage = require('./utils/messages')
-
+var storyRouter = require('./routes/storyRoutes')
 
 var app = express();
 var server = http.createServer(app)
 
-
 const io = socketio(server)
-
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -30,29 +24,14 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', indexRouter);
-app.use('/story', storyRouter)
+// parse application/x-www-form-urlencoded
+app.use(bodyParser.urlencoded({ extended: false }))
 
-const randName = '007'
+// parse application/json
+app.use(bodyParser.json())
 
-io.on('connection', socket => {
-  socket.on('joinRoom', room => {
-    socket.join(room)
 
-    socket.emit('message', formatMessage(randName, 'welcome to the chat'))
-
-    socket.broadcast.to(room).emit('message', formatMessage(randName, 'an agent has join the chat'))
-
-    socket.on('disconnect', () => {
-      io.to(room).emit('message', formatMessage(randName, 'an agent left chat'))
-    })
-
-    socket.on('chatMessage', msg => {
-      io.to(room).emit('message', formatMessage(randName, msg))
-    })
-  })
-})
-
+app.use('/', storyRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -70,4 +49,4 @@ app.use(function (err, req, res, next) {
   res.render('error');
 });
 
-module.exports = { app: app, server: server};
+module.exports = { app: app, server: server };
