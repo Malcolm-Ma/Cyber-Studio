@@ -2,13 +2,14 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-17 19:08:17
+ * @Last Modified time: 2022-04-17 19:27:28
  */
 
 const moment = require('moment')
 const axios = require('axios');
 const randomColor = require('../utils/colors')
 
+// API url from server-app
 let url = 'http://localhost:3001/stories'
 
 const story_index = (req, res) => {

@@ -2,7 +2,6 @@
 var formatMessage = require('../utils/messages')
 const randName = 'anonymity'
 
-
 exports.init = function (io) {
   io.sockets.on('connection', function (socket) {
     try {
