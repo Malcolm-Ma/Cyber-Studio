@@ -19,13 +19,14 @@ const roomId = params.match(regex)[0]
 socket.emit('joinRoom', roomId)
 // get color from server
 
-function init() {
+async function init() {
   initCanvas(socket, imgUrl)
+  await initMessageDB()
   fetch('/color')
-  .then(response => response.json())
-  .then(function(data){
-    color = data.color
-  })
+      .then(response => response.json())
+      .then(function (data) {
+        color = data.color
+      })
 }
 
 window.onload = init
@@ -49,6 +50,12 @@ sentMsg.addEventListener('click', (e) => {
 })
 
 function outputMessage(message) {
+  // Construct the data item and store it in the database
+  getMsgNum(1).then(messageNum =>
+      storeMessage({ roomId: 1, username:message.name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
+        .then(response => console.log('Inserting message worked!!'))
+        .catch(error => console.log("Error inserting: "+ JSON.stringify(error))))
+
   const li = document.createElement('li')
   li.classList.add('list-group-item')
   li.classList.add('border-0')
