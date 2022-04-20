@@ -2,32 +2,24 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-20 20:54:40
+ * @Last Modified time: 2022-04-20 21:00:06
  */
 
 let socket = io()
 let roomNo = null
 let name = null
 
-const params = window.location.pathname
-const regex = /[0-9]+/
-const roomid = 1
-
 const initForm = document.querySelector('#initial_form')
 const chatInterface = document.querySelector('#chat_interface')
 const cardImg = document.querySelector('#story_info_image')
 const storyInfo = document.querySelector('#story_info')
-
-
-// function init() {
-//   initCanvas(socket, imgUrl)
-//   socket.emit('joinRoom', roomid)
-// }
+const canvasForm = document.querySelector('#canvas_form')
 
 function init() {
   initForm.style.display = 'block'
   chatInterface.style.display = 'none'
   storyInfo.style.display = 'block'
+  canvasForm.style.display = 'none'
 }
 window.onload = init
 
@@ -65,13 +57,12 @@ connect.addEventListener('click', (e) => {
     return 
   }
   if (!name) name = 'Unknown-' + Math.random();
-  //@todo join the room
   initCanvas(socket, imageUrl);
   hideLoginInterface(roomNo, name);
 })
 
 /**
- * it hides the initial form and shows the chat
+ * it hides the initial form, shows the chat and join the room
  * @param room the selected room
  * @param userId the user name
  */
@@ -79,8 +70,10 @@ function hideLoginInterface(room, userId) {
   initForm.style.display = 'none'
   chatInterface.style.display = 'block'
   storyInfo.style.display = 'none'
+  canvasForm.style.display = 'block'
   document.getElementById('who_you_are').innerHTML= userId;
   document.getElementById('in_room').innerHTML= ' '+room;
+  //@todo join the room
   socket.emit('joinRoom', roomNo)
 }
 
