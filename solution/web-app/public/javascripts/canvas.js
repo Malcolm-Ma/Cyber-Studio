@@ -4,6 +4,7 @@
 let room;
 let userId;
 let thickness = 4;
+let color = 'red'
 
 /**
  * it inits the image canvas to draw on. It sets up the events to respond to (click, mouse on, etc.)
@@ -41,7 +42,8 @@ function initCanvas(sckt, imageUrl) {
         // @todo if you draw on the canvas, you may want to let everyone know via socket.io (socket.emit...)  by sending them
         const data = {
           x: currX,
-          y: currY
+          y: currY,
+          lineColor: color
         }
         socket.emit('mouse', data)
       }
@@ -49,13 +51,14 @@ function initCanvas(sckt, imageUrl) {
   });
 
   let socketPrevX, socketPrevY, socketCurrX, socketCurrY = 0
+  let socketColor = ''
   socket.on('sendmouse', data => {
     socketPrevX = socketCurrX
     socketPrevY = socketCurrY
     socketCurrX = data.x
     socketCurrY = data.y
-    drawOnCanvas(ctx, canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, color, thickness)
-    flag = false
+    socketColor = data.lineColor
+    drawOnCanvas(ctx, canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, socketColor, thickness)
   })
 
   // this is code left in case you need to  provide a button clearing the canvas (it is suggested that you implement it)
