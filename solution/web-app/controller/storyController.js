@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-17 19:27:28
+ * @Last Modified time: 2022-04-20 16:23:10
  */
 
 const moment = require('moment')
@@ -13,10 +13,8 @@ const randomColor = require('../utils/colors')
 let url = 'http://localhost:3001/stories'
 
 const story_index = (req, res) => {
-  var stories = []
   axios.get(url).then(response => {
-    stories = response.data
-    res.render('index', { stories })
+    res.render('index', { stories: response.data, title: "All Stories" })
   }).catch(err => {
     console.log(err.message)
   })
@@ -27,16 +25,16 @@ const story_create_get = (req, res) => {
 }
 
 const story_create_post = (req, res) => {
-  
+
 }
 
 const story_details = (req, res) => {
-  var story = []
-  const id = req.params.id
-  console.log("story_details", id)
-  axios.get(url + "/" + id).then(response => {
-    story = response.data
-    res.render('story_detail', { story })
+  // const roomId = req.body.roomId
+  // const storyId = req.body.storyId
+  const storyId = req.params.id
+  console.log("details", storyId)
+  axios.get(url + "/" + storyId).then(response => {
+    res.render('details', { story: response.data, title: "Story Details" })
   }).catch(err => {
     console.log(err.message)
   })
@@ -47,9 +45,9 @@ const story_delete = (req, res) => {
 }
 
 const random_color = (req, res) => {
-  const color  = randomColor()
+  const color = randomColor()
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({color: color}))
+  res.send(JSON.stringify({ color: color }))
 }
 
 module.exports = {

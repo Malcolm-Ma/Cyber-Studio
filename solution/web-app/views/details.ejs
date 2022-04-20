@@ -1,0 +1,73 @@
+<html lang="en">
+
+<%- include('./partials/head.ejs') %>
+
+  <body>
+    <%- include('./partials/nav.ejs') %>
+      <div class="container mt-5" id="story_info">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">
+              <%= story.title %>
+            </h5>
+            <p class="card-text">
+              <%= story.content %>
+            </p>
+            <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+          </div>
+          <img id="story_info_image" src="<%= story.photo%>" class="card-img-bottom" alt="...">
+        </div>
+      </div>
+      <div class="container" id="initial_form">
+        <p>Please insert the id of the Room you want to Join, if you do not have a room id, click Generate Room</p>
+        <form>
+          <p><label for="name"> Your name </label>
+            <input type="text" id="name" name="name">
+          </p>
+          <p>
+            <label for="roomNo"> Your room </label>
+            <input type="text" id="roomNo" name="roomNo">
+            <button id="roomNoGenerator">Generate Room</button>
+          </p>
+          <div id="warning" style="display: none;">
+            <p class="fw-bold text-warning">Room Id cannot be empty</p>
+          </div>
+          <a id="connect" class="btn" data-doc="<%= story.photo%> ">Connect</a>
+        </form>
+      </div>
+      <div class="container">
+        <div style="width: 100%; height: 50vh">
+          <img id="image" height="100%">
+          <canvas id="canvas"></canvas>
+        </div>
+      </div>
+      <div class="container" id="chat_interface">
+        <div class="card">
+          <div class="card-header">
+            <p>
+            <div id="who_you_are" style="display: inline" style="height: 10vh"></div>, you are in room: <div
+              id="in_room" style="display: inline"></div>
+          </div>
+          <div class="card-body" style="height: 500px; overflow: auto;">
+            <ul id="message-list" class="list-group">
+            </ul>
+          </div>
+          <div class="card-footer bg-white">
+            <div class="row m-3">
+              <div class="col-10">
+                <input type="text" class="form-control border-0 border-bottom" id="comment"
+                  placeholder="Write a message...">
+              </div>
+              <div class="col-2">
+                <button id="send_msg" type="submit" class="btn btn-primary">Send Message</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <%- include('./partials/footer.ejs') %>
+        <script src="/javascripts/details.js"></script>
+        <script src="/javascripts/canvas.js"></script>
+  </body>
+
+</html>
