@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-17 19:27:28
+ * @Last Modified time: 2022-04-20 22:25:50
  */
 
 const moment = require('moment')
@@ -12,44 +12,67 @@ const randomColor = require('../utils/colors')
 // API url from server-app
 let url = 'http://localhost:3001/stories'
 
+/**
+ * index view, will show a list of stories
+ * @req request from user  
+ * @res response to the user
+ */
 const story_index = (req, res) => {
-  var stories = []
   axios.get(url).then(response => {
-    stories = response.data
-    res.render('index', { stories })
+    res.render('index', { stories: response.data, title: "All Stories" })
   }).catch(err => {
     console.log(err.message)
   })
 }
 
+/**
+ * redirect to the create_story view
+ * @req request from user  
+ * @res response to the user
+ */
 const story_create_get = (req, res) => {
   res.render('create_story', { title: 'Create' })
 }
 
+/**
+ * Create a new Story, and send new story info to server-app
+ * @req request from user  
+ * @res response to the user
+ */
 const story_create_post = (req, res) => {
-  
+
 }
 
+/**
+ * Show the story details, include photo, title and content
+ * @req request from user  
+ * @res response to the user
+ */
 const story_details = (req, res) => {
-  var story = []
-  const id = req.params.id
-  console.log("story_details", id)
-  axios.get(url + "/" + id).then(response => {
-    story = response.data
-    res.render('story_detail', { story })
+  // const roomId = req.body.roomId
+  // const storyId = req.body.storyId
+  const storyId = req.params.id
+  console.log("details", storyId)
+  axios.get(url + "/" + storyId).then(response => {
+    res.render('details', { story: response.data, title: "Story Details" })
   }).catch(err => {
     console.log(err.message)
   })
 }
 
+/**
+ * Delete the story by id
+ * @req request from user  
+ * @res response to the user
+ */
 const story_delete = (req, res) => {
 
 }
 
 const random_color = (req, res) => {
-  const color  = randomColor()
+  const color = randomColor()
   res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({color: color}))
+  res.send(JSON.stringify({ color: color }))
 }
 
 module.exports = {
