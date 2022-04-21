@@ -41,8 +41,9 @@ roomNoGenerator.addEventListener('click', (e) => {
 })
 
 /**
- * used to connect to a room. It gets the user name and room number from the
- * interface
+ * used to connect to a room. It gets the username and room number from the interface
+ * every time user click "connect", message database created or upgraded
+ * update the relationship between room and story
  */
 const connect = document.querySelector('a#connect')
 connect.addEventListener('click', async (e) => {
@@ -50,7 +51,9 @@ connect.addEventListener('click', async (e) => {
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
+  let storyId = connect.dataset.sid
   console.log("imageUrl: ", imageUrl)
+  console.log("story id:", storyId)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
     document.querySelector('#roomNo').focus()
@@ -59,6 +62,8 @@ connect.addEventListener('click', async (e) => {
   if (!name) name = 'Unknown-' + Math.random();
   initCanvas(socket, imageUrl);
   await initMessageDB();
+  await initRoomToStoryDB();
+  await storeRelationship({roomId: roomNo, storyId: storyId});
   hideLoginInterface(roomNo, name);
 })
 

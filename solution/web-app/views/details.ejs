@@ -32,7 +32,7 @@
           <div id="warning" style="display: none;">
             <p class="fw-bold text-warning">Room Id cannot be empty</p>
           </div>
-          <a id="connect" class="btn btn-success" data-doc="<%= story.photo%> ">Connect</a>
+          <a id="connect" class="btn btn-success" data-doc="<%= story.photo%>" data-sid="<%= story.id%>">Connect</a>
         </form>
       </div>
       <div class="container" id="canvas_form">
@@ -70,6 +70,7 @@
         <script src="/javascripts/canvas.js"></script>
         <script src="/javascripts/indexedDB/messageDB.js" type="module"></script>
         <script src="/javascripts/indexedDB/storyDB.js" type="module"></script>
+        <script src="/javascripts/indexedDB/room_to_story.js" type="module"></script>
   </body>
 
 </html>
