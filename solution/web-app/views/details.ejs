@@ -4,6 +4,8 @@
 
   <body>
     <%- include('./partials/nav.ejs') %>
+
+      <!-- It shows Story Information -->
       <div class="container mt-5" id="story_info">
         <div class="card">
           <div class="card-body">
@@ -18,6 +20,8 @@
           <img id="story_info_image" src="<%= story.photo%>" class="card-img-bottom" alt="...">
         </div>
       </div>
+
+      <!-- It shows initial form for connect to the room -->
       <div class="container" id="initial_form">
         <p>Please insert the id of the Room you want to Join, if you do not have a room id, click Generate Room</p>
         <form>
@@ -35,12 +39,16 @@
           <a id="connect" class="btn btn-success" data-doc="<%= story.photo%> ">Connect</a>
         </form>
       </div>
+
+      <!-- It shows canvas and image  -->
       <div class="container" id="canvas_form">
         <div style="width: 100%; height: 50vh">
           <img id="image" height="100%">
           <canvas id="canvas"></canvas>
         </div>
       </div>
+
+      <!-- It shows chat interface -->
       <div class="container" id="chat_interface">
         <div class="card">
           <div class="card-header">
@@ -64,6 +72,10 @@
             </div>
           </div>
         </div>
+      </div>
+
+      <div class="container">
+        <button id="checkConnection">Check room connection</button>
       </div>
       <%- include('./partials/footer.ejs') %>
         <script src="/javascripts/details.js"></script>

@@ -2,12 +2,13 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-20 21:00:06
+ * @Last Modified time: 2022-04-21 15:31:19
  */
 
 let socket = io()
 let roomNo = null
 let name = null
+let color = randomColor()
 
 const initForm = document.querySelector('#initial_form')
 const chatInterface = document.querySelector('#chat_interface')
@@ -51,13 +52,13 @@ connect.addEventListener('click', (e) => {
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
   console.log("imageUrl: ", imageUrl)
-  if(!roomNo){
+  if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
     document.querySelector('#roomNo').focus()
-    return 
+    return
   }
   if (!name) name = 'Unknown-' + Math.random();
-  initCanvas(socket, imageUrl);
+  initCanvas(socket, imageUrl, color);
   hideLoginInterface(roomNo, name);
 })
 
@@ -71,31 +72,32 @@ function hideLoginInterface(room, userId) {
   chatInterface.style.display = 'block'
   storyInfo.style.display = 'none'
   canvasForm.style.display = 'block'
-  document.getElementById('who_you_are').innerHTML= userId;
-  document.getElementById('in_room').innerHTML= ' '+room;
+  document.getElementById('who_you_are').innerHTML = userId;
+  document.getElementById('in_room').innerHTML = ' ' + room;
   //@todo join the room
   socket.emit('joinRoom', roomNo)
 }
 
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
-
 socket.on('message', message => {
   outputMessage(message)
 })
 
 sentMsg.addEventListener('click', (e) => {
   e.preventDefault()
-
   const message = comment.value
-
-  socket.emit('chatMessage', message)
-
+  socket.emit('chatMessage', { chatMessage: message, chatName: name })
   comment.value = ''
   comment.focus()
 })
 
+/**
+ * it create message on the chat interface
+ * @param message message reviced by socket to append
+ */
 function outputMessage(message) {
+  if(message.text === '') return 
   const li = document.createElement('li')
   li.classList.add('list-group-item')
   li.classList.add('border-0')
@@ -105,3 +107,24 @@ function outputMessage(message) {
   document.getElementById('message-list').appendChild(li)
 }
 
+/**
+ * it create random color for line style
+ */
+function randomColor() {
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
+  let rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
+  return rgb;
+}
+
+function checkEmpty(roomNo) {
+  const count2 = io.sockets.size;
+  console.log(count2)
+}
+
+const checkConnectionBtn = document.querySelector('#checkConnection')
+checkConnectionBtn.addEventListener('click', (e)=>{
+  e.preventDefault()
+  checkEmpty(roomNo)
+})
