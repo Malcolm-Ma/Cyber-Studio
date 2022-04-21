@@ -2,10 +2,10 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-21 15:31:19
+ * @Last Modified time: 2022-04-21 18:54:42
  */
 
-let socket = io()
+let chat = io.connect('/chat')
 let roomNo = null
 let name = null
 let color = randomColor()
@@ -51,14 +51,16 @@ connect.addEventListener('click', (e) => {
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
-  console.log("imageUrl: ", imageUrl)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
     document.querySelector('#roomNo').focus()
     return
   }
   if (!name) name = 'Unknown-' + Math.random();
-  initCanvas(socket, imageUrl, color);
+  
+  //@todo join the chat room
+  chat.emit('create or join', roomNo, name)
+  initCanvas(chat, imageUrl, color);
   hideLoginInterface(roomNo, name);
 })
 
@@ -74,20 +76,18 @@ function hideLoginInterface(room, userId) {
   canvasForm.style.display = 'block'
   document.getElementById('who_you_are').innerHTML = userId;
   document.getElementById('in_room').innerHTML = ' ' + room;
-  //@todo join the room
-  socket.emit('joinRoom', roomNo)
 }
 
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
-socket.on('message', message => {
+chat.on('message', message => {
   outputMessage(message)
 })
 
 sentMsg.addEventListener('click', (e) => {
   e.preventDefault()
   const message = comment.value
-  socket.emit('chatMessage', { chatMessage: message, chatName: name })
+  chat.emit('chatMessage', roomNo, name, message)
   comment.value = ''
   comment.focus()
 })
@@ -97,7 +97,7 @@ sentMsg.addEventListener('click', (e) => {
  * @param message message reviced by socket to append
  */
 function outputMessage(message) {
-  if(message.text === '') return 
+  if (message.text === '') return
   const li = document.createElement('li')
   li.classList.add('list-group-item')
   li.classList.add('border-0')
@@ -124,7 +124,7 @@ function checkEmpty(roomNo) {
 }
 
 const checkConnectionBtn = document.querySelector('#checkConnection')
-checkConnectionBtn.addEventListener('click', (e)=>{
+checkConnectionBtn.addEventListener('click', (e) => {
   e.preventDefault()
   checkEmpty(roomNo)
 })
