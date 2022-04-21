@@ -45,19 +45,20 @@ roomNoGenerator.addEventListener('click', (e) => {
  * interface
  */
 const connect = document.querySelector('a#connect')
-connect.addEventListener('click', (e) => {
+connect.addEventListener('click', async (e) => {
   e.preventDefault()
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
   console.log("imageUrl: ", imageUrl)
-  if(!roomNo){
+  if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
     document.querySelector('#roomNo').focus()
-    return 
+    return
   }
   if (!name) name = 'Unknown-' + Math.random();
   initCanvas(socket, imageUrl);
+  await initMessageDB();
   hideLoginInterface(roomNo, name);
 })
 
@@ -71,7 +72,7 @@ function hideLoginInterface(room, userId) {
   chatInterface.style.display = 'block'
   storyInfo.style.display = 'none'
   canvasForm.style.display = 'block'
-  document.getElementById('who_you_are').innerHTML= userId;
+  document.getElementById('who_you_are').innerHTML = userId;
   document.getElementById('in_room').innerHTML= ' '+room;
   //@todo join the room
   socket.emit('joinRoom', roomNo)
@@ -96,6 +97,13 @@ sentMsg.addEventListener('click', (e) => {
 })
 
 function outputMessage(message) {
+  // Construct the data item and store it in the database
+  getMsgNum(roomNo).then(messageNum => {
+    storeMessage({ roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
+        .then(response => console.log('Inserting message worked!!'))
+        .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
+  })
+
   const li = document.createElement('li')
   li.classList.add('list-group-item')
   li.classList.add('border-0')
