@@ -1,32 +1,30 @@
 
 var formatMessage = require('../utils/messages')
-const randName = 'anonymity'
+const botName = 'Chat-Bot'
 
 exports.init = function (io) {
-  io.sockets.on('connection', function (socket) {
+  const chat = io.of('/chat').on('connection', (socket) => {
     try {
-      // insert here your event
-      socket.on('joinRoom', room => {
-        socket.join(room)
-
-        socket.emit('message', formatMessage(randName, 'welcome to the chat'))
-
-        socket.broadcast.to(room).emit('message', formatMessage(randName, 'an agent has join the chat'))
+      socket.on('create or join', (roomNo, name) => {
+        socket.join(roomNo)
+        socket.emit('message', formatMessage(botName, `Hello ${name}, welcome to the chat`))
+        socket.broadcast.to(roomNo).emit('message', formatMessage(botName, `${name} has joined the chat`))
 
         socket.on('disconnect', () => {
-          io.to(room).emit('message', formatMessage(randName, 'an agent left chat'))
+          chat.to(roomNo).emit('message', formatMessage(botName, `${name} has left the chat`))
         })
 
-        socket.on('chatMessage', msg => {
-          io.to(room).emit('message', formatMessage(randName, msg))
-        })
-
-        socket.on('mouse', data => {
-          socket.broadcast.to(room).emit('sendmouse', data)
+        socket.on('mouse', (data) => {
+          socket.broadcast.to(roomNo).emit('sendmouse', data)
         })
       })
+
+      socket.on('chatMessage', (roomNo, name, msg) => {
+        chat.to(roomNo).emit('message', formatMessage(name, msg))
+      })
+      
     } catch (e) {
       console.log(e.message)
     }
-  });
+  })
 }

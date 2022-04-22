@@ -4,7 +4,6 @@
 let room;
 let userId;
 let thickness = 4;
-let color = 'red'
 
 /**
  * it inits the image canvas to draw on. It sets up the events to respond to (click, mouse on, etc.)
@@ -12,7 +11,7 @@ let color = 'red'
  * @param sckt the open socket to register events on
  * @param imageUrl teh image url to download
  */
-function initCanvas(sckt, imageUrl) {
+function initCanvas(sckt, imageUrl, color) {
   socket = sckt;
   let flag = false,
     prevX, prevY, currX, currY = 0;
@@ -158,3 +157,4 @@ function drawOnCanvas(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY
   ctx.stroke();
   ctx.closePath();
 }
+
