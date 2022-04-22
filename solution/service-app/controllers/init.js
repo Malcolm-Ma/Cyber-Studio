@@ -35,7 +35,9 @@ exports.init = async () => {
     }
     assetBase64.push(bitmap);
     // sleep for solving 503 error
-    setTimeout(() => {}, 10);
+    setTimeout(() => {
+      console.info(`Convert [Image ${i + 1}] successfully. `);
+    }, 10);
   }
 
   const assetDemo = assetBase64.map((base64) => {

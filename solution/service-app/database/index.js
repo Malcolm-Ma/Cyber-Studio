@@ -10,8 +10,8 @@ connection = mongoose.connect(MONGODB_URL, {
   checkServerIdentity: false,
 })
   .then(() => {
-    console.info('connection to mongodb worked!');
+    console.info(`Connection to ${MONGODB_URL} worked!`);
   })
   .catch((error) => {
-    console.error('connection to mongodb did not work! ' + JSON.stringify(error));
+    console.error(`connection to ${MONGODB_URL} did not work! See error: ${JSON.stringify(error)}`);
   });
