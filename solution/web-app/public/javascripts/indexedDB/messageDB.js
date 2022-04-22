@@ -115,7 +115,7 @@ async function getMessageList(roomNum) {
         let store = await tx.objectStore(MSG_STORE_NAME);
         let index = await store.index('roomId');
         let readingsList = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
-        console.log('list: ' + JSON.stringify(readingsList));
+        console.log('Find message list: ' + JSON.stringify(readingsList));
         await tx.complete;
 
         if (readingsList && readingsList.length > 0) {

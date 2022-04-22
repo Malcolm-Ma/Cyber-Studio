@@ -31,22 +31,26 @@ const roomToStoryData = [
  * it gets the story id from database and checks if the story changed
  * @param roomNum: the room number that user require to enter
  * @param newStoryId: the story number that user require to discuss this time
- * @return : boolean
+ * @return : boolean: return true if story is changed, return false if story isn't changed
  */
-function checkStoryChange(roomNum, newStoryId){
-    getStoryNumber(roomNum)
-        .then( result => {
-            if(result === newStoryId) {
-                return true;
-            } else {
-                return false;
-            }
+async function checkStoryChange(roomNum, newStoryId){
+    // get old story from roomToStory database
+    /*
+    await getStoryNumber(roomNum)
+        .then(result => {
+            console.log('newstory:', newStoryId);
+            console.log('result:', result);
+            //return result !== newStoryId;
+            return new Promise(resolve => {return 8});
         })
-        .catch( error => console.log('Error: ' + error))
+        .catch(error => console.log('Error: ' + error))
+
+     */
+    let result = await getStoryNumber(roomNum);
+    return result !== newStoryId;
 }
 
-// check room
-// story变了 & 有人 -》不能进；story没变 & 有人 -》 加入房间； story变了 & 没人 -》 进房间且选择清记录，改变story关系；story没变 & 没人 -》 进房间
+
 /**
  * it checks if the user can enter the room now and clear char history according to user choice
  * @param ifEmpty: it means if the room is empty now
@@ -54,13 +58,41 @@ function checkStoryChange(roomNum, newStoryId){
  * @param newStoryId: the story number that user require to discuss this time
  */
 async function checkRoomAvailable(ifEmpty, roomNum, newStoryId){
-    await updateRelationship(roomNum, newStoryId);
-    await clearHistory(roomNum);
-    //let ifStoryChange = checkStoryChange(roomNum, newStoryId);
+    await getStoryNumber(roomNum)
+        .then( result => {
+            if(result === -1){
+                return true; // room is new, user can enter
+            }
+        })
+
+    let ifStoryChanged = await checkStoryChange(roomNum, newStoryId);
+
+    if (ifStoryChanged) {
+        // story is changed
+        if (ifEmpty) {
+            // room is empty, room will be reused
+            // clear history of room
+            await clearHistory(roomNum);
+            // update the relationship between room and story
+            await updateRelationship(roomNum, newStoryId);
+            console.log('room already be reused');
+            return true;
+
+        } else {
+            // room is not empty, user can't enter room
+            console.log('room is not empty, user can not enter room');
+            return false;
+        }
+    } else {
+        // story is not changed, user can enter the room
+        console.log('story is not changed, user can enter the room');
+        return true;
+    }
+
     /*
     if(ifEmpty && ifStoryChange){
         //story变了 & 没人 -》 进房间且选择清记录，改变story关系
-        // 1. get old story from roomToStory database
+        // 1.
         // 2. judge if story change
         // 3. delete/not delete
         // deleteMessage(roomNum);
@@ -110,7 +142,6 @@ window.initRoomToStoryDB= initRoomToStoryDB;
  * @param object
  */
 async function storeRelationship(object) {
-    console.log('inserting: '+JSON.stringify(object));
     if (!db)
         await initRoomToStoryDB();
     if (db) {
@@ -187,12 +218,11 @@ async function getStoryNumber(roomNum) {
     if (!db)
         await initRoomToStoryDB();
     if (db) {
-        console.log('fetching story of room: ' + roomNum);
         let tx = await db.transaction(ROOM_TO_STORY_NAME, 'readonly');
         let store = await tx.objectStore(ROOM_TO_STORY_NAME);
         let index = await store.index('roomId');
         let story = await index.get(IDBKeyRange.only(roomNum)); // search story
-        console.log('Story id: ' + JSON.stringify(story));
+        console.log('Story and room: ' + JSON.stringify(story));
         await tx.complete;
 
         if (story) {
@@ -200,18 +230,12 @@ async function getStoryNumber(roomNum) {
         } else {
             // if the database is not supported, use localstorage
             const value = localStorage.getItem(roomNum);
-            if (value == null)
-                console.log('No room discuss this story.'); // there are nothing in localstorage
-            else {
+            if(value){
                 return value.storyId;
+            } else {
+                console.log('This room is new.'); // there are nothing in localstorage
+                return -1;
             }
-        }
-    } else {
-        const value = localStorage.getItem(roomNum);
-        if (value == null)
-            console.log('No room discuss this story.'); // there are nothing in localstorage
-        else {
-            return value.storyId;
         }
     }
 }

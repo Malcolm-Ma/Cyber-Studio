@@ -61,11 +61,23 @@ connect.addEventListener('click', async (e) => {
   }
   if (!name) name = 'Unknown-' + Math.random();
   initCanvas(socket, imageUrl);
+  hideLoginInterface(roomNo, name);
+
   await initMessageDB();
   await initRoomToStoryDB();
-  await storeRelationship({roomId: roomNo, storyId: storyId});
-  await checkRoomAvailable(true, roomNo, storyId);
-  hideLoginInterface(roomNo, name);
+  checkRoomAvailable(true, roomNo, storyId)
+      .then( async result => {
+        if(result){
+          console.log('Access room ', roomNo, ' successfully.');
+          getMessageList(roomNo)
+              .then( list => {
+                console.log(JSON.stringify(list));
+              })
+        } else {
+          console.log('Access room ', roomNo, ' failed.');
+          alert('Access room '+ roomNo + ' failed.');
+        }
+      })
 })
 
 /**
