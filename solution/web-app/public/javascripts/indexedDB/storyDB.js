@@ -20,7 +20,7 @@ window.ROOM_TO_STORY_NAME = ROOM_TO_STORY_NAME;
 
 // the database receives from the server the following structure
 const storyData = [
-    { title: "IceSnow", author: "Tong", description: "It is a happy ending.", photoId: "ascv123jsfgiu"},//, timestamp}
+    { title: "IceSnow", author: "Tong", content: "It is a happy ending.", photoId: "ascv123jsfgiu"},//, timestamp}
 ];
 
 /**

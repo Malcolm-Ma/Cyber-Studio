@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-22 14:33:49
+ * @Last Modified time: 2022-04-20 21:00:06
  */
 
 let chat = io.connect('/chat')
@@ -50,6 +50,7 @@ connect.addEventListener('click', async (e) => {
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
+  let storyId = connect.dataset.sid
   console.log("imageUrl: ", imageUrl)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
@@ -57,12 +58,27 @@ connect.addEventListener('click', async (e) => {
     return
   }
   if (!name) name = 'Unknown-' + Math.random();
-  
+
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
   initCanvas(chat, imageUrl, color);
   hideLoginInterface(roomNo, name);
+
   await initMessageDB();
+  await initRoomToStoryDB();
+  checkRoomAvailable(true, roomNo, storyId)
+      .then( async result => {
+        if(result){
+          console.log('Access room ', roomNo, ' successfully.');
+          getMessageList(roomNo)
+              .then( list => {
+                console.log(JSON.stringify(list));
+              })
+        } else {
+          console.log('Access room ', roomNo, ' failed.');
+          alert('Access room '+ roomNo + ' failed.');
+        }
+      })
 })
 
 /**
@@ -100,9 +116,11 @@ sentMsg.addEventListener('click', (e) => {
 function outputMessage(message) {
   // Construct the data item and store it in the database
   getMsgNum(roomNo).then(messageNum => {
-    storeMessage({ roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
-        .then(response => console.log('Inserting message worked!!'))
-        .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
+    generateID().then(result => {
+      storeMessage({ id:result+1, roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
+          .then(response => console.log('Inserting message worked!!'))
+          .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
+    })
   })
 
   const li = document.createElement('li')
@@ -135,3 +153,4 @@ checkConnectionBtn.addEventListener('click', (e) => {
   e.preventDefault()
   checkEmpty(roomNo)
 })
+
