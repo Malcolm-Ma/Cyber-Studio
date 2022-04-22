@@ -2,12 +2,10 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-20 23:58:09
+ * @Last Modified time: 2022-04-22 18:49:43
  */
 
-const moment = require('moment')
 const axios = require('axios');
-const randomColor = require('../utils/colors')
 
 // API url from server-app
 let url = 'http://localhost:3001/stories'
@@ -69,17 +67,10 @@ const story_delete = (req, res) => {
 
 }
 
-const random_color = (req, res) => {
-  const color = randomColor()
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({ color: color }))
-}
-
 module.exports = {
   story_index,
   story_create_get,
   story_create_post,
   story_details,
   story_delete,
-  random_color
 }
