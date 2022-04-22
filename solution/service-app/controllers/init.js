@@ -4,9 +4,11 @@
  */
 
 const { faker } = require('@faker-js/faker');
+const fs = require("fs");
 const base64 = require('node-base64-image');
 
-const { DEMO_AMOUNT } = require('../configure/database');
+const { DEMO_AMOUNT, STATIC_IMAGE_PATH } = require('../configure/database');
+const { HOSTNAME } = require('../configure/network');
 
 const Story = require('../models/stories');
 const Asset = require('../models/assets');
@@ -23,29 +25,30 @@ exports.init = async () => {
     console.info('Loading images, please wait about 10 seconds...');
   });
 
-  let assetBase64 = [];
+  let assetDemo = [];
 
   for (let i = 0; i < DEMO_AMOUNT; i++) {
     const url = faker.image.image();
+    const fileName = faker.word.noun();
     let bitmap = '';
+    let imageuri = `./public${STATIC_IMAGE_PATH}`;
     try {
       bitmap = await base64.encode(url, {string: true});
+      imageuri += fileName;
+      await base64.decode(bitmap, { fname: imageuri, ext: 'jpg' });
     } catch (e) {
       console.error(e);
     }
-    assetBase64.push(bitmap);
+    assetDemo.push({
+      file_name: fileName + '.jpg',
+      base64: bitmap,
+      url: HOSTNAME + STATIC_IMAGE_PATH + fileName + '.jpg',
+    });
     // sleep for solving 503 error
     setTimeout(() => {
       console.info(`Convert [Image ${i + 1}] successfully. `);
     }, 10);
   }
-
-  const assetDemo = assetBase64.map((base64) => {
-    return {
-      file_name: faker.word.noun(),
-      base64,
-    }
-  });
 
   let photoIds = [];
   await Asset.create(assetDemo)
