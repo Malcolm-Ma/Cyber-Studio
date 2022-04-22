@@ -64,6 +64,7 @@ connect.addEventListener('click', async (e) => {
   await initMessageDB();
   await initRoomToStoryDB();
   await storeRelationship({roomId: roomNo, storyId: storyId});
+  await checkRoomAvailable(true, roomNo, storyId);
   hideLoginInterface(roomNo, name);
 })
 
@@ -104,9 +105,11 @@ sentMsg.addEventListener('click', (e) => {
 function outputMessage(message) {
   // Construct the data item and store it in the database
   getMsgNum(roomNo).then(messageNum => {
-    storeMessage({ roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
-        .then(response => console.log('Inserting message worked!!'))
-        .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
+    generateID().then(result => {
+      storeMessage({ id:result+1, roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
+          .then(response => console.log('Inserting message worked!!'))
+          .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
+    })
   })
 
   const li = document.createElement('li')

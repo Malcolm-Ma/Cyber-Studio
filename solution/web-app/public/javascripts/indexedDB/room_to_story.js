@@ -54,7 +54,10 @@ function checkStoryChange(roomNum, newStoryId){
  * @param newStoryId: the story number that user require to discuss this time
  */
 async function checkRoomAvailable(ifEmpty, roomNum, newStoryId){
-    let ifStoryChange = checkStoryChange(roomNum, newStoryId);
+    await updateRelationship(roomNum, newStoryId);
+    await clearHistory(roomNum);
+    //let ifStoryChange = checkStoryChange(roomNum, newStoryId);
+    /*
     if(ifEmpty && ifStoryChange){
         //story变了 & 没人 -》 进房间且选择清记录，改变story关系
         // 1. get old story from roomToStory database
@@ -73,8 +76,9 @@ async function checkRoomAvailable(ifEmpty, roomNum, newStoryId){
     } else if(!ifEmpty && !ifStoryChange){
         //story没变 & 有人 -》 加入房间
         return true;
-    }
+    }*/
 }
+window.checkRoomAvailable = checkRoomAvailable;
 
 /**
  * it inits the roomToStory database and creates an index for the roomId field
@@ -114,7 +118,7 @@ async function storeRelationship(object) {
             let tx = await db.transaction(ROOM_TO_STORY_NAME, 'readwrite');
             let store = await tx.objectStore(ROOM_TO_STORY_NAME);
             await store.put(object);
-            await  tx.complete;
+            await tx.complete;
             console.log('Added relationship to the store! '+ JSON.stringify(object));
         } catch(error) {
             console.log('Error: I could not store the relationship. Reason: '+error);
@@ -212,3 +216,44 @@ async function getStoryNumber(roomNum) {
     }
 }
 window.getStoryNumber= getStoryNumber;
+
+
+/**
+ * it updates relationship between room and story into the database
+ * when a room is reused and change a story to discuss
+ * if the database is not supported, it will use localstorage
+ * @param roomId: id of room
+ * @param storyNum: id of story
+ */
+async function updateRelationship(roomId, storyNum) {
+    if (!db)
+        await initRoomToStoryDB();
+    if (db) {
+        try{
+            let tx = await db.transaction(ROOM_TO_STORY_NAME, 'readwrite');
+            let store = await tx.objectStore(ROOM_TO_STORY_NAME);
+            let request = await store.get(roomId);
+
+            /*
+            request.onsuccess = async function (event) {
+                // get the data item which needed to update
+                var data = event.target.result;
+
+                // change the story id
+                data.storyId = '555';
+
+                // put back
+                await store.put({roomId:roomId, storyId:'000'});
+            };
+
+             */
+
+            console.log(request);
+            await store.put({roomId:roomId, storyId:storyNum}); // insert new item
+            await tx.complete;
+        } catch(error) {
+            console.log('Error: Can not store the relationship. Reason: '+error);
+        }
+    }
+}
+window.updateRelationship= updateRelationship;
