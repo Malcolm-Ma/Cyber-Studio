@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-21 18:54:42
+ * @Last Modified time: 2022-04-22 01:05:39
  */
 
 let chat = io.connect('/chat')
@@ -46,11 +46,12 @@ roomNoGenerator.addEventListener('click', (e) => {
  * interface
  */
 const connect = document.querySelector('a#connect')
-connect.addEventListener('click', (e) => {
+connect.addEventListener('click', async (e) => {
   e.preventDefault()
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
+  console.log("imageUrl: ", imageUrl)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
     document.querySelector('#roomNo').focus()
@@ -61,6 +62,7 @@ connect.addEventListener('click', (e) => {
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
   initCanvas(chat, imageUrl, color);
+  await initMessageDB();
   hideLoginInterface(roomNo, name);
 })
 
@@ -97,7 +99,13 @@ sentMsg.addEventListener('click', (e) => {
  * @param message message reviced by socket to append
  */
 function outputMessage(message) {
-  if (message.text === '') return
+  // Construct the data item and store it in the database
+  getMsgNum(roomNo).then(messageNum => {
+    storeMessage({ roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
+        .then(response => console.log('Inserting message worked!!'))
+        .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
+  })
+
   const li = document.createElement('li')
   li.classList.add('list-group-item')
   li.classList.add('border-0')

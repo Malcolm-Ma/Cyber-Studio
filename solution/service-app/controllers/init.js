@@ -3,54 +3,75 @@
  * @author Mingze Ma
  */
 
-const fs = require('fs');
+const { faker } = require('@faker-js/faker');
+const base64 = require('node-base64-image');
+
+const { DEMO_AMOUNT } = require('../configure/database');
 
 const Story = require('../models/stories');
 const Asset = require('../models/assets');
 
 exports.init = async () => {
-  // uncomment if you need to drop the database
+  /**
+   * uncomment above if you need to drop the database
+   */
   Story.remove({}, (err) => {
-     console.log('collection removed')
+    console.info('Story collection removed');
   });
   Asset.remove({}, (err) => {
-     console.log('collection removed')
+    console.info('Asset collection removed');
+    console.info('Loading images, please wait about 10 seconds...');
   });
 
-  const base64Demo = (() => {
-    const bitmap = fs.readFileSync('assets/demo.jpg');
-    // base64 encode
-    return Buffer.from(bitmap, 'binary').toString('base64');
-  })();
+  let assetBase64 = [];
 
-  const asset = new Asset({
-    file_name: 'demo.jpg',
-    base64: base64Demo
+  for (let i = 0; i < DEMO_AMOUNT; i++) {
+    const url = faker.image.image();
+    let bitmap = '';
+    try {
+      bitmap = await base64.encode(url, {string: true});
+    } catch (e) {
+      console.error(e);
+    }
+    assetBase64.push(bitmap);
+    // sleep for solving 503 error
+    setTimeout(() => {}, 10);
+  }
+
+  const assetDemo = assetBase64.map((base64) => {
+    return {
+      file_name: faker.word.noun(),
+      base64,
+    }
   });
 
-  let photoId;
-
-  await asset.save()
+  let photoIds = [];
+  await Asset.create(assetDemo)
     .then((results) => {
-      photoId = results._id;
-      console.log("Asset " + "object created in init: " + JSON.stringify(results));
+      console.log('Assets create success!');
+      photoIds = results.map(value => value._id);
     })
     .catch((error) => {
       console.log(JSON.stringify(error));
     });
 
-  const story = new Story({
-    title: 'Demo of MongoDB',
-    author_name: 'Malcolm Ma',
-    description: 'This is a demo for testing MongoDB connection',
-    photo_id: photoId
+  // Init container for demo document
+  const storyDemo = photoIds.map((value) => {
+    return {
+      title: faker.random.words(Math.ceil(Math.random() * 6)),
+      content: faker.random.words(50),
+      date: faker.date.recent(),
+      author: faker.name.findName(),
+      photo_id: value,
+    };
   });
 
-  await story.save()
-    .then ((results) => {
-      console.log("Story " + "object created in init: "+ JSON.stringify(results));
+  await Story.create(storyDemo)
+    .then((results) => {
+      console.log('Stories create success!');
     })
-    .catch ((error) => {
+    .catch((error) => {
       console.log(JSON.stringify(error));
     });
+
 };
