@@ -5,13 +5,13 @@
  * @Last Modified time: 2022-04-20 21:00:06
  */
 
-let socket = io()
+let chat = io.connect('/chat')
 let roomNo = null
 let name = null
+let color = randomColor()
 
 const initForm = document.querySelector('#initial_form')
 const chatInterface = document.querySelector('#chat_interface')
-const cardImg = document.querySelector('#story_info_image')
 const storyInfo = document.querySelector('#story_info')
 const canvasForm = document.querySelector('#canvas_form')
 
@@ -50,6 +50,7 @@ connect.addEventListener('click', async (e) => {
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
+  let storyId = connect.dataset.sid
   console.log("imageUrl: ", imageUrl)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
@@ -57,7 +58,10 @@ connect.addEventListener('click', async (e) => {
     return
   }
   if (!name) name = 'Unknown-' + Math.random();
-  initCanvas(socket, imageUrl);
+
+  //@todo join the chat room
+  chat.emit('create or join', roomNo, name)
+  initCanvas(chat, imageUrl, color);
   hideLoginInterface(roomNo, name);
 
   await initMessageDB();
@@ -88,29 +92,27 @@ function hideLoginInterface(room, userId) {
   storyInfo.style.display = 'none'
   canvasForm.style.display = 'block'
   document.getElementById('who_you_are').innerHTML = userId;
-  document.getElementById('in_room').innerHTML= ' '+room;
-  //@todo join the room
-  socket.emit('joinRoom', roomNo)
+  document.getElementById('in_room').innerHTML = ' ' + room;
 }
 
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
-
-socket.on('message', message => {
+chat.on('message', message => {
   outputMessage(message)
 })
 
 sentMsg.addEventListener('click', (e) => {
   e.preventDefault()
-
   const message = comment.value
-
-  socket.emit('chatMessage', message)
-
+  chat.emit('chatMessage', roomNo, name, message)
   comment.value = ''
   comment.focus()
 })
 
+/**
+ * it create message on the chat interface
+ * @param message message reviced by socket to append
+ */
 function outputMessage(message) {
   // Construct the data item and store it in the database
   getMsgNum(roomNo).then(messageNum => {
@@ -129,4 +131,26 @@ function outputMessage(message) {
                   <span>${message.time}</span>`
   document.getElementById('message-list').appendChild(li)
 }
+
+/**
+ * it create random color for line style
+ */
+function randomColor() {
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
+  let rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
+  return rgb;
+}
+
+function checkEmpty(roomNo) {
+  const count2 = io.sockets.size;
+  console.log(count2)
+}
+
+const checkConnectionBtn = document.querySelector('#checkConnection')
+checkConnectionBtn.addEventListener('click', (e) => {
+  e.preventDefault()
+  checkEmpty(roomNo)
+})
 
