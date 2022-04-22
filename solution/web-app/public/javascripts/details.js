@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-22 01:05:39
+ * @Last Modified time: 2022-04-22 14:33:49
  */
 
 let chat = io.connect('/chat')
@@ -12,7 +12,6 @@ let color = randomColor()
 
 const initForm = document.querySelector('#initial_form')
 const chatInterface = document.querySelector('#chat_interface')
-const cardImg = document.querySelector('#story_info_image')
 const storyInfo = document.querySelector('#story_info')
 const canvasForm = document.querySelector('#canvas_form')
 
@@ -62,8 +61,8 @@ connect.addEventListener('click', async (e) => {
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
   initCanvas(chat, imageUrl, color);
-  await initMessageDB();
   hideLoginInterface(roomNo, name);
+  await initMessageDB();
 })
 
 /**
