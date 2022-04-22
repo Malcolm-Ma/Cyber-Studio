@@ -11,6 +11,7 @@ const assetSchema = new Schema(
   {
     file_name: String,
     base64: { type: String, required: true },
+    url: { type: String, required: true },
   },
   {
     timestamps: {
