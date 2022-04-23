@@ -13,7 +13,7 @@ const storySchema = new Schema(
     author: { type: String, required: true },
     content: String,
     date: Date,
-    photo_id: Schema.Types.ObjectId
+    photo_id: { type: Schema.Types.ObjectId, required: true },
   },
 );
 
