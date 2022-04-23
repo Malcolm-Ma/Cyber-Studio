@@ -3,11 +3,33 @@
  * @author Mingze Ma
  */
 
+const mongoose = require('mongoose');
+
 const requestUtils = require('../utils/requestUtils');
 
 const Story = require('../models/stories');
 
 const assetController = require('./asset');
+
+const projectionPipeline = {
+  _id: 0,
+  story_id: '$_id',
+  title: 1,
+  content: 1,
+  author: 1,
+  date: 1,
+  photo: {
+    // Take url from object in array
+    $let: {
+      vars: {
+        firstMember: {
+          $arrayElemAt: ["$photo_info", 0]
+        }
+      },
+      in: '$$firstMember.url',
+    },
+  },
+};
 
 const getStoryList = (req, res) => {
   Story.aggregate()
@@ -19,17 +41,9 @@ const getStoryList = (req, res) => {
       as: 'photo_info',
     })
     // handle raw data
-    .project({
-      _id: 0,
-      story_id: '$_id',
-      title: 1,
-      content: 1,
-      author: 1,
-      date: 1,
-      photo: '$photo_info[0].url',
-    })
+    .project(projectionPipeline)
     // sort by date
-    // .sort('-date')
+    .sort('-date')
     .exec()
     .then(stories => {
       console.log('--stories--\n', stories);
@@ -83,7 +97,49 @@ const createStory = async (req, res) => {
     });
 };
 
+const getStoryDetail = (req, res) => {
+  const params = req.query;
+  console.log('--params--\n', params);
+  const { story_id: id } = params;
+  if (!id) {
+    requestUtils.buildErrorResponse(res, {
+      status: 403,
+      error: new Error('Invalid id, please try again.'),
+      message: 'Invalid id, please try again.',
+    });
+    return;
+  }
+  // search and aggregate
+  Story.aggregate()
+    .match({
+      _id: mongoose.Types.ObjectId(id),
+    })
+    // join Assets
+    .lookup({
+      from: 'assets',
+      localField: 'photo_id',
+      foreignField: '_id',
+      as: 'photo_info',
+    })
+    // handle raw data
+    .project(projectionPipeline)
+    .exec()
+    .then(stories => {
+      console.log('--stories--\n', stories);
+      requestUtils.buildSuccessResponse(res, {
+        data: stories[0] || {},
+      });
+    })
+    .catch((err) => {
+      requestUtils.buildErrorResponse(res, {
+        error: err,
+        message: 'Invalid data or not found!',
+      });
+    });
+};
+
 module.exports = {
   getStoryList,
   createStory,
+  getStoryDetail,
 };

@@ -15,4 +15,6 @@ router.get('/get_story_list', storyController.getStoryList);
 
 router.post('/create_story', storyController.createStory);
 
+router.get('/get_story_detail', storyController.getStoryDetail);
+
 module.exports = router;
