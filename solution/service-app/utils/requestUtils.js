@@ -3,6 +3,11 @@
  * @author Mingze Ma
  */
 
+/**
+ * Successful response format generator
+ * @param res res callback
+ * @param options options
+ */
 const buildSuccessResponse = (res, options = {}) => {
   const { message = 'success', data = {} } = options;
 
@@ -13,6 +18,17 @@ const buildSuccessResponse = (res, options = {}) => {
   });
 };
 
+const buildErrorResponse = (res, options = {}) => {
+  const { message = 'error', error = {}, status = 500 } = options;
+
+  res.status(status).json({
+    status: 1,
+    message,
+    error,
+  });
+};
+
 module.exports = {
   buildSuccessResponse,
+  buildErrorResponse,
 };
