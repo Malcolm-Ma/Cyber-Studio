@@ -2,13 +2,15 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-22 18:49:43
+ * @Last Modified time: 2022-04-23 16:28:21
  */
 
 const axios = require('axios');
 
 // API url from server-app
-let url = 'http://localhost:3001/stories'
+// let url = 'http://localhost:3001/stories'
+let url = 'http://localhost:3100'
+
 
 /**
  * index view, will show a list of stories
@@ -16,8 +18,14 @@ let url = 'http://localhost:3001/stories'
  * @res response to the user
  */
 const story_index = (req, res) => {
-  axios.get(url).then(response => {
-    res.render('index', { stories: response.data, title: "All Stories" })
+  axios.get(url + '/get_story_list').then(response => {
+    if(response.data.status === 0){
+      var story_list = []
+      story_list = response.data
+      res.render('index', { stories: story_list.data, title: "All Stories" })
+    }else{
+      console.log(response.data.message)
+    }
   }).catch(err => {
     console.log(err.message)
   })
@@ -51,8 +59,14 @@ const story_details = (req, res) => {
   // const storyId = req.body.storyId
   const storyId = req.params.id
   console.log("details", storyId)
-  axios.get(url + "/" + storyId).then(response => {
-    res.render('details', { story: response.data, title: "Story Details" })
+  axios.get(url + "/get_story_detail?story_id=" + storyId).then(response => {
+    var story = []
+    if (response.data.status === 0) {
+      story = response.data
+      res.render('details', { story: story.data, title: "Story Details" })
+    } else {
+      console.log(response.data.message)
+    }
   }).catch(err => {
     console.log(err.message)
   })

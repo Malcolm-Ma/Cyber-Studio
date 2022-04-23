@@ -8,7 +8,7 @@
 
       <div class="container">
         <div class="row-10">
-          <form action="/create" method="POST" enctype="multipart/form-data" class="col-10 mt-10">
+          <form class="col-10 mt-10">
             <div class="mb-3 mt-5">
               <label for="title" class="form-label">Title: </label>
               <input type="text" id="title" name="title" class="form-control" required>
@@ -30,13 +30,14 @@
             </div>
 
             <div class="mb-3">
-              <button class="btn btn-success m-2">Submit</button>
+              <button id="submit" class="btn btn-success m-2">Submit</button>
               <a class="btn btn-warning m-2" href="/">Cancel</a>
             </div>
           </form>
         </div>
       </div>
       <%- include('./partials/footer.ejs') %>
+      <script src="/javascripts/create_story.js"></script>
   </body>
 
 </html>
