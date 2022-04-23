@@ -3,10 +3,10 @@
  * @author Mingze Ma
  */
 
-const Asset = require('../models/stories');
+const Asset = require('../models/assets');
 
-const findAssetByPath = async (pathName) => {
-  return await Asset.findOne({ url: pathName }).exec();
+const findAssetByPath = (pathName) => {
+  return Asset.findOne({ url: pathName });
 };
 
 module.exports = {
