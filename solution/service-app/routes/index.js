@@ -13,4 +13,6 @@ router.get('/', function(req, res, next) {
 
 router.get('/get_story_list', storyController.getStoryList);
 
+router.post('/create_story', storyController.createStory);
+
 module.exports = router;
