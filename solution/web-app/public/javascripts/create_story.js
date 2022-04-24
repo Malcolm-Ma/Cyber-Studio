@@ -3,6 +3,9 @@ const author = document.getElementById('author');
 const photo_path = document.getElementById('formFile');
 const content = document.getElementById('content');
 const submit_btn = document.getElementById('submit')
+const story_form = document.getElementById('story_form')
+
+let url = 'http://localhost:3100/upload_image'
 
 function offlineCreateStory() {
   storeStory({ title: title, author: author, photo: photo_path, content: content })
@@ -15,39 +18,79 @@ function offlineCreateStory() {
 }
 
 
+const convertBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.readAsDataURL(file)
 
-submit_btn.addEventListener('click', (e) => {
-  e.preventDefault()
-  let photo = photo_path.files[0]
-  let reader = new FileReader()
-  reader.readAsDataURL(photo)
-  reader.onload = function () {
-    console.log("photo_url:", reader.result)
-  }
+    fileReader.onload = () => {
+      resolve(fileReader.result)
+    }
 
-  var story_title = title.value
-  var story_author = author.value
-  var story_content = content.value
+    fileReader.onerror = (error) => {
+      reject(error)
+    }
+  })
+}
 
-  var data = { title: story_title, content: story_content, author: story_author, photo: photo_url }
-
-  // postData(data).then(response => {
-  //   console.log(response.data)
-
-  // }).catch(err => {
-  //   console.log(err.message)
-  // }
-  // )
-})
-
-async function postData(data) {
+const uploadImage = async (event) => {
+  const file = event.target.files[0]
+  const base64 = await convertBase64(file)
+  var data = { imageBlob: base64 }
   console.log(data)
-  const response = await fetch(url + '/create_story', {
+  const response = await fetch('http://localhost:3000/upload_image', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
     },
+    body: JSON.stringify(data)
+  })
+  return response.json()
+}
 
+photo_path.addEventListener('change', async (event) => {
+  uploadImage(event).then(result => {
+    console.log(result)
+  }).catch(err => {
+    alert("image size is too large, please upload image again")
+    photo_path.value = ''
+  })
+})
+
+story_form.addEventListener('submit', async (event) => {
+  event.preventDefault()
+  const title = story_form.title.value
+  const author = story_form.author.value
+  const content = story_form.content.value
+  try {
+    const response = await fetch('/create', {
+      method: 'POST',
+      body: JSON.stringify({ title, author, content }),
+      headers: { 'Content-Type': 'application/json' }
+    })
+    const data = await response.json()
+
+    if (data.err) {
+      alert(data.err)
+      location.reload()
+    }
+
+    if (data.story) {
+      location.assign('/')
+    }
+
+  } catch (err) {
+    alert(err.message)
+  }
+})
+
+async function postData(data) {
+  console.log(data)
+  const response = await fetch(url + '/create', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
     body: JSON.stringify(data)
   })
 
