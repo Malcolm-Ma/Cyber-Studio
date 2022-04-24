@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-24 16:39:05
+ * @Last Modified time: 2022-04-24 19:30:32
  */
 
 const axios = require('axios');
@@ -73,11 +73,10 @@ const story_create_post = (req, res) => {
  * @req request from user  
  * @res response to the user
  */
-const uploadImage = (req, res) => {
+const upload_image = (req, res) => {
   const image = req.body
   axios.post(url + '/upload_image', image).then(response => {
     imageURL = response.data.data.url
-    console.log("url", imageURL)
   }).catch(err => {
     console.log(err.message)
     res.json({err: err.message})
@@ -93,7 +92,6 @@ const story_details = (req, res) => {
   // const roomId = req.body.roomId
   // const storyId = req.body.storyId
   const storyId = req.params.id
-  console.log("details", storyId)
   axios.get(url + "/get_story_detail?story_id=" + storyId).then(response => {
     var story = []
     if (response.data.status === 0) {
@@ -122,5 +120,5 @@ module.exports = {
   story_create_post,
   story_details,
   story_delete,
-  uploadImage
+  upload_image
 }
