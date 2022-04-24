@@ -51,6 +51,5 @@ npm run start
 ```shell
 cd web-app
 npm install
-npm run initdb
 npm run start
 ```
