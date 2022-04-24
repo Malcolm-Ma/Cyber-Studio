@@ -2,14 +2,13 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-24 16:11:33
+ * @Last Modified time: 2022-04-24 16:39:05
  */
 
 const axios = require('axios');
 const { response } = require('express');
 
 // API url from server-app
-// let url = 'http://localhost:3001/stories'
 let url = 'http://localhost:3100'
 
 // this is for storing image URL from server-app
@@ -69,6 +68,11 @@ const story_create_post = (req, res) => {
   }
 }
 
+/**
+ * upload the image with base64 format to server-app
+ * @req request from user  
+ * @res response to the user
+ */
 const uploadImage = (req, res) => {
   const image = req.body
   axios.post(url + '/upload_image', image).then(response => {
@@ -76,7 +80,7 @@ const uploadImage = (req, res) => {
     console.log("url", imageURL)
   }).catch(err => {
     console.log(err.message)
-    res.sned('failed')
+    res.json({err: err.message})
   })
 }
 
