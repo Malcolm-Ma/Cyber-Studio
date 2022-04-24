@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-23 16:28:21
+ * @Last Modified time: 2022-04-24 13:42:59
  */
 
 const axios = require('axios');
@@ -46,7 +46,17 @@ const story_create_get = (req, res) => {
  * @res response to the user
  */
 const story_create_post = (req, res) => {
-
+  const story_info = req.body
+  if (story_info == null) {
+    requestUtils.buildErrorResponse(res, {
+      status: 403,
+      error: new Error('No data sent!'),
+      message: 'No data sent!',
+    });
+    return;
+  }else{
+    console.log("story_info",story_info)
+  }
 }
 
 /**
