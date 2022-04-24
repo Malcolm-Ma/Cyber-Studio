@@ -5,8 +5,6 @@ const content = document.getElementById('content');
 const submit_btn = document.getElementById('submit')
 const story_form = document.getElementById('story_form')
 
-let url = 'http://localhost:3100/upload_image'
-
 function offlineCreateStory() {
   storeStory({ title: title, author: author, photo: photo_path, content: content })
     .then(res =>
@@ -16,7 +14,6 @@ function offlineCreateStory() {
       console.log('Fail to store this new story')
     )
 }
-
 
 const convertBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -45,19 +42,20 @@ const uploadImage = async (event) => {
     },
     body: JSON.stringify(data)
   })
-  return response.json()
+  return response
 }
 
-photo_path.addEventListener('change', async (event) => {
+photo_path.addEventListener('change', (event) => {
   uploadImage(event).then(result => {
-    console.log(result)
-  }).catch(err => {
-    alert("image size is too large, please upload image again")
-    photo_path.value = ''
+    console.log("result ", result)
+    if (result.status == 413) {
+      alert("image size is too large, please upload it again")
+      photo_path.value = ''
+    }
   })
 })
 
-story_form.addEventListener('submit', async (event) => {
+submit_btn.addEventListener('click', async (event) => {
   event.preventDefault()
   const title = story_form.title.value
   const author = story_form.author.value
@@ -71,7 +69,6 @@ story_form.addEventListener('submit', async (event) => {
     const data = await response.json()
 
     if (data.err) {
-      alert(data.err)
       location.reload()
     }
 
@@ -80,7 +77,7 @@ story_form.addEventListener('submit', async (event) => {
     }
 
   } catch (err) {
-    alert(err.message)
+    console.log(err.message)
   }
 })
 
