@@ -52,7 +52,8 @@ photo_path.addEventListener('change', async (event) => {
   uploadImage(event).then(result => {
     console.log(result)
   }).catch(err => {
-    console.log("err", err.message)
+    alert("image size is too large, please upload image again")
+    photo_path.value = ''
   })
 })
 
