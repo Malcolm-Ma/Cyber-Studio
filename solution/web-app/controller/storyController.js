@@ -2,15 +2,18 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-24 13:42:59
+ * @Last Modified time: 2022-04-24 16:11:33
  */
 
 const axios = require('axios');
+const { response } = require('express');
 
 // API url from server-app
 // let url = 'http://localhost:3001/stories'
 let url = 'http://localhost:3100'
 
+// this is for storing image URL from server-app
+let imageURL = ''
 
 /**
  * index view, will show a list of stories
@@ -19,11 +22,11 @@ let url = 'http://localhost:3100'
  */
 const story_index = (req, res) => {
   axios.get(url + '/get_story_list').then(response => {
-    if(response.data.status === 0){
+    if (response.data.status === 0) {
       var story_list = []
       story_list = response.data
       res.render('index', { stories: story_list.data, title: "All Stories" })
-    }else{
+    } else {
       console.log(response.data.message)
     }
   }).catch(err => {
@@ -47,16 +50,34 @@ const story_create_get = (req, res) => {
  */
 const story_create_post = (req, res) => {
   const story_info = req.body
-  if (story_info == null) {
-    requestUtils.buildErrorResponse(res, {
-      status: 403,
-      error: new Error('No data sent!'),
-      message: 'No data sent!',
-    });
-    return;
-  }else{
-    console.log("story_info",story_info)
+  console.log("story_info", story_info)
+  console.log("imageURL", imageURL)
+
+  if (story_info != null && imageURL != '') {
+    axios.post(url + "/create_story", {
+      title: story_info.title,
+      content: story_info.content,
+      author: story_info.author,
+      photo: imageURL
+    }).then(response => {
+      res.status(201).json({ story: response.data.data.story_id })
+    }).catch(err => {
+      res.status(400).json({ err: response.data.message })
+    })
+  } else {
+    res.status(400).json({err: "story_info or image cannot be empty"})
   }
+}
+
+const uploadImage = (req, res) => {
+  const image = req.body
+  axios.post(url + '/upload_image', image).then(response => {
+    imageURL = response.data.data.url
+    console.log("url", imageURL)
+  }).catch(err => {
+    console.log(err.message)
+    res.sned('failed')
+  })
 }
 
 /**
@@ -97,4 +118,5 @@ module.exports = {
   story_create_post,
   story_details,
   story_delete,
+  uploadImage
 }
