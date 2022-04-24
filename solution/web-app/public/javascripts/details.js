@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-17 12:05:22 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-20 21:00:06
+ * @Last Modified time: 2022-04-22 18:48:25
  */
 
 let chat = io.connect('/chat')
@@ -142,15 +142,3 @@ function randomColor() {
   let rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
   return rgb;
 }
-
-function checkEmpty(roomNo) {
-  const count2 = io.sockets.size;
-  console.log(count2)
-}
-
-const checkConnectionBtn = document.querySelector('#checkConnection')
-checkConnectionBtn.addEventListener('click', (e) => {
-  e.preventDefault()
-  checkEmpty(roomNo)
-})
-
