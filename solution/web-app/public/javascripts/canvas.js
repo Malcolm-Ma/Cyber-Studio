@@ -40,6 +40,8 @@ function initCanvas(sckt, imageUrl, color) {
         drawOnCanvas(ctx, canvas.width, canvas.height, prevX, prevY, currX, currY, color, thickness);
         // @todo if you draw on the canvas, you may want to let everyone know via socket.io (socket.emit...)  by sending them
         const data = {
+          px:prevX,
+          py: prevY,
           x: currX,
           y: currY,
           lineColor: color
@@ -49,11 +51,9 @@ function initCanvas(sckt, imageUrl, color) {
     }
   });
 
-  let socketPrevX, socketPrevY, socketCurrX, socketCurrY = 0
-  let socketColor = ''
   socket.on('sendmouse', data => {
-    socketPrevX = socketCurrX
-    socketPrevY = socketCurrY
+    socketPrevX = data.px
+    socketPrevY = data.py
     socketCurrX = data.x
     socketCurrY = data.y
     socketColor = data.lineColor
