@@ -51,6 +51,7 @@ connect.addEventListener('click', async (e) => {
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
   let storyId = connect.dataset.sid
+  console.log("story id: ", storyId)
   console.log("imageUrl: ", imageUrl)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
@@ -68,15 +69,18 @@ connect.addEventListener('click', async (e) => {
   await initRoomToStoryDB();
   checkRoomAvailable(true, roomNo, storyId)
       .then( async result => {
+        // user enter the room with history
         if(result){
           console.log('Access room ', roomNo, ' successfully.');
           getMessageList(roomNo)
               .then( list => {
                 console.log(JSON.stringify(list));
               })
-        } else {
-          console.log('Access room ', roomNo, ' failed.');
-          alert('Access room '+ roomNo + ' failed.');
+        }
+        // user enter a new/empty room
+        else {
+          console.log('Access room ', roomNo, ' successfully.');
+
         }
       })
 })
