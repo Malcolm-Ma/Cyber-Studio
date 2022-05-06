@@ -58,51 +58,31 @@ async function checkStoryChange(roomNum, newStoryId){
  * @param newStoryId: the story number that user require to discuss this time
  */
 async function checkRoomAvailable(ifEmpty, roomNum, newStoryId){
-    await getStoryNumber(roomNum) // get the id of story which is discussing in room
-        .then( result => {
-            if(result === -1){
+    return await getStoryNumber(roomNum) // get the id of story which is discussing in room
+        .then( async result => {
+            if (result === -1) {
+                // console.log("this room is new")
+                await updateRelationship(roomNum, newStoryId);
                 return false; // room is new, user can enter
+            } else {
+                let ifStoryChanged = await checkStoryChange(roomNum, newStoryId);
+
+                if (ifStoryChanged) {
+                    // story is changed, clear history of room
+                    console.log("Ready to clear history")
+                    await clearHistory(roomNum);
+                    // update the relationship between room and story
+                    await updateRelationship(roomNum, newStoryId);
+                    console.log('room already be reused');
+                    return false;
+
+                } else {
+                    // story is not changed, user can enter and reuse the room
+                    console.log('story is not changed, user can enter the room and view history');
+                    return true;
+                }
             }
         })
-
-    let ifStoryChanged = await checkStoryChange(roomNum, newStoryId);
-
-    if (ifStoryChanged) {
-        // story is changed, clear history of room
-        await clearHistory(roomNum);
-        // update the relationship between room and story
-        await updateRelationship(roomNum, newStoryId);
-        console.log('room already be reused');
-        return false;
-
-    } else {
-        // story is not changed, user can enter and reuse the room
-        console.log('story is not changed, user can enter the room and view history');
-        return true;
-    }
-
-    // if (ifStoryChanged) {
-    //     // story is changed
-    //     if (ifEmpty) {
-    //         // room is empty, room will be reused
-    //         // clear history of room
-    //         await clearHistory(roomNum);
-    //         // update the relationship between room and story
-    //         await updateRelationship(roomNum, newStoryId);
-    //         console.log('room already be reused');
-    //         return true;
-    //
-    //     } else {
-    //         // room is not empty, user can't enter room
-    //         // ！！！可以进
-    //         console.log('room is not empty, user can not enter room');
-    //         return false;
-    //     }
-    // } else {
-    //     // story is not changed, user can enter the room
-    //     console.log('story is not changed, user can enter the room');
-    //     return true;
-    // }
 }
 window.checkRoomAvailable = checkRoomAvailable;
 

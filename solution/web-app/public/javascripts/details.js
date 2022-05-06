@@ -67,14 +67,16 @@ connect.addEventListener('click', async (e) => {
 
   await initMessageDB();
   await initRoomToStoryDB();
-  checkRoomAvailable(true, roomNo, storyId)
+  await checkRoomAvailable(true, roomNo, storyId)
       .then( async result => {
         // user enter the room with history
+        console.log('Result ', result);
         if(result){
           console.log('Access room ', roomNo, ' successfully.');
-          getMessageList(roomNo)
+          await getMessageList(roomNo)
               .then( list => {
                 console.log(JSON.stringify(list));
+                outputHistory(list);
               })
         }
         // user enter a new/empty room
@@ -146,4 +148,20 @@ function randomColor() {
   let b = Math.floor(Math.random() * 256);
   let rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
   return rgb;
+}
+
+/**
+ * it create message on the chat interface
+ * @param message message reviced by socket to append
+ */
+function outputHistory(message) {
+  for(let msg of message){
+    const li = document.createElement('li')
+    li.classList.add('list-group-item')
+    li.classList.add('border-0')
+    li.innerHTML = `<span class="fs-6 text-success">${msg.username} : </span>
+                  <span class="fs-5">${msg.content}</span><br>
+                  <span>${msg.time}</span>`
+    document.getElementById('message-list').appendChild(li)
+  }
 }
