@@ -187,7 +187,7 @@ async function clearHistory(roomNum) {
         // delete the messages according to id
         if (history && history.length > 0) {
             for(let msg of history){
-                console.log('deleting msg:', msg);
+                console.log('deleting !!! msg:', msg);
                 await store.delete(msg.id);
             }
         }
