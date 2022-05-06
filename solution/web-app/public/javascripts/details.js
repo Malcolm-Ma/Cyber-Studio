@@ -119,11 +119,12 @@ sentMsg.addEventListener('click', (e) => {
  */
 function outputMessage(message) {
   // Construct the data item and store it in the database
-  getMsgNum(roomNo).then(messageNum => {
-    generateID().then(result => {
+  getMsgNum(roomNo).then(async messageNum => {
+    generateID().then(async result => {
+      // console.log("Return result !!! ",result);
       storeMessage({ id:result+1, roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
-          .then(response => console.log('Inserting message worked!!'))
-          .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
+          .then(async response => console.log('Inserting message worked!!'))
+          .catch(async error => console.log("Error inserting: "+ JSON.stringify(error)))
     })
   })
 
