@@ -7,38 +7,52 @@
 
       <!-- It shows Story Information -->
       <div class="container mt-5" id="story_info">
-        <div class="card">
-          <div class="card-body">
-            <h5 class="card-title">
-              <%= story.title %>
-            </h5>
-            <p class="card-text">
-              <%= story.content %>
-            </p>
-            <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+        <div class="row row-cols-sm-1 row-cols-md-2 ">
+
+          <div class="col card">
+            <div class="card-body">
+              <h5 class="card-title">
+                <%= story.title %>
+              </h5>
+              <p class="card-text">
+                <%= story.content %>
+              </p>
+              <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+            </div>
+            <img id="story_info_image" src="<%= story.photo%>" class="card-img-bottom" alt="...">
           </div>
-          <img id="story_info_image" src="<%= story.photo%>" class="card-img-bottom" alt="...">
+
+          <!-- It shows initial form for connect to the room -->
+          <div class="col card" id="initial_form">
+            <div class="card-title">
+              <p>Please insert the id of the Room you want to Join, if you do not have a room id, click Generate Room
+              </p>
+            </div>
+            <form>
+              <div class="card-body">
+                <p><label for="name"> Your name </label>
+                  <input type="text" id="name" name="name">
+                </p>
+                <p>
+                  <label for="roomNo"> Your room </label>
+                  <input type="text" id="roomNo" name="roomNo">
+                  <a id="roomNoGenerator" class="btn btn-warning">Generate Room</a>
+                </p>
+                <div id="warning" style="display: none;">
+                  <p class="fw-bold text-warning">Room Id cannot be empty</p>
+                </div>
+              </div>
+              <div class="card-footer text-end">
+                <a id="connect" class="btn btn-success " data-doc="<%= story.photo %>"
+                  data-sid="<%= story.id %>">Connect</a>
+              </div>
+            </form>
+          </div>
         </div>
+
       </div>
 
-      <!-- It shows initial form for connect to the room -->
-      <div class="container" id="initial_form">
-        <p>Please insert the id of the Room you want to Join, if you do not have a room id, click Generate Room</p>
-        <form>
-          <p><label for="name"> Your name </label>
-            <input type="text" id="name" name="name">
-          </p>
-          <p>
-            <label for="roomNo"> Your room </label>
-            <input type="text" id="roomNo" name="roomNo">
-            <a id="roomNoGenerator" class="btn btn-warning">Generate Room</a>
-          </p>
-          <div id="warning" style="display: none;">
-            <p class="fw-bold text-warning">Room Id cannot be empty</p>
-          </div>
-          <a id="connect" class="btn btn-success" data-doc="<%= story.photo %>" data-sid="<%= story.story_id %>">Connect</a>
-        </form>
-      </div>
+
 
       <!-- It shows canvas and image  -->
       <div class="container" id="canvas_form">
@@ -80,4 +94,5 @@
         <script src="/javascripts/indexedDB/storyDB.js" type="module"></script>
         <script src="/javascripts/indexedDB/room_to_story.js" type="module"></script>
   </body>
+
 </html>

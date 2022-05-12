@@ -1,7 +1,14 @@
-const title = document.getElementById('title');
-const author = document.getElementById('author');
-const photo_path = document.getElementById('formFile');
-const content = document.getElementById('content');
+/*
+ * @Author: Jipu Li 
+ * @Date: 2022-05-02 22:40:44 
+ * @Last Modified by: Jipu Li
+ * @Last Modified time: 2022-05-02 22:41:06
+ */
+
+const title = document.getElementById('title')
+const author = document.getElementById('author')
+const photo_path = document.getElementById('formFile')
+const content = document.getElementById('content')
 const submit_btn = document.getElementById('submit')
 const story_form = document.getElementById('story_form')
 
