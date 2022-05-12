@@ -51,6 +51,7 @@ connect.addEventListener('click', async (e) => {
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
   let storyId = connect.dataset.sid
+  console.log("story id: ", storyId)
   console.log("imageUrl: ", imageUrl)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
@@ -66,17 +67,22 @@ connect.addEventListener('click', async (e) => {
 
   await initMessageDB();
   await initRoomToStoryDB();
-  checkRoomAvailable(true, roomNo, storyId)
+  await checkRoomAvailable(true, roomNo, storyId)
       .then( async result => {
+        // user enter the room with history
+        console.log('Result ', result);
         if(result){
           console.log('Access room ', roomNo, ' successfully.');
-          getMessageList(roomNo)
+          await getMessageList(roomNo)
               .then( list => {
                 console.log(JSON.stringify(list));
+                outputHistory(list);
               })
-        } else {
-          console.log('Access room ', roomNo, ' failed.');
-          alert('Access room '+ roomNo + ' failed.');
+        }
+        // user enter a new/empty room
+        else {
+          console.log('Access room ', roomNo, ' successfully.');
+
         }
       })
 })
@@ -114,14 +120,6 @@ sentMsg.addEventListener('click', (e) => {
  * @param message message reviced by socket to append
  */
 function outputMessage(message) {
-  // Construct the data item and store it in the database
-  getMsgNum(roomNo).then(messageNum => {
-    generateID().then(result => {
-      storeMessage({ id:result+1, roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
-          .then(response => console.log('Inserting message worked!!'))
-          .catch(error => console.log("Error inserting: "+ JSON.stringify(error)))
-    })
-  })
 
   const li = document.createElement('li')
   li.classList.add('list-group-item')
@@ -130,6 +128,18 @@ function outputMessage(message) {
                   <span class="fs-5">${message.text}</span><br>
                   <span>${message.time}</span>`
   document.getElementById('message-list').appendChild(li)
+
+  // Construct the data item and store it in the database
+  if(message.name !== "Chat-Bot"){
+    getMsgNum(roomNo).then(async messageNum => {
+      generateID().then(async result => {
+        // console.log("Return result !!! ",result);
+        storeMessage({ id:result+1, roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
+            .then(async response => console.log('Inserting message worked!!'))
+            .catch(async error => console.log("Error inserting: "+ JSON.stringify(error)))
+      })
+    })
+  }
 }
 
 /**
@@ -141,4 +151,25 @@ function randomColor() {
   let b = Math.floor(Math.random() * 256);
   let rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
   return rgb;
+}
+
+/**
+ * it create message on the chat interface
+ * @param message message reviced by socket to append
+ */
+function outputHistory(message) {
+  for(let msg of message){
+    const li = document.createElement('li')
+    li.classList.add('list-group-item')
+    li.classList.add('border-0')
+    li.innerHTML = `<span class="fs-6 text-success">${msg.username} : </span>
+                  <span class="fs-5">${msg.content}</span><br>
+                  <span>${msg.time}</span>`
+    document.getElementById('message-list').appendChild(li)
+  }
+
+  const hint = document.createElement('hint')
+  hint.innerHTML = `<span class="text-muted">above is history message</span>`
+  document.getElementById('message-list').appendChild(hint)
+
 }

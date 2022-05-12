@@ -58,57 +58,31 @@ async function checkStoryChange(roomNum, newStoryId){
  * @param newStoryId: the story number that user require to discuss this time
  */
 async function checkRoomAvailable(ifEmpty, roomNum, newStoryId){
-    await getStoryNumber(roomNum)
-        .then( result => {
-            if(result === -1){
-                return true; // room is new, user can enter
+    return await getStoryNumber(roomNum) // get the id of story which is discussing in room
+        .then( async result => {
+            if (result === -1) {
+                // console.log("this room is new")
+                await updateRelationship(roomNum, newStoryId);
+                return false; // room is new, user can enter
+            } else {
+                let ifStoryChanged = await checkStoryChange(roomNum, newStoryId);
+
+                if (ifStoryChanged) {
+                    // story is changed, clear history of room
+                    console.log("Ready to clear history")
+                    await clearHistory(roomNum);
+                    // update the relationship between room and story
+                    await updateRelationship(roomNum, newStoryId);
+                    console.log('room already be reused');
+                    return false;
+
+                } else {
+                    // story is not changed, user can enter and reuse the room
+                    console.log('story is not changed, user can enter the room and view history');
+                    return true;
+                }
             }
         })
-
-    let ifStoryChanged = await checkStoryChange(roomNum, newStoryId);
-
-    if (ifStoryChanged) {
-        // story is changed
-        if (ifEmpty) {
-            // room is empty, room will be reused
-            // clear history of room
-            await clearHistory(roomNum);
-            // update the relationship between room and story
-            await updateRelationship(roomNum, newStoryId);
-            console.log('room already be reused');
-            return true;
-
-        } else {
-            // room is not empty, user can't enter room
-            console.log('room is not empty, user can not enter room');
-            return false;
-        }
-    } else {
-        // story is not changed, user can enter the room
-        console.log('story is not changed, user can enter the room');
-        return true;
-    }
-
-    /*
-    if(ifEmpty && ifStoryChange){
-        //story变了 & 没人 -》 进房间且选择清记录，改变story关系
-        // 1.
-        // 2. judge if story change
-        // 3. delete/not delete
-        // deleteMessage(roomNum);
-        // 4. change relation in roomToStory
-        // updateRoomToStory(roomNum, newStoryId);
-        return true;
-    } else if(!ifEmpty && ifStoryChange){
-        //story变了 & 有人 -》不能进
-        return false;
-    } else if(ifEmpty && !ifStoryChange){
-        //story没变 & 没人 -》 进房间
-        return true;
-    } else if(!ifEmpty && !ifStoryChange){
-        //story没变 & 有人 -》 加入房间
-        return true;
-    }*/
 }
 window.checkRoomAvailable = checkRoomAvailable;
 
@@ -258,22 +232,9 @@ async function updateRelationship(roomId, storyNum) {
             let store = await tx.objectStore(ROOM_TO_STORY_NAME);
             let request = await store.get(roomId);
 
-            /*
-            request.onsuccess = async function (event) {
-                // get the data item which needed to update
-                var data = event.target.result;
-
-                // change the story id
-                data.storyId = '555';
-
-                // put back
-                await store.put({roomId:roomId, storyId:'000'});
-            };
-
-             */
-
             console.log(request);
             await store.put({roomId:roomId, storyId:storyNum}); // insert new item
+            console.log('Update relationship!!!!!! ', roomId, storyNum)
             await tx.complete;
         } catch(error) {
             console.log('Error: Can not store the relationship. Reason: '+error);

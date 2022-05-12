@@ -45,7 +45,7 @@ async function initMessageDB(){
                 if (!upgradeDb.objectStoreNames.contains(MSG_STORE_NAME)) {
                     let msgDB = upgradeDb.createObjectStore(MSG_STORE_NAME, {
                         keyPath: 'id'
-                        //autoIncrement: true
+                        // autoIncrement: true
                     });
                     msgDB.createIndex('roomId', 'roomId', {unique: false, multiEntry: true});
                 }
@@ -90,10 +90,16 @@ async function generateID(){
     if (db) {
         let tx = await db.transaction(MSG_STORE_NAME, 'readonly');
         let store = await tx.objectStore(MSG_STORE_NAME);
-        let index = await store.index('roomId');
+        let messages = await store.getAll(); // read all history messages in this room
 
-        // count all history messages in databse
-        return await index.count();
+        // get the last id in history in database
+        let count = 0;
+        for( let msg of messages){
+            count++;
+            if(count === messages.length){
+                return msg.id;
+            }
+        }
 
     }
 }
@@ -110,12 +116,11 @@ async function getMessageList(roomNum) {
     if (!db)
         await initMessageDB();
     if (db) {
-        console.log('fetching: ' + roomNum);
         let tx = await db.transaction(MSG_STORE_NAME, 'readonly');
         let store = await tx.objectStore(MSG_STORE_NAME);
         let index = await store.index('roomId');
         let readingsList = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
-        console.log('Find message list: ' + JSON.stringify(readingsList));
+        console.log('Fetching message list: ' + JSON.stringify(readingsList));
         await tx.complete;
 
         if (readingsList && readingsList.length > 0) {
@@ -182,7 +187,7 @@ async function clearHistory(roomNum) {
         // delete the messages according to id
         if (history && history.length > 0) {
             for(let msg of history){
-                console.log('deleting msg:', msg.id);
+                console.log('deleting !!! msg:', msg);
                 await store.delete(msg.id);
             }
         }
