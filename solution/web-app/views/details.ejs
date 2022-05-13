@@ -62,15 +62,15 @@
 
       <!-- It shows canvas and image  -->
       <div class="container" id="canvas_form">
-        <div style="width: 100%; height: 50vh">
+        <div style="width: 100%; height: 50vh; ">
           <img id="image" height="100%">
           <canvas id="canvas"></canvas>
         </div>
       </div>
       <!-- It shows chat interface -->
       <div class="container" id="chat_interface">
-        <div class="row row-cols-2 row-cols-md-2 row-cols-sm-1">
-          <!-- story info without img -->
+        <div class="row row-cols-1 row-cols-sm-2">
+          <!-- It shows story info without img -->
           <div class="card col">
             <div class="card-body">
               <h5 class="card-title">
@@ -120,7 +120,6 @@
             </div>
           </div>
         </div>
-
         <!-- chat room interface -->
         <div class="row">
           <div class="card border-top-0">
@@ -129,7 +128,7 @@
                 id="in_room" style="display: inline"></div>
               <a class="btn btn-link" onClick="window.location.reload()">Disconnect</a>
             </div>
-            <div class="card-body" style="height: 500px; overflow: auto;">
+            <div id="message-container" class="card-body" style="height: 500px; overflow: auto;">
               <ul id="message-list" class="list-group">
               </ul>
             </div>
@@ -137,7 +136,7 @@
               <div class="row m-3">
                 <div class="col-10">
                   <input type="text" class="form-control border-0 border-bottom" id="comment"
-                    placeholder="Write a message...">
+                    placeholder="Write a message...(enter to send)">
                 </div>
                 <div class="col-2">
                   <button id="send_msg" type="submit" class="btn btn-primary">Send Message</button>

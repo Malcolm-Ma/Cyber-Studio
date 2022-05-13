@@ -1,10 +1,3 @@
-/*
- * @Author: Jipu Li 
- * @Date: 2022-03-17 12:05:22 
- * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-22 18:48:25
- */
-
 let chat = io.connect('/chat')
 let roomNo = null
 let name = null
@@ -14,6 +7,9 @@ const initForm = document.querySelector('#initial_form')
 const chatInterface = document.querySelector('#chat_interface')
 const storyInfo = document.querySelector('#story_info')
 const canvasForm = document.querySelector('#canvas_form')
+const messagelist = document.getElementById('message-list')
+const messageContainer = document.querySelector("#message-container")
+const canvas = document.querySelector("#canvas")
 
 function init() {
   initForm.style.display = 'block'
@@ -64,27 +60,28 @@ connect.addEventListener('click', async (e) => {
   chat.emit('create or join', roomNo, name)
   initCanvas(chat, imageUrl, color);
   hideLoginInterface(roomNo, name);
-
+  canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
+  
   await initMessageDB();
   await initRoomToStoryDB();
   await checkRoomAvailable(true, roomNo, storyId)
-      .then( async result => {
-        // user enter the room with history
-        console.log('Result ', result);
-        if(result){
-          console.log('Access room ', roomNo, ' successfully.');
-          await getMessageList(roomNo)
-              .then( list => {
-                console.log(JSON.stringify(list));
-                outputHistory(list);
-              })
-        }
-        // user enter a new/empty room
-        else {
-          console.log('Access room ', roomNo, ' successfully.');
+    .then(async result => {
+      // user enter the room with history
+      console.log('Result ', result);
+      if (result) {
+        console.log('Access room ', roomNo, ' successfully.');
+        await getMessageList(roomNo)
+          .then(list => {
+            console.log(JSON.stringify(list));
+            outputHistory(list);
+          })
+      }
+      // user enter a new/empty room
+      else {
+        console.log('Access room ', roomNo, ' successfully.');
 
-        }
-      })
+      }
+    })
 })
 
 /**
@@ -98,6 +95,7 @@ function hideLoginInterface(room, userId) {
   storyInfo.style.display = 'none'
   canvasForm.style.display = 'block'
   document.getElementById('who_you_are').innerHTML = userId;
+  document.getElementById('who_you_are').style.color = color;
   document.getElementById('in_room').innerHTML = ' ' + room;
 }
 
@@ -105,14 +103,28 @@ const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
 chat.on('message', message => {
   outputMessage(message)
+  messageContainer.scrollTop = messageContainer.scrollHeight
 })
 
 sentMsg.addEventListener('click', (e) => {
+
   e.preventDefault()
   const message = comment.value
-  chat.emit('chatMessage', roomNo, name, message)
-  comment.value = ''
-  comment.focus()
+  if (message !== '') {
+    chat.emit('chatMessage', roomNo, name, message)
+    comment.value = ''
+    comment.focus()
+  }
+
+})
+comment.addEventListener('keyup', (e) => {
+  e.preventDefault()
+  const message = comment.value
+  if (e.key === "Enter" && message !== '') {
+    chat.emit('chatMessage', roomNo, name, message)
+    comment.value = ''
+    comment.focus()
+  }
 })
 
 /**
@@ -122,21 +134,33 @@ sentMsg.addEventListener('click', (e) => {
 function outputMessage(message) {
 
   const li = document.createElement('li')
+
   li.classList.add('list-group-item')
   li.classList.add('border-0')
-  li.innerHTML = `<span class="fs-6 text-success">${message.name} : </span>
-                  <span class="fs-5">${message.text}</span><br>
-                  <span>${message.time}</span>`
-  document.getElementById('message-list').appendChild(li)
+
+  if (name == message.name) {
+    li.classList.add('text-end')
+    li.innerHTML = `
+    <span class="fs-5 ">${message.text}</span>
+    <span class="fs-6 text-success">: ${message.name}</span><br>
+    <span>${message.time}</span>`
+    messagelist.appendChild(li)
+  } else {
+    li.innerHTML = `
+    <span class="fs-6 text-success ">${message.name} : </span>
+    <span class="fs-5 ">${message.text}</span><br>
+    <span>${message.time}</span>`
+    messagelist.appendChild(li)
+  }
 
   // Construct the data item and store it in the database
-  if(message.name !== "Chat-Bot"){
+  if (message.name !== "Chat-Bot") {
     getMsgNum(roomNo).then(async messageNum => {
       generateID().then(async result => {
         // console.log("Return result !!! ",result);
-        storeMessage({ id:result+1, roomId: roomNo, username:name, isSelf: true, msgNum: messageNum+1, content:message.text, time:message.time})
-            .then(async response => console.log('Inserting message worked!!'))
-            .catch(async error => console.log("Error inserting: "+ JSON.stringify(error)))
+        storeMessage({ id: result + 1, roomId: roomNo, username: name, isSelf: true, msgNum: messageNum + 1, content: message.text, time: message.time })
+          .then(async response => console.log('Inserting message worked!!'))
+          .catch(async error => console.log("Error inserting: " + JSON.stringify(error)))
       })
     })
   }
@@ -158,7 +182,7 @@ function randomColor() {
  * @param message message reviced by socket to append
  */
 function outputHistory(message) {
-  for(let msg of message){
+  for (let msg of message) {
     const li = document.createElement('li')
     li.classList.add('list-group-item')
     li.classList.add('border-0')
