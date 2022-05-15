@@ -96,28 +96,15 @@
             <div class="card-header">
               <h5 class="card-title">Search the Knowledge Graph</h5>
             </div>
-            <div id="typeForm">
-              <label for="myType">Type: </label>
-              <input type="text" id="myType">
-              <button>Set Type</button>
+            <div class="myRow" id="typeForm">
+              <label for="myType">Type: </label><input type="text" id="myType">
+              <button onclick="widgetInit()">Set type</button>
             </div>
-            <div id="widget">
-              <label for="myInput">Search for:</label>
-              <input type="text" id="myInput">
-              <div id="typeSet"></div>
+            <div class="myRow" id='widget' style="display: none">
+              <label for="myInput">Search for: </label><input type="text" id="myInput">
+              <label class="myRow" id="typeSet"></label>
             </div>
-            <div>
-              <div id="resultPanel">
-                <h3 id="resultName"></h3>
-                <h4 id="resultId"></h4>
-                <div id="resultDescription"></div>
-                <div>
-                  <a id="resultUrl" target="_blank">
-                    Link to Webpage
-                  </a>
-                </div>
-              </div>
-            </div>
+            <div id="resultBox"></div>
           </div>
         </div>
         <!-- chat room interface -->
@@ -135,7 +122,7 @@
             <div class="card-footer bg-white">
               <div class="row m-3">
                 <div class="col-10">
-                  <input type="text" class="form-control border-0 border-bottom" id="comment"
+                  <input type="text" class="form-control border-0 border-bottom shadow-none" id="comment"
                     placeholder="Write a message...(enter to send)">
                 </div>
                 <div class="col-2">

@@ -1,7 +1,12 @@
+// Google Knowledge Graph
+const service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
+const apiKey = 'AIzaSyAG7w627q-djB4gTTahssufwNOImRqdYKM';
+
 let chat = io.connect('/chat')
 let roomNo = null
 let name = null
 let color = randomColor()
+
 
 const initForm = document.querySelector('#initial_form')
 const chatInterface = document.querySelector('#chat_interface')
@@ -61,7 +66,7 @@ connect.addEventListener('click', async (e) => {
   initCanvas(chat, imageUrl, color);
   hideLoginInterface(roomNo, name);
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
-  
+
   await initMessageDB();
   await initRoomToStoryDB();
   await checkRoomAvailable(true, roomNo, storyId)
@@ -196,4 +201,86 @@ function outputHistory(message) {
   hint.innerHTML = `<span class="text-muted">above is history message</span>`
   document.getElementById('message-list').appendChild(hint)
 
+}
+
+
+/**
+ * it inits the widget by selecting the type from the field myType
+ * and it displays the Google Graph widget
+ * it also hides the form to get the type
+ */
+function widgetInit() {
+  let type = document.getElementById("myType").value;
+  if (type) {
+    let config = {
+      'limit': 10,
+      'languages': ['en'],
+      'types': [type],
+      'maxDescChars': 100,
+      'selectHandler': selectItem,
+    }
+    KGSearchWidget(apiKey, document.getElementById("myInput"), config);
+    document.getElementById('typeSet').innerHTML = 'of type: ' + type;
+    document.getElementById('widget').style.display = 'block';
+    document.getElementById('typeForm').style.display = 'none';
+  }
+  else {
+    alert('Set the type please');
+    document.getElementById('widget').style.display = 'none';
+    document.getElementById('resultPanel').style.display = 'none';
+    document.getElementById('typeSet').innerHTML = '';
+    document.getElementById('typeForm').style.display = 'block';
+  }
+}
+
+/**
+ * callback called when an element in the widget is selected
+ * @param event the Google Graph widget event {@link https://developers.google.com/knowledge-graph/how-tos/search-widget}
+ */
+function selectItem(event) {
+  let row = event.row;
+  // document.getElementById('resultImage').src= row.json.image.url;
+
+
+  const result = `
+                <h3 id="resultName">${row.name}</h3>
+                <h4 id="resultId">id: ${row.id}</h4>
+                <div id="resultDescription">${row.rc}</div>
+                <div>
+                  <a id="resultUrl" target="_blank" href="${row.qc}">
+                    Link to Webpage
+                  </a>
+                </div>
+              `;
+
+  const resultBox = document.querySelector('#resultBox')
+  const resultPanel = document.createElement('div')
+  resultPanel.innerHTML = result
+  resultBox.appendChild(resultPanel)
+  // document.getElementById('resultId').innerText = 'id: ' + row.id;
+  // document.getElementById('resultName').innerText = row.name;
+  // document.getElementById('resultDescription').innerText = row.rc;
+  // document.getElementById("resultUrl").href = row.qc;
+  // document.getElementById('resultPanel').style.display = 'block';
+}
+
+/**
+ * currently not used. left for reference
+ * @param id
+ * @param type
+ */
+function queryMainEntity(id, type) {
+  const params = {
+    'query': mainEntityName,
+    'types': type,
+    'limit': 10,
+    'indent': true,
+    'key': apiKey,
+  };
+  $.getJSON(service_url + '?callback=?', params, function (response) {
+    $.each(response.itemListElement, function (i, element) {
+
+      $('<div>', { text: element['result']['name'] }).appendTo(document.body);
+    });
+  });
 }
