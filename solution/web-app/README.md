@@ -1,3 +1,10 @@
- ### Start the service    
-* json-server --watch data/stories.json --port 3001     
-* npm run dev   
+ ### Start the web service    
+For development   
+```bash
+npm run dev
+```
+
+For running the service   
+```bash
+npm run start
+```
