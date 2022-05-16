@@ -14,6 +14,11 @@ var server = http.createServer(app)
 
 const io = socketio(server)
 
+const swaggerUi = require('swagger-ui-express');
+const openApiDocumentation = require('./swagger/swaggerDocumentation.json');
+// the route where the swagger documentation can be seen
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiDocumentation));
+
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
