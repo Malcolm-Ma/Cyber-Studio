@@ -18,11 +18,21 @@ exports.init = function (io) {
         socket.on('mouse', (data) => {
           socket.broadcast.to(roomNo).emit('sendmouse', data)
         })
+        socket.on('emitKGraph', (roomNo, row, name, color) => {
+          const data = {
+            grow: row,
+            gname: name,
+            gcolor: color
+          }
+          chat.to(roomNo).emit('KGraph', data)
+        })
       })
 
       socket.on('chatMessage', (roomNo, name, msg) => {
         chat.to(roomNo).emit('message', formatMessage(name, msg))
       })
+
+
 
     } catch (e) {
       console.log(e.message)
