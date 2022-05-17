@@ -34,6 +34,18 @@ function generateRoom() {
   return 'R' + roomNo;
 }
 
+/**
+ * it create random color for line style
+ */
+function randomColor() {
+  let r = Math.floor(Math.random() * 256);
+  let g = Math.floor(Math.random() * 256);
+  let b = Math.floor(Math.random() * 256);
+  let rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
+  return rgb;
+}
+
+
 const roomNoGenerator = document.querySelector('#roomNoGenerator')
 roomNoGenerator.addEventListener('click', (e) => {
   e.preventDefault()
@@ -137,9 +149,7 @@ comment.addEventListener('keyup', (e) => {
  * @param message message reviced by socket to append
  */
 function outputMessage(message) {
-
   const li = document.createElement('li')
-
   li.classList.add('list-group-item')
   li.classList.add('border-0')
 
@@ -171,16 +181,6 @@ function outputMessage(message) {
   }
 }
 
-/**
- * it create random color for line style
- */
-function randomColor() {
-  let r = Math.floor(Math.random() * 256);
-  let g = Math.floor(Math.random() * 256);
-  let b = Math.floor(Math.random() * 256);
-  let rgb = 'rgb(' + r + ',' + g + ',' + b + ')';
-  return rgb;
-}
 
 /**
  * it create message on the chat interface
@@ -241,28 +241,34 @@ function selectItem(event) {
   let row = event.row;
   // document.getElementById('resultImage').src= row.json.image.url;
 
-
-  const result = `
-                <h3 id="resultName">${row.name}</h3>
-                <h4 id="resultId">id: ${row.id}</h4>
-                <div id="resultDescription">${row.rc}</div>
-                <div>
-                  <a id="resultUrl" target="_blank" href="${row.qc}">
-                    Link to Webpage
-                  </a>
-                </div>
-              `;
-
-  const resultBox = document.querySelector('#resultBox')
-  const resultPanel = document.createElement('div')
-  resultPanel.innerHTML = result
-  resultBox.appendChild(resultPanel)
-  // document.getElementById('resultId').innerText = 'id: ' + row.id;
-  // document.getElementById('resultName').innerText = row.name;
-  // document.getElementById('resultDescription').innerText = row.rc;
-  // document.getElementById("resultUrl").href = row.qc;
-  // document.getElementById('resultPanel').style.display = 'block';
+  chat.emit('emitKGraph', roomNo,row, name, color)
 }
+
+function outputKGraph(row, name, color) {
+  const result = `
+  <h3 id="resultName">${row.name}</h3>
+  <h4 id="resultId">id: ${row.id}</h4>
+  <div id="resultDescription">${row.rc}</div>
+  <div>
+    <a id="resultUrl" target="_blank" href="${row.qc}">
+      Link to Webpage
+    </a>
+  </div>
+`;
+
+  const resultContainer = document.querySelector('#resultContainer')
+  const resultPanel = document.createElement('div')
+  resultPanel.classList.add('p-1')
+  resultPanel.innerHTML = result
+  resultContainer.appendChild(resultPanel)
+  resultPanel.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
+
+}
+
+chat.on('KGraph', data => {
+  console.log(data)
+  outputKGraph(data.grow, data.gname, data.gcolor)
+})
 
 /**
  * currently not used. left for reference
