@@ -58,6 +58,7 @@ function initCanvas(sckt, imageUrl, color) {
     socketCurrY = data.y
     socketColor = data.lineColor
     drawOnCanvas(ctx, canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, socketColor, thickness)
+    // storeCanvas({})
   })
 
   // this is code left in case you need to  provide a button clearing the canvas (it is suggested that you implement it)

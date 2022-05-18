@@ -37,18 +37,18 @@ async function initCanvasDB(){
 
                 // Check if there exists canvas database; if not, create a new database for canvas
                 if (!upgradeDb.objectStoreNames.contains(CANVAS_STORE_NAME)) {
-                    let msgDB = upgradeDb.createObjectStore(CANVAS_STORE_NAME, {
+                    let canvasDB = upgradeDb.createObjectStore(CANVAS_STORE_NAME, {
                         keyPath: 'id'
                         // autoIncrement: true
                     });
-                    msgDB.createIndex('roomId', 'roomId', {unique: false, multiEntry: true});
+                    canvasDB.createIndex('roomId', 'roomId', {unique: false, multiEntry: true});
                 }
             }
         });
-        console.log('Message database created');
+        console.log('Canvas database created');
     }
 }
-window.initCanvasDB= initCanvasDB;
+window.initCanvasDB = initCanvasDB;
 
 /**
  * it saves the draws into the database
