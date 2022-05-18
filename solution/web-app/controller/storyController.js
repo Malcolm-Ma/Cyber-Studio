@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-04-16 23:08:17 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-04-24 19:30:32
+ * @Last Modified time: 2022-05-18 15:55:48
  */
 
 const axios = require('axios');
@@ -21,6 +21,34 @@ let imageURL = ''
  */
 const story_index = (req, res) => {
   axios.get(url + '/get_story_list').then(response => {
+    if (response.data.status === 0) {
+      var story_list = []
+      story_list = response.data
+      res.render('index', { stories: story_list.data, title: "All Stories" })
+    } else {
+      console.log(response.data.message)
+    }
+  }).catch(err => {
+    console.log(err.message)
+  })
+}
+
+const story_list_date = (req, res) => {
+  axios.get(url + '/get_story_list?order=date').then(response => {
+    if (response.data.status === 0) {
+      var story_list = []
+      story_list = response.data
+      res.render('index', { stories: story_list.data, title: "All Stories" })
+    } else {
+      console.log(response.data.message)
+    }
+  }).catch(err => {
+    console.log(err.message)
+  })
+}
+
+const sotry_list_author = (req, res) => {
+  axios.get(url + '/get_story_list?order=author').then(response => {
     if (response.data.status === 0) {
       var story_list = []
       story_list = response.data
@@ -64,7 +92,7 @@ const story_create_post = (req, res) => {
       res.status(400).json({ err: response.data.message })
     })
   } else {
-    res.status(400).json({err: "story_info or image cannot be empty"})
+    res.status(400).json({ err: "story_info or image cannot be empty" })
   }
 }
 
@@ -79,7 +107,7 @@ const upload_image = (req, res) => {
     imageURL = response.data.data.url
   }).catch(err => {
     console.log(err.message)
-    res.json({err: err.message})
+    res.json({ err: err.message })
   })
 }
 
@@ -120,5 +148,7 @@ module.exports = {
   story_create_post,
   story_details,
   story_delete,
-  upload_image
+  upload_image,
+  story_list_date,
+  sotry_list_author,
 }

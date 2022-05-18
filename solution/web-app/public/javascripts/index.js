@@ -41,3 +41,18 @@ const setNetworkStatusTag = (status) => {
   onlineTag.className = `badge text-bg-${status ? 'success' : 'danger'} me-4`;
   onlineTag.innerText = status ? 'Online' : 'Offline';
 };
+
+
+
+const orderByDate = document.querySelector('#order-by-date')
+const orderByAuthor = document.querySelector('#order-by-author')
+
+orderByDate.addEventListener('click', (e) => {
+  e.preventDefault()
+  window.location.href = "/order_by_date"
+})
+
+orderByAuthor.addEventListener('click', (e) => {
+  e.preventDefault()
+  window.location.href = "/order_by_author"
+})
