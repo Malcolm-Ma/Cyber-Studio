@@ -7,16 +7,17 @@ const staticCacheName = 'cyberStudio-cache-v1';
 
 const filesToCache = [
   '/',
+  '/offline/not_found',
   'javascripts/scripts/bootstrap.min.js',
   'javascripts/scripts/jquery-3.6.0.min.js',
   'javascripts/scripts/socket.io.min.js',
   'javascripts/scripts/axios.min.js',
   'javascripts/index.js',
-  '/javascripts/details.js',
-  '/javascripts/canvas.js',
-  '/javascripts/indexedDB/messageDB.js',
-  '/javascripts/indexedDB/storyDB.js',
-  '/javascripts/indexedDB/room_to_story.js',
+  'javascripts/details.js',
+  'javascripts/canvas.js',
+  'javascripts/indexedDB/messageDB.js',
+  'javascripts/indexedDB/storyDB.js',
+  'javascripts/indexedDB/room_to_story.js',
   'stylesheets/bootstrap.min.css',
   'stylesheets/store_detail.css',
   'stylesheets/style.css',
@@ -56,20 +57,19 @@ self.addEventListener('fetch', function (event) {
       return cache.match(event.request).then(function (response) {
         return fetch(event.request)
           .then(function (response) {
-          console.log('network request ...')
-          cache.put(event.request, response.clone()).catch((err) => {
-            console.error(err);
-          });
-          return response;
-        })
-          .catch(() => {
+            cache.put(event.request, response.clone()).catch((err) => {
+              console.error(err);
+            });
             return response;
+          }).catch((err) => {
+            console.error(err);
+            return response;
+            // if (response) {
+            //   return response;
+            // }
+            // return cache.match('/offline/not_found');
           })
-      }).catch((err) => {
-        console.error(err);
       });
-    }).catch((err) => {
-      console.log('--err--\n', err);
     })
   );
 });
