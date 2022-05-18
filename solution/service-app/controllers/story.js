@@ -34,8 +34,9 @@ const projectionPipeline = {
 const getStoryList = (req, res) => {
   const allowedOrder = ['data', '-date', 'author', '-author'];
   const { order = '-date' } = req.query;
-  if (!allowedOrder.some(item => item === order)) {
+  if (!!order && !allowedOrder.some(item => item === order)) {
     requestUtils.buildErrorResponse(res, {
+      status: 400,
       error: new Error('Invalid parameter Error'),
       message: 'Invalid parameter: { order }!',
     });
@@ -52,7 +53,7 @@ const getStoryList = (req, res) => {
     // handle raw data
     .project(projectionPipeline)
     // sort by date
-    .sort(order)
+    .sort(order || '-date')
     .exec()
     .then(stories => {
       requestUtils.buildSuccessResponse(res, {

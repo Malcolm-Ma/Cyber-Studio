@@ -19,12 +19,12 @@ const buildSuccessResponse = (res, options = {}) => {
 };
 
 const buildErrorResponse = (res, options = {}) => {
-  const { message = 'error', error = {}, status = 500 } = options;
+  const { message = 'error', error = new Error(), status = 500 } = options;
 
   res.status(status).json({
     status: 1,
     message,
-    error,
+    error: error.toString(),
   });
 };
 
