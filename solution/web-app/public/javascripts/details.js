@@ -170,7 +170,6 @@ function outputMessage(message) {
     messagelist.appendChild(li)
   }
 
-  console.log('Try to stroe message');
   // Construct the data item and store it in the database
   if (message.name !== "Chat-Bot") {
     getMsgNum(roomNo).then(async messageNum => {
