@@ -19,6 +19,10 @@
     {
       "url": "http://localhost:3000/",
       "description": "the only Local server"
+    },
+    {
+      "url": "http://localhost:3000/",
+      "description": "the only Local server"
     }
   ],
   "paths": {
