@@ -47,6 +47,9 @@ const setNetworkStatusTag = (status) => {
 const orderByDate = document.querySelector('#order-by-date')
 const orderByAuthor = document.querySelector('#order-by-author')
 
+/**
+ * Order stories by date
+ */
 orderByDate.addEventListener('click', (e) => {
   e.preventDefault()
   var des = orderByDate.dataset.doc
@@ -58,9 +61,11 @@ orderByDate.addEventListener('click', (e) => {
   }
 })
 
+/**
+ * Order stories by author name
+ */
 orderByAuthor.addEventListener('click', (e) => {
   e.preventDefault()
-
   var des = orderByAuthor.dataset.doc
   console.log("des", des)
   if (des == 1) {
