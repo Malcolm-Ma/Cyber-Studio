@@ -119,6 +119,7 @@ function hideLoginInterface(room, userId) {
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
 chat.on('message', message => {
+  console.log("Receive a chat!")
   outputMessage(message)
   messageContainer.scrollTop = messageContainer.scrollHeight
 })
@@ -168,11 +169,12 @@ function outputMessage(message) {
     messagelist.appendChild(li)
   }
 
+  console.log('Try to stroe message');
   // Construct the data item and store it in the database
   if (message.name !== "Chat-Bot") {
     getMsgNum(roomNo).then(async messageNum => {
       generateID().then(async result => {
-        // console.log("Return result !!! ",result);
+        console.log("Return result !!! ",result);
         storeMessage({ id: result + 1, roomId: roomNo, username: name, isSelf: true, msgNum: messageNum + 1, content: message.text, time: message.time })
           .then(async response => console.log('Inserting message worked!!'))
           .catch(async error => console.log("Error inserting: " + JSON.stringify(error)))
