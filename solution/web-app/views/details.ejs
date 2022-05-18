@@ -45,13 +45,14 @@
                 <p>
                   <label for="roomNo"> Your room </label>
                   <input type="text" id="roomNo" name="roomNo">
-                  <a id="roomNoGenerator" class="btn btn-warning">Generate Room</a>
+                  <a id="roomNoGenerator" class="btn btn-primary">Generate Room</a>
                 </p>
                 <div id="warning" style="display: none;">
                   <p class="fw-bold text-warning">Room Id cannot be empty</p>
                 </div>
               </div>
-              <div class="card-footer text-end">
+              <div class="card-footer d-flex justify-content-between">
+                <a href="/" class="btn btn-warning">Cancel</a>
                 <a id="connect" class="btn btn-success " data-doc="<%= story.photo %>"
                   data-sid="<%= story.id %>">Connect</a>
               </div>
