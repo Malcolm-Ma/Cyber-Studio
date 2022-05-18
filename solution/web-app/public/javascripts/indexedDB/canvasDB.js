@@ -70,6 +70,50 @@ async function storeCanvas(drawObject) {
     else localStorage.setItem(drawObject.drawObject, JSON.stringify(drawObject));
 }
 window.storeCanvas= storeCanvas;
+
+/**
+ * it retrieves all the messages that have sent in the roomNum
+ * if the database is not supported, it will use localstorage
+ * @param roomNum: a number
+ * @returns a list of message items
+ */
+async function getCanvasList(roomNum) {
+    let searchResult = []; // return the canvas list of roomNum
+    if (canvas_db) {
+        let tx = await canvas_db.transaction(CANVAS_STORE_NAME, 'readonly');
+        let store = await tx.objectStore(CANVAS_STORE_NAME);
+        let index = await store.index('roomId');
+        let draws = await index.getAll(IDBKeyRange.only(roomNum)); // read all history draws in this room
+        console.log('Fetching canvas list: ' + draws.length);
+        await tx.complete;
+
+        if (draws && draws.length > 0) {
+            for (let elem of draws){
+                searchResult.push(elem); // save draws in list
+            }
+        } else {
+            // if the database is not supported, use localstorage
+            const value = localStorage.getItem(roomNum);
+            if (value == null)
+                console.log('There are no history in this room.'); // there are nothing in localstorage
+            else {
+                searchResult.push(value);
+            }
+        }
+    } else {
+        const value = localStorage.getItem(roomNum);
+        if (value == null)
+            console.log('There are no history in this room.'); // there are nothing in localstorage
+        else {
+            searchResult.push(value);
+        }
+    }
+
+    return searchResult;
+}
+window.getCanvasList= getCanvasList;
+
+
 //
 // /**
 //  * it counts all history messages in message database
@@ -98,47 +142,7 @@ window.storeCanvas= storeCanvas;
 // }
 // window.generateID = generateID;
 //
-// /**
-//  * it retrieves all the messages that have sent in the roomNum
-//  * if the database is not supported, it will use localstorage
-//  * @param roomNum: a number
-//  * @returns a list of message items
-//  */
-// async function getMessageList(roomNum) {
-//     let searchResult = []; // return the message list of roomNum
-//     if (db) {
-//         let tx = await db.transaction(MSG_STORE_NAME, 'readonly');
-//         let store = await tx.objectStore(MSG_STORE_NAME);
-//         let index = await store.index('roomId');
-//         let readingsList = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
-//         console.log('Fetching message list: ' + JSON.stringify(readingsList));
-//         await tx.complete;
-//
-//         if (readingsList && readingsList.length > 0) {
-//             for (let elem of readingsList){
-//                 searchResult.push(elem); // save message in list
-//             }
-//         } else {
-//             // if the database is not supported, use localstorage
-//             const value = localStorage.getItem(roomNum);
-//             if (value == null)
-//                 console.log('There are no history in this room.'); // there are nothing in localstorage
-//             else {
-//                 searchResult.push(value);
-//             }
-//         }
-//     } else {
-//         const value = localStorage.getItem(roomNum);
-//         if (value == null)
-//             console.log('There are no history in this room.'); // there are nothing in localstorage
-//         else {
-//             searchResult.push(value);
-//         }
-//     }
-//
-//     return searchResult;
-// }
-// window.getMessageList= getMessageList;
+
 //
 // /**
 //  * it counts the number of history messages in roomNum

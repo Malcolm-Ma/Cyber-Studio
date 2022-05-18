@@ -85,14 +85,17 @@ connect.addEventListener('click', async (e) => {
   await checkRoomAvailable(true, roomNo, storyId)
     .then(async result => {
       // user enter the room with history
-      console.log('Result ', result);
+      // console.log('Result ', result);
       if (result) {
-        console.log('Access room ', roomNo, ' successfully.');
-        await getMessageList(roomNo)
-          .then(list => {
-            console.log(JSON.stringify(list));
-            outputHistory(list);
-          })
+        console.log('Welcome back to room ', roomNo);
+        // await getMessageList(roomNo)
+        //   .then(list => {
+        //     console.log(JSON.stringify(list));
+        //     outputHistory(list);
+        //   })
+        let msgList = await getMessageList(roomNo);
+        let canvasList = await getCanvasList(roomNo);
+        outputHistory(msgList, canvasList);
       }
       // user enter a new/empty room
       else {
@@ -207,19 +210,20 @@ function outputMsgHistory(message) {
 
 /**
  * it outputs the history of draws in specific room
- * @param test
+ * @param canvasList
  */
-function outputDrawsHistory(test){
+function outputDrawsHistory(canvasList){
   console.log("draw history!!!");
+
 }
 
 /**
  * it shows the history includes messages and canvas
- * @param message message reviced by socket to append
+ * @param messageList message reviced by socket to append
  */
-function outputHistory(message){
-  outputMsgHistory(message);
-  outputDrawsHistory();
+function outputHistory(messageList, canvasList){
+  outputMsgHistory(messageList);
+  outputDrawsHistory(canvasList);
 }
 
 
