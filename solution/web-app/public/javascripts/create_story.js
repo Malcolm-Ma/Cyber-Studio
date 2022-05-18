@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-05-02 22:40:44 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-05-02 22:41:06
+ * @Last Modified time: 2022-05-18 16:55:42
  */
 
 const title = document.getElementById('title')
@@ -22,6 +22,11 @@ function offlineCreateStory() {
     )
 }
 
+/**
+ * it can convert image file to base64 data
+ * @param {*} file image file
+ * @returns 
+ */
 const convertBase64 = (file) => {
   return new Promise((resolve, reject) => {
     const fileReader = new FileReader()
@@ -37,6 +42,9 @@ const convertBase64 = (file) => {
   })
 }
 
+/**
+ * upload image by base64 
+ */
 const uploadImage = async (event) => {
   const file = event.target.files[0]
   const base64 = await convertBase64(file)
@@ -52,6 +60,10 @@ const uploadImage = async (event) => {
   return response
 }
 
+/**
+ * when click upload img button 
+ * it will send base 64 image file to server , and return a img url to web-app
+ */
 photo_path.addEventListener('change', (event) => {
   uploadImage(event).then(result => {
     console.log("result ", result)
@@ -62,6 +74,10 @@ photo_path.addEventListener('change', (event) => {
   })
 })
 
+
+/**
+ * it will upload story info to server
+ */
 submit_btn.addEventListener('click', async (event) => {
   event.preventDefault()
   const title = story_form.title.value
@@ -88,6 +104,11 @@ submit_btn.addEventListener('click', async (event) => {
   }
 })
 
+/**
+ * post data to server
+ * @param data 
+ * @returns response json data
+ */
 async function postData(data) {
   console.log(data)
   const response = await fetch(url + '/create', {

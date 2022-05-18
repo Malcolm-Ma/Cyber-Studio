@@ -5,6 +5,18 @@
     <%- include('./partials/nav.ejs') %>
       <section>
         <div class="container">
+          <div
+            class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <h1 class="h2"></h1>
+            <div class="btn-toolbar mb-2 mb-md-0">
+              <div class="btn-group me-2">
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="order-by-date"
+                  data-doc="<%= des %>">Date</button>
+                <button type="button" class="btn btn-sm btn-outline-secondary" id="order-by-author"
+                  data-doc="<%= des %>">Author</button>
+              </div>
+            </div>
+          </div>
           <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3 mt-5">
             <% if(stories){ %>
               <% stories.forEach(story=> { %>
@@ -17,12 +29,18 @@
                       </h3>
                       <div>
                         <ul class="list-group list-group-flush">
-                          <li class="list-group-item">Author :<small class="text-muted"><%= story.author %></small></li>
-                          <li class="list-group-item">Date : <small class="text-muted"><%= story.date %></small></li>
-                          <li class="list-group-item">Content :<small class="text-muted"> <%= story.content.slice(0, 98)+"..." %></small></li>
+                          <li class="list-group-item">Author :<small class="text-muted">
+                              <%= story.author %>
+                            </small></li>
+                          <li class="list-group-item">Date : <small class="text-muted">
+                              <%= story.date %>
+                            </small></li>
+                          <li class="list-group-item">Content :<small class="text-muted">
+                              <%= story.content.slice(0, 98)+"..." %>
+                            </small></li>
                         </ul>
                       </div>
-                    
+
                     </div>
                     <a href="/details/<%= story.story_id %>" class="stretched-link"></a>
                   </div>
