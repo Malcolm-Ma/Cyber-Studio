@@ -20,10 +20,10 @@ window.CANVAS_STORE_NAME = CANVAS_STORE_NAME;
 
 // the database receives from the server the following structure
 const canvasData = [
-    { roomId: 1, username:'Tong', drawNum: 1, drawObject: "o"},
-    { roomId: 1, username:'Mary', drawNum: 2, drawObject: "o"},
-    { roomId: 1, username:'Tong', drawNum: 3, drawObject: "o"},
-    { roomId: 2, username:'Mary', drawNum: 1, drawObject: "o"}
+    { roomId: 1, username:'Tong', drawsNum: 1, drawObject: "o"},
+    { roomId: 1, username:'Mary', drawsNum: 2, drawObject: "o"},
+    { roomId: 1, username:'Tong', drawsNum: 3, drawObject: "o"},
+    { roomId: 2, username:'Mary', drawsNum: 1, drawObject: "o"}
 ];
 
 
@@ -38,8 +38,8 @@ async function initCanvasDB(){
                 // Check if there exists canvas database; if not, create a new database for canvas
                 if (!upgradeDb.objectStoreNames.contains(CANVAS_STORE_NAME)) {
                     let canvasDB = upgradeDb.createObjectStore(CANVAS_STORE_NAME, {
-                        keyPath: 'id'
-                        // autoIncrement: true
+                        keyPath: 'id',
+                        autoIncrement: true
                     });
                     canvasDB.createIndex('roomId', 'roomId', {unique: false, multiEntry: true});
                 }
@@ -53,17 +53,16 @@ window.initCanvasDB = initCanvasDB;
 /**
  * it saves the draws into the database
  * if the database is not supported, it will use localstorage
- * @param drawObject: it contains { roomId, username, isSelf, msgNum, content, time}
+ * @param drawObject: it contains { roomId, username, drawsNum, drawObject }
  */
 async function storeCanvas(drawObject) {
-    console.log('Inserting draw into indexedDB: ' + JSON.stringify(drawObject));
     if (canvas_db) {
         try{
             let tx = await canvas_db.transaction(CANVAS_STORE_NAME, 'readwrite');
             let store = await tx.objectStore(CANVAS_STORE_NAME);
             await store.put(drawObject);
             await  tx.complete;
-            console.log('Added message to the store: ' + JSON.stringify(drawObject));
+            console.log('Added draw to the store: ' + JSON.stringify(drawObject.drawsNum));
         } catch(error) {
             console.log('Error: Could not store the draws. Reason: '+error);
         }

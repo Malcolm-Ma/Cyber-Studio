@@ -11,7 +11,7 @@ let thickness = 4;
  * @param sckt the open socket to register events on
  * @param imageUrl teh image url to download
  */
-function initCanvas(sckt, imageUrl, color, roomID) {
+function initCanvas(sckt, imageUrl, color, roomID, username) {
   socket = sckt;
   let flag = false,
     prevX, prevY, currX, currY = 0;
@@ -21,9 +21,9 @@ function initCanvas(sckt, imageUrl, color, roomID) {
   let ctx = cvx.getContext('2d');
   img.src = imageUrl;
 
-  console.log('enter init', ctx);
   // store object of draw
   let drawObject = [];
+  let drawsNum = 0;
 
   // event on the canvas when the mouse is on it
   canvas.on('mousemove mousedown mouseup mouseout', function (e) {
@@ -37,9 +37,11 @@ function initCanvas(sckt, imageUrl, color, roomID) {
     }
     if (e.type === 'mouseup' || e.type === 'mouseout') {
       // end drawing, send it to database and clear list
-      sendDrawToDB(roomID, drawObject)
+      if (drawObject.length > 0) {
+        drawsNum ++;
+        sendDrawToDB(roomID, username, drawsNum, drawObject);
+      }
       drawObject = [];
-      console.log(drawObject)
       flag = false;
     }
     // if the flag is up, the movement of the mouse draws on the canvas
@@ -182,9 +184,18 @@ function drawOnCanvas(canvasWidth, canvasHeight, prevX, prevY, currX, currY, col
 /**
  * called when it is required to draw the image on the canvas. We have resized the canvas to the same image size
  * so ti is simpler to draw later
+ * @param roomID
+ * @param username
+ * @param drawsNum
  * @param drawObject
  */
-function sendDrawToDB(drawObject){
-  console.log(drawObject);
+async function sendDrawToDB(roomID, username, drawsNum, drawObject) {
+  console.log(roomID, username, drawsNum, drawObject);
+  await storeCanvas({
+    roomId: roomID,
+    username: username,
+    drawsNum: drawsNum,
+    drawObject: drawObject
+  });
 }
 
