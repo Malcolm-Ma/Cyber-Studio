@@ -122,9 +122,14 @@ async function storeRelationship(object) {
         try{
             let tx = await db.transaction(ROOM_TO_STORY_NAME, 'readwrite');
             let store = await tx.objectStore(ROOM_TO_STORY_NAME);
-            await store.put(object);
-            await tx.complete;
-            console.log('Added relationship to the store! '+ JSON.stringify(object));
+            if (object.storyId !== ''){
+                await store.put(object);
+                await tx.complete;
+                console.log('Added relationship to the store! '+ JSON.stringify(object));
+            }
+            else {
+                console.log('Can\'t add relationship to the store! Missing story id. '+ JSON.stringify(object));
+            }
         } catch(error) {
             console.log('Error: I could not store the relationship. Reason: '+error);
         }

@@ -152,7 +152,7 @@ const story_details = (req, res) => {
     var story = []
     if (response.data.status === 0) {
       story = response.data
-      res.render('details', { story: story.data, title: "Story Details" })
+      res.render('details', { story: story.data, story_id: storyId, title: "Story Details" })
     } else {
       console.log(response.data.message)
     }

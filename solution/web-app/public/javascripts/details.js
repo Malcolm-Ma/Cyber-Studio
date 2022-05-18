@@ -80,6 +80,7 @@ connect.addEventListener('click', async (e) => {
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
 
   await initMessageDB();
+  await initCanvasDB();
   await initRoomToStoryDB();
   await checkRoomAvailable(true, roomNo, storyId)
     .then(async result => {
@@ -119,6 +120,7 @@ function hideLoginInterface(room, userId) {
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
 chat.on('message', message => {
+  console.log("Receive a chat!")
   outputMessage(message)
   messageContainer.scrollTop = messageContainer.scrollHeight
 })
@@ -172,7 +174,7 @@ function outputMessage(message) {
   if (message.name !== "Chat-Bot") {
     getMsgNum(roomNo).then(async messageNum => {
       generateID().then(async result => {
-        // console.log("Return result !!! ",result);
+        console.log("Return result !!! ",result);
         storeMessage({ id: result + 1, roomId: roomNo, username: name, isSelf: true, msgNum: messageNum + 1, content: message.text, time: message.time })
           .then(async response => console.log('Inserting message worked!!'))
           .catch(async error => console.log("Error inserting: " + JSON.stringify(error)))
@@ -186,7 +188,7 @@ function outputMessage(message) {
  * it create message on the chat interface
  * @param message message reviced by socket to append
  */
-function outputHistory(message) {
+function outputMsgHistory(message) {
   for (let msg of message) {
     const li = document.createElement('li')
     li.classList.add('list-group-item')
@@ -201,6 +203,23 @@ function outputHistory(message) {
   hint.innerHTML = `<span class="text-muted">above is history message</span>`
   document.getElementById('message-list').appendChild(hint)
 
+}
+
+/**
+ * it outputs the history of draws in specific room
+ * @param test
+ */
+function outputDrawsHistory(test){
+  console.log("draw history!!!");
+}
+
+/**
+ * it shows the history includes messages and canvas
+ * @param message message reviced by socket to append
+ */
+function outputHistory(message){
+  outputMsgHistory(message);
+  outputDrawsHistory();
 }
 
 
