@@ -49,10 +49,24 @@ const orderByAuthor = document.querySelector('#order-by-author')
 
 orderByDate.addEventListener('click', (e) => {
   e.preventDefault()
-  window.location.href = "/order_by_date"
+  var des = orderByDate.dataset.doc
+  console.log("des", des)
+  if (des == 1) {
+    window.location.href = "/order_by_date_des"
+  } else {
+    window.location.href = "/order_by_date"
+  }
 })
 
 orderByAuthor.addEventListener('click', (e) => {
   e.preventDefault()
-  window.location.href = "/order_by_author"
+
+  var des = orderByAuthor.dataset.doc
+  console.log("des", des)
+  if (des == 1) {
+    window.location.href = "/order_by_author_des"
+  } else {
+    window.location.href = "/order_by_author"
+  }
+
 })

@@ -32,7 +32,7 @@ const projectionPipeline = {
 };
 
 const getStoryList = (req, res) => {
-  const allowedOrder = ['data', '-date', 'author', '-author'];
+  const allowedOrder = ['date', '-date', 'author', '-author'];
   const { order = '-date' } = req.query;
   if (!!order && !allowedOrder.some(item => item === order)) {
     requestUtils.buildErrorResponse(res, {
