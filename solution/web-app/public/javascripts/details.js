@@ -75,7 +75,7 @@ connect.addEventListener('click', async (e) => {
 
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
-  initCanvas(chat, imageUrl, color);
+  initCanvas(chat, imageUrl, color, roomNo);
   hideLoginInterface(roomNo, name);
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
 

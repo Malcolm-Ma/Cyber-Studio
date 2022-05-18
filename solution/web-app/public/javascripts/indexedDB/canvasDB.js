@@ -20,10 +20,10 @@ window.CANVAS_STORE_NAME = CANVAS_STORE_NAME;
 
 // the database receives from the server the following structure
 const canvasData = [
-    { roomId: 1, username:'Tong', isSelf: true, drawNum: 1, drawObject: "o"},//, time, accountId},
-    { roomId: 1, username:'Mary',isSelf: false, drawNum: 2, drawObject: "o"},
-    { roomId: 1, username:'Tong',isSelf: true, drawNum: 3, drawObject: "o"},
-    { roomId: 2, username:'Mary',isSelf: true, drawNum: 1, drawObject: "o"}
+    { roomId: 1, username:'Tong', drawNum: 1, drawObject: "o"},
+    { roomId: 1, username:'Mary', drawNum: 2, drawObject: "o"},
+    { roomId: 1, username:'Tong', drawNum: 3, drawObject: "o"},
+    { roomId: 2, username:'Mary', drawNum: 1, drawObject: "o"}
 ];
 
 
@@ -56,7 +56,7 @@ window.initCanvasDB = initCanvasDB;
  * @param drawObject: it contains { roomId, username, isSelf, msgNum, content, time}
  */
 async function storeCanvas(drawObject) {
-    console.log('Inserting item into indexedDB: ' + JSON.stringify(drawObject));
+    console.log('Inserting draw into indexedDB: ' + JSON.stringify(drawObject));
     if (canvas_db) {
         try{
             let tx = await canvas_db.transaction(CANVAS_STORE_NAME, 'readwrite');
