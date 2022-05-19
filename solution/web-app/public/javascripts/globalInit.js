@@ -9,6 +9,7 @@ const globalInit = async (customInitMethod) => {
   await initCanvasDB();
   await initRoomToStoryDB();
   await initStoryDB();
+  await initKGraphDB();
 
   /**
    * set online and offline tag in nav

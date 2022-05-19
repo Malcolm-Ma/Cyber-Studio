@@ -28,7 +28,7 @@ const kGraphData = [
 
 
 /**
- * it inits the message database and creates an index for the roomId field
+ * it inits the knowledge graph database and creates an index for the roomId field
  */
 async function initKGraphDB(){
     if (!k_graph_db) {
@@ -38,14 +38,14 @@ async function initKGraphDB(){
                 // Check if there exists message database; if not, create a new database for chat
                 if (!upgradeDb.objectStoreNames.contains(GRAPH_STORE_NAME)) {
                     let graphDB = upgradeDb.createObjectStore(GRAPH_STORE_NAME, {
-                        keyPath: 'id'
-                        // autoIncrement: true
+                        // keyPath: 'id',
+                        autoIncrement: true
                     });
                     graphDB.createIndex('roomId', 'roomId', {unique: false, multiEntry: true});
                 }
             }
         });
-        console.log('Message database created');
+        console.log('Knowledge Graph database created');
     }
 }
 window.initKGraphDB= initKGraphDB;
@@ -54,14 +54,14 @@ window.initKGraphDB= initKGraphDB;
  * it saves the knowledge into the database
  * if the database is not supported, it will use localstorage
  * @param roomNo id of room
- * @param username username
+ * @param name username
  * @param color color of border
  * @param row object of KGraph
  */
-async function storeKGraph(roomNo, username, color, row) {
+async function storeKGraph(roomNo, row, name, color) {
     let addObject = {
-        roomNo: roomNo,
-        username: username,
+        roomId: roomNo,
+        username: name,
         kGraphNum: 1,
         color: color,
         row: JSON.stringify(row)
@@ -74,7 +74,7 @@ async function storeKGraph(roomNo, username, color, row) {
 
             await store.put(addObject);
             await  tx.complete;
-            console.log('Added knowledge graph to the store: ' + JSON.stringify(addObject));
+            console.log('Added knowledge graph to the store');
         } catch(error) {
             console.log('Error: Could not store the knowledge. Reason: '+error);
         }

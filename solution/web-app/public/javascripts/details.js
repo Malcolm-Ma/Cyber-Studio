@@ -246,7 +246,7 @@ function widgetInit() {
  * callback called when an element in the widget is selected
  * @param event the Google Graph widget event {@link https://developers.google.com/knowledge-graph/how-tos/search-widget}
  */
-function selectItem(event) {
+async function selectItem(event) {
   let row = event.row;
   // document.getElementById('resultImage').src= row.json.image.url;
 
@@ -255,9 +255,9 @@ function selectItem(event) {
   // let ob = JSON.parse(test)
   // console.log('row: ', typeof test)
   // console.log('test: ', ob.name, ob.id, ob.rc)
-  // console.log('name: ', typeof name)
+  // console.log('name: ', name)
   // console.log('color: ', typeof color)
-  await = storeKGraph(roomNo, row, name, color)
+  await storeKGraph(roomNo, row, name, color)
 
 }
 
