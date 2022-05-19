@@ -3,6 +3,11 @@
  * @author Mingze Ma
  */
 
+import globalInit from './globalInit.js';
+
+window.onload = () => globalInit()
+
+
 /**
  * service worker registration
  */
@@ -22,28 +27,6 @@ if ('serviceWorker' in navigator) {
 }
 
 
-/**
- * set online and offline tag in nav
- */
-window.addEventListener('online', () => {
-  setNetworkStatusTag(true);
-});
-window.addEventListener('offline', () => {
-  setNetworkStatusTag(false);
-});
-
-/**
- * set Network Status Tag in nav
- * @param status {boolean} true: online; false: offline;
- */
-const setNetworkStatusTag = (status) => {
-  const onlineTag = document.getElementById('online');
-  onlineTag.className = `badge text-bg-${status ? 'success' : 'danger'} me-4`;
-  onlineTag.innerText = status ? 'Online' : 'Offline';
-};
-
-
-
 const orderByDate = document.querySelector('#order-by-date')
 const orderByAuthor = document.querySelector('#order-by-author')
 
@@ -54,7 +37,7 @@ orderByDate.addEventListener('click', (e) => {
   e.preventDefault()
   var des = orderByDate.dataset.doc
   console.log("des", des)
-  if (des == 1) {
+  if (des === 1) {
     window.location.href = "/order_by_date_des"
   } else {
     window.location.href = "/order_by_date"
@@ -68,7 +51,7 @@ orderByAuthor.addEventListener('click', (e) => {
   e.preventDefault()
   var des = orderByAuthor.dataset.doc
   console.log("des", des)
-  if (des == 1) {
+  if (des === 1) {
     window.location.href = "/order_by_author_des"
   } else {
     window.location.href = "/order_by_author"

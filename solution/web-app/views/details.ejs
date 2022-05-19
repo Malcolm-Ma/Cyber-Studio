@@ -54,7 +54,7 @@
               <div class="card-footer d-flex justify-content-between">
                 <a href="/" class="btn btn-warning">Cancel</a>
                 <a id="connect" class="btn btn-success " data-doc="<%= story.photo %>"
-                  data-sid="<%= story.id %>">Connect</a>
+                  data-sid="<%= story_id %>">Connect</a>
               </div>
             </form>
           </div>
@@ -137,9 +137,10 @@
         </div>
       </div>
       <%- include('./partials/footer.ejs') %>
-        <script src="/javascripts/details.js"></script>
+        <script src="/javascripts/details.js" type="module"></script>
         <script src="/javascripts/canvas.js"></script>
         <script src="/javascripts/indexedDB/messageDB.js" type="module"></script>
+        <script src="/javascripts/indexedDB/canvasDB.js" type="module"></script>
         <script src="/javascripts/indexedDB/storyDB.js" type="module"></script>
         <script src="/javascripts/indexedDB/room_to_story.js" type="module"></script>
   </body>

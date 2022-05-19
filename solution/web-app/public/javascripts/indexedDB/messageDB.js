@@ -8,7 +8,7 @@ import * as idb from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
 
 
 ////////////////// DATABASE //////////////////
-let db;
+let msg_db;
 
 // Define the names of databases and object stores
 const MSG_DB_NAME= 'db_msg';
@@ -37,8 +37,8 @@ const roomToStoryData = [
  * it inits the message database and creates an index for the roomId field
  */
 async function initMessageDB(){
-    if (!db) {
-        db = await idb.openDB(MSG_DB_NAME, 2, {
+    if (!msg_db) {
+        msg_db = await idb.openDB(MSG_DB_NAME, 2, {
             upgrade(upgradeDb, oldVersion, newVersion) {
 
                 // Check if there exists message database; if not, create a new database for chat
@@ -63,11 +63,9 @@ window.initMessageDB= initMessageDB;
  */
 async function storeMessage(msgObject) {
     console.log('Inserting item into indexedDB: ' + JSON.stringify(msgObject));
-    if (!db)
-        await initMessageDB();
-    if (db) {
+    if (msg_db) {
         try{
-            let tx = await db.transaction(MSG_STORE_NAME, 'readwrite');
+            let tx = await msg_db.transaction(MSG_STORE_NAME, 'readwrite');
             let store = await tx.objectStore(MSG_STORE_NAME);
             await store.put(msgObject);
             await  tx.complete;
@@ -85,22 +83,24 @@ window.storeMessage= storeMessage;
  * @returns number of messages
  */
 async function generateID(){
-    if (!db)
-        await initMessageDB();
-    if (db) {
-        let tx = await db.transaction(MSG_STORE_NAME, 'readonly');
-        let store = await tx.objectStore(MSG_STORE_NAME);
-        let messages = await store.getAll(); // read all history messages in this room
+    let tx = await msg_db.transaction(MSG_STORE_NAME, 'readonly');
+    let store = await tx.objectStore(MSG_STORE_NAME);
+    let messages = await store.getAll(); // read all history messages in this room
 
-        // get the last id in history in database
-        let count = 0;
+    // get the last id in history in database
+    let count = 0;
+    console.log('msg length', messages.length);
+    if(messages.length === 0){
+        return 0;
+    } else {
         for( let msg of messages){
             count++;
+            console.log('Count: ',count);
             if(count === messages.length){
+                console.log('Detect id:', msg.id);
                 return msg.id;
             }
         }
-
     }
 }
 window.generateID = generateID;
@@ -113,10 +113,8 @@ window.generateID = generateID;
  */
 async function getMessageList(roomNum) {
     let searchResult = []; // return the message list of roomNum
-    if (!db)
-        await initMessageDB();
-    if (db) {
-        let tx = await db.transaction(MSG_STORE_NAME, 'readonly');
+    if (msg_db) {
+        let tx = await msg_db.transaction(MSG_STORE_NAME, 'readonly');
         let store = await tx.objectStore(MSG_STORE_NAME);
         let index = await store.index('roomId');
         let readingsList = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
@@ -155,18 +153,12 @@ window.getMessageList= getMessageList;
  * @returns number of messages
  */
 async function getMsgNum(roomNum) {
-    if (!db)
-        await initMessageDB();
-    if (db) {
-        let tx = await db.transaction(MSG_STORE_NAME, 'readonly');
-        let store = await tx.objectStore(MSG_STORE_NAME);
-        let index = await store.index('roomId');
+    let tx = await msg_db.transaction(MSG_STORE_NAME, 'readonly');
+    let store = await tx.objectStore(MSG_STORE_NAME);
+    let index = await store.index('roomId');
 
-
-         // count the history messages in this room
-        return await index.count(IDBKeyRange.only(roomNum));
-
-    }
+    // count the history messages in this room
+    return await index.count(IDBKeyRange.only(roomNum));
 }
 window.getMsgNum= getMsgNum;
 
@@ -176,20 +168,17 @@ window.getMsgNum= getMsgNum;
  * @param roomNum: id of room
  */
 async function clearHistory(roomNum) {
-    if (!db)
-        await initMessageDB();
-    if (db) {
-        let tx = await db.transaction(MSG_STORE_NAME, 'readwrite');
-        let store = await tx.objectStore(MSG_STORE_NAME);
-        let index = await store.index('roomId');
-        let history = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
+    console.log('msg_db', msg_db);
+    let tx = await msg_db.transaction(MSG_STORE_NAME, 'readwrite');
+    let store = await tx.objectStore(MSG_STORE_NAME);
+    let index = await store.index('roomId');
+    let history = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
 
-        // delete the messages according to id
-        if (history && history.length > 0) {
-            for(let msg of history){
-                console.log('deleting !!! msg:', msg);
-                await store.delete(msg.id);
-            }
+    // delete the messages according to id
+    if (history && history.length > 0) {
+        for(let msg of history){
+            console.log('deleting !!! msg:', msg);
+            await store.delete(msg.id);
         }
     }
 }

@@ -1,12 +1,28 @@
 {
   "openapi": "3.0.2",
   "info": {
-    "title": "API Title",
-    "version": "1.0.0"
+    "title": "Cyber Studio",
+    "version": "1.0.0",
+    "description": "User management API",
+    "termsOfService": "http://api_url/terms/",
+    "contact": {
+      "name": "Team",
+      "email": "tchen64@sheffield.ac.uk",
+      "url": "http://shef.ac.uk"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "https://www.apache.org/licenses/LICENSE-2.0.html"
+    }
   },
   "servers": [
     {
-      "url": "https://api.server.test/v1"
+      "url": "http://localhost:3000/",
+      "description": "the only Local server"
+    },
+    {
+      "url": "http://localhost:3000/",
+      "description": "the only Local server"
     }
   ],
   "paths": {

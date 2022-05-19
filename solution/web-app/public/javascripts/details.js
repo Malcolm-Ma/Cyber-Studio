@@ -1,3 +1,5 @@
+import globalInit from './globalInit.js';
+
 // Google Knowledge Graph
 const service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
 const apiKey = 'AIzaSyAG7w627q-djB4gTTahssufwNOImRqdYKM';
@@ -16,13 +18,18 @@ const messagelist = document.getElementById('message-list')
 const messageContainer = document.querySelector("#message-container")
 const canvas = document.querySelector("#canvas")
 
-function init() {
+async function init() {
   initForm.style.display = 'block'
   chatInterface.style.display = 'none'
   storyInfo.style.display = 'block'
   canvasForm.style.display = 'none'
+
+  // get available old rooms for reuse
+  let storyId = connect.dataset.sid
+  let old_room_list = await getRoomList(storyId);
+  console.log(old_room_list);
 }
-window.onload = init
+window.onload = () => globalInit(init)
 
 /**
  * called to generate a random room number
@@ -75,26 +82,29 @@ connect.addEventListener('click', async (e) => {
 
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
-  initCanvas(chat, imageUrl, color);
+  // initCanvas(chat, imageUrl, color, roomNo, name);
   hideLoginInterface(roomNo, name);
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
 
-  await initMessageDB();
-  await initRoomToStoryDB();
+  // check if the room can be reuse -> show history / clear history
   await checkRoomAvailable(true, roomNo, storyId)
     .then(async result => {
       // user enter the room with history
-      console.log('Result ', result);
       if (result) {
-        console.log('Access room ', roomNo, ' successfully.');
-        await getMessageList(roomNo)
-          .then(list => {
-            console.log(JSON.stringify(list));
-            outputHistory(list);
-          })
+        console.log('Welcome back to room ', roomNo);
+        // await getMessageList(roomNo)
+        //   .then(list => {
+        //     console.log(JSON.stringify(list));
+        //     outputHistory(list);
+        //   })
+        let msgList = await getMessageList(roomNo);
+        let canvasList = await getCanvasList(roomNo);
+        outputMsgHistory(msgList);
+        initCanvas(chat, imageUrl, color, roomNo, name, canvasList);
       }
       // user enter a new/empty room
       else {
+        initCanvas(chat, imageUrl, color, roomNo, name, null);
         console.log('Access room ', roomNo, ' successfully.');
 
       }
@@ -119,6 +129,7 @@ function hideLoginInterface(room, userId) {
 const sentMsg = document.getElementById('send_msg')
 const comment = document.getElementById('comment')
 chat.on('message', message => {
+  console.log("Receive a chat!")
   outputMessage(message)
   messageContainer.scrollTop = messageContainer.scrollHeight
 })
@@ -153,7 +164,7 @@ function outputMessage(message) {
   li.classList.add('list-group-item')
   li.classList.add('border-0')
 
-  if (name == message.name) {
+  if (name === message.name) {
     li.classList.add('text-end')
     li.innerHTML = `
     <span class="fs-5 ">${message.text}</span>
@@ -172,7 +183,7 @@ function outputMessage(message) {
   if (message.name !== "Chat-Bot") {
     getMsgNum(roomNo).then(async messageNum => {
       generateID().then(async result => {
-        // console.log("Return result !!! ",result);
+        console.log("Return result !!! ",result);
         storeMessage({ id: result + 1, roomId: roomNo, username: name, isSelf: true, msgNum: messageNum + 1, content: message.text, time: message.time })
           .then(async response => console.log('Inserting message worked!!'))
           .catch(async error => console.log("Error inserting: " + JSON.stringify(error)))
@@ -186,7 +197,7 @@ function outputMessage(message) {
  * it create message on the chat interface
  * @param message message reviced by socket to append
  */
-function outputHistory(message) {
+function outputMsgHistory(message) {
   for (let msg of message) {
     const li = document.createElement('li')
     li.classList.add('list-group-item')

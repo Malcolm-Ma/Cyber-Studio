@@ -115,7 +115,13 @@ const story_create_post = (req, res) => {
       author: story_info.author,
       photo: imageURL
     }).then(response => {
-      res.status(201).json({ story: response.data.data.story_id })
+      res.status(201).json({
+        story_id: response.data.data.story_id,
+        title: story_info.title,
+        content: story_info.content,
+        author: story_info.author,
+        photo: imageURL
+      })
     }).catch(err => {
       res.status(400).json({ err: response.data.message })
     })
@@ -152,7 +158,7 @@ const story_details = (req, res) => {
     var story = []
     if (response.data.status === 0) {
       story = response.data
-      res.render('details', { story: story.data, title: "Story Details" })
+      res.render('details', { story: story.data, story_id: storyId, title: "Story Details" })
     } else {
       console.log(response.data.message)
     }
