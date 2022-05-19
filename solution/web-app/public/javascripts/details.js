@@ -97,7 +97,8 @@ connect.addEventListener('click', async (e) => {
         //   })
         let msgList = await getMessageList(roomNo);
         let canvasList = await getCanvasList(roomNo);
-        outputMsgHistory(msgList);
+        let knowledgeList = await getKGraphList(roomNo);
+        outputHistory(msgList, knowledgeList);
         initCanvas(chat, imageUrl, color, roomNo, name, canvasList);
       }
       // user enter a new/empty room
@@ -212,6 +213,17 @@ function outputMsgHistory(message) {
 
 }
 
+function outputKGraphHistory(kList){
+  kList.forEach( k => {
+    outputKGraph(JSON.parse(k.row), k.username, k.color)
+  })
+}
+
+function outputHistory(messageHistory, knowledgeHistory){
+  outputMsgHistory(messageHistory);
+  outputKGraphHistory(knowledgeHistory);
+}
+
 
 /**
  * it inits the widget by selecting the type from the field myType
@@ -251,12 +263,7 @@ async function selectItem(event) {
   // document.getElementById('resultImage').src= row.json.image.url;
 
   chat.emit('emitKGraph', roomNo, row, name, color)
-  // let test = JSON.stringify(row)
-  // let ob = JSON.parse(test)
-  // console.log('row: ', typeof test)
-  // console.log('test: ', ob.name, ob.id, ob.rc)
-  // console.log('name: ', name)
-  // console.log('color: ', typeof color)
+  // save knowledge in indexedDB
   await storeKGraph(roomNo, row, name, color)
 
 }

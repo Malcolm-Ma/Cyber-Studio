@@ -73,7 +73,7 @@ async function storeKGraph(roomNo, row, name, color) {
             let store = await tx.objectStore(GRAPH_STORE_NAME);
 
             await store.put(addObject);
-            await  tx.complete;
+            await tx.complete;
             console.log('Added knowledge graph to the store');
         } catch(error) {
             console.log('Error: Could not store the knowledge. Reason: '+error);
@@ -83,28 +83,89 @@ async function storeKGraph(roomNo, row, name, color) {
 }
 window.storeKGraph= storeKGraph;
 
+/**
+ * it retrieves all the knowledge that have searched in the roomNum
+ * if the database is not supported, it will use localstorage
+ * @param roomNum: id of room
+ * @returns a list of knowledge items
+ */
+async function getKGraphList(roomNum) {
+    let searchResult = []; // return the knowledge list of roomNum
+    if (k_graph_db) {
+        let tx = await k_graph_db.transaction(GRAPH_STORE_NAME, 'readonly');
+        let store = await tx.objectStore(GRAPH_STORE_NAME);
+        let index = await store.index('roomId');
+        let knowledges = await index.getAll(IDBKeyRange.only(roomNum)); // read all history knowledge in this room
+        await tx.complete;
+
+        if (knowledges && knowledges.length > 0) {
+            for (let elem of knowledges){
+                searchResult.push(elem); // save knowledge in list
+            }
+        } else {
+            // if the database is not supported, use localstorage
+            const value = localStorage.getItem(roomNum);
+            if (value == null)
+                console.log('There are no history in this room.'); // there are nothing in localstorage
+            else {
+                searchResult.push(value);
+            }
+        }
+    } else {
+        const value = localStorage.getItem(roomNum);
+        if (value == null)
+            console.log('There are no history in this room.'); // there are nothing in localstorage
+        else {
+            searchResult.push(value);
+        }
+    }
+    return searchResult;
+}
+window.getKGraphList= getKGraphList;
+
+
 // /**
-//  * it saves the message into the database
+//  * it retrieves all the messages that have sent in the roomNum
 //  * if the database is not supported, it will use localstorage
-//  * @param msgObject: it contains { roomId, username, isSelf, msgNum, content, time}
+//  * @param roomNum: a number
+//  * @returns a list of message items
 //  */
-// async function storeMessage(msgObject) {
-//     console.log('Inserting item into indexedDB: ' + JSON.stringify(msgObject));
+// async function getMessageList(roomNum) {
+//     let searchResult = []; // return the message list of roomNum
 //     if (msg_db) {
-//         try{
-//             let tx = await msg_db.transaction(MSG_STORE_NAME, 'readwrite');
-//             let store = await tx.objectStore(MSG_STORE_NAME);
-//             await store.put(msgObject);
-//             await  tx.complete;
-//             console.log('Added message to the store: ' + JSON.stringify(msgObject));
-//         } catch(error) {
-//             console.log('Error: Could not store the message. Reason: '+error);
+//         let tx = await msg_db.transaction(MSG_STORE_NAME, 'readonly');
+//         let store = await tx.objectStore(MSG_STORE_NAME);
+//         let index = await store.index('roomId');
+//         let readingsList = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
+//         console.log('Fetching message list: ' + JSON.stringify(readingsList));
+//         await tx.complete;
+//
+//         if (readingsList && readingsList.length > 0) {
+//             for (let elem of readingsList){
+//                 searchResult.push(elem); // save message in list
+//             }
+//         } else {
+//             // if the database is not supported, use localstorage
+//             const value = localStorage.getItem(roomNum);
+//             if (value == null)
+//                 console.log('There are no history in this room.'); // there are nothing in localstorage
+//             else {
+//                 searchResult.push(value);
+//             }
+//         }
+//     } else {
+//         const value = localStorage.getItem(roomNum);
+//         if (value == null)
+//             console.log('There are no history in this room.'); // there are nothing in localstorage
+//         else {
+//             searchResult.push(value);
 //         }
 //     }
-//     else localStorage.setItem(msgObject.content, JSON.stringify(msgObject));
-// }
-// window.storeMessage= storeMessage;
 //
+//     return searchResult;
+// }
+// window.getMessageList= getMessageList;
+
 // /**
 //  * it counts all history messages in message database
 //  * @returns number of messages
