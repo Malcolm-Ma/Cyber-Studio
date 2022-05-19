@@ -12,15 +12,20 @@ const content = document.getElementById('content')
 const submit_btn = document.getElementById('submit')
 const story_form = document.getElementById('story_form')
 
-function offlineCreateStory() {
-  storeStory({ title: title, author: author, photo: photo_path, content: content })
-    .then(res =>
-      console.log('Successfully story a new story in database.')
-    )
-    .catch(err =>
-      console.log('Fail to store this new story')
-    )
+// function offlineCreateStory() {
+//   storeStory({ title: title, author: author, photo: photo_path, content: content })
+//     .then(res =>
+//       console.log('Successfully story a new story in database.')
+//     )
+//     .catch(err =>
+//       console.log('Fail to store this new story')
+//     )
+// }
+
+async function init() {
+  await initStoryDB();
 }
+window.onload = init
 
 /**
  * it can convert image file to base64 data
@@ -95,7 +100,16 @@ submit_btn.addEventListener('click', async (event) => {
       location.reload()
     }
 
-    if (data.story) {
+    if (data.story_id) {
+      console.log('data_story: ', data);
+      await storeStoryToDB({
+        story_id: data.story_id,
+        title: data.title,
+        content: data.content,
+        author: data.author,
+        photo: data.photo,
+        ifUpdate: true
+      });
       location.assign('/')
     }
 

@@ -34,9 +34,11 @@ async function initStoryDB(){
                 // Check if there exists story database; if not, create a new database for story
                 if (!upgradeDb.objectStoreNames.contains(STORY_STORE_NAME)) {
                     let storyDB = upgradeDb.createObjectStore(STORY_STORE_NAME, {
-                        keyPath: 'storyId', // story id is unique for each story
-                        autoIncrement: true
+                        keyPath: 'story_id', // story id is unique for each story
                     });
+                    storyDB.createIndex('ifUpdate', 'ifUpdate', {unique: false, multiEntry: true});
+                    storyDB.createIndex('author', 'author', {unique: false, multiEntry: true});
+                    // storyDB.createIndex('date', 'date', {unique: false, multiEntry: true});
                 }
             }
         });
@@ -58,9 +60,9 @@ async function storeStoryToDB(storyObject) {
             let store = await tx.objectStore(STORY_STORE_NAME);
             await store.put(storyObject);
             await  tx.complete;
-            console.log('added item to the store! '+ JSON.stringify(storyObject));
+            console.log('added story to the store! '+ JSON.stringify(storyObject));
         } catch(error) {
-            console.log('error: I could not store the element. Reason: '+error);
+            console.log('error: I could not store the story. Reason: '+error);
         }
     }
     else localStorage.setItem(storyObject.content, JSON.stringify(storyObject));
