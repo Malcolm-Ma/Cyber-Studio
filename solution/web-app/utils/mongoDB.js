@@ -6,7 +6,7 @@
 const mongoose = require('mongoose');
 
 const generateObjectId = () => {
-  return mongoose.Types.ObjectId;
+  return mongoose.Types.ObjectId().toString();
 }
 
 module.exports = {
