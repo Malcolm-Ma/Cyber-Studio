@@ -21,15 +21,17 @@ if ('serviceWorker' in navigator) {
   console.warn('[Service Worker] No service worker supported');
 }
 
-
+window.addEventListener('load', () => {
+  setNetworkStatusTag(navigator.onLine);
+});
 /**
  * set online and offline tag in nav
  */
 window.addEventListener('online', () => {
-  setNetworkStatusTag(true);
+  setNetworkStatusTag(navigator.onLine);
 });
 window.addEventListener('offline', () => {
-  setNetworkStatusTag(false);
+  setNetworkStatusTag(navigator.onLine);
 });
 
 /**
