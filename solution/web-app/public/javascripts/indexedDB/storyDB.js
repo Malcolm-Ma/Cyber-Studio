@@ -8,7 +8,7 @@ import * as idb from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
 
 
 ////////////////// DATABASE //////////////////
-let db;
+let story_db;
 
 // Define the names of databases and object stores
 const STORY_DB_NAME= 'db_story';
@@ -27,8 +27,8 @@ const storyData = [
  * it inits the story database and set key path
  */
 async function initStoryDB(){
-    if (!db) {
-        db = await idb.openDB(STORY_DB_NAME, 2, {
+    if (!story_db) {
+        story_db = await idb.openDB(STORY_DB_NAME, 2, {
             upgrade(upgradeDb, oldVersion, newVersion) {
 
                 // Check if there exists story database; if not, create a new database for story
@@ -52,9 +52,9 @@ window.initStoryDB= initStoryDB;
  */
 async function storeStoryToDB(storyObject) {
     console.log('inserting: '+JSON.stringify(storyObject));
-    if (db) {
+    if (story_db) {
         try{
-            let tx = await db.transaction(STORY_STORE_NAME, 'readwrite');
+            let tx = await story_db.transaction(STORY_STORE_NAME, 'readwrite');
             let store = await tx.objectStore(STORY_STORE_NAME);
             await store.put(storyObject);
             await  tx.complete;
@@ -67,45 +67,45 @@ async function storeStoryToDB(storyObject) {
 }
 window.storeStoryToDB= storeStoryToDB;
 
-/**
- * it retrieves all the information of story
- * if the database is not supported, it will use localstorage
- * @param storyNum: id of story
- * @returns data item of story
- */
-async function getStory(storyNum) {
-    let searchResult = []; // return all information about story
-    if (db) {
-        console.log('fetching: ' + storyNum);
-        let tx = await db.transaction(STORY_STORE_NAME, 'readonly');
-        let store = await tx.objectStore(STORY_STORE_NAME);
-        let index = await store.index('storyId');
-        let storyInfo = await index.getAll(IDBKeyRange.only(storyNum)); // search story
-        console.log('Story: ' + JSON.stringify(storyInfo));
-        await tx.complete;
-
-        if (storyInfo && storyInfo.length > 0) {
-            for (let elem of storyInfo){
-                searchResult.push(elem); // save message in list
-            }
-        } else {
-            // if the database is not supported, use localstorage
-            const value = localStorage.getItem(storyNum);
-            if (value == null)
-                console.log('This story is not exits.'); // there are nothing in localstorage
-            else {
-                searchResult.push(value);
-            }
-        }
-    } else {
-        const value = localStorage.getItem(storyNum);
-        if (value == null)
-            console.log('This story is not exits.'); // there are nothing in localstorage
-        else {
-            searchResult.push(value);
-        }
-    }
-
-    return searchResult;
-}
-window.getStory= getStory;
+// /**
+//  * it retrieves all the information of story
+//  * if the database is not supported, it will use localstorage
+//  * @param storyNum: id of story
+//  * @returns data item of story
+//  */
+// async function getStory(storyNum) {
+//     let searchResult = []; // return all information about story
+//     if (story_db) {
+//         console.log('fetching: ' + storyNum);
+//         let tx = await story_db.transaction(STORY_STORE_NAME, 'readonly');
+//         let store = await tx.objectStore(STORY_STORE_NAME);
+//         let index = await store.index('storyId');
+//         let storyInfo = await index.getAll(IDBKeyRange.only(storyNum)); // search story
+//         console.log('Story: ' + JSON.stringify(storyInfo));
+//         await tx.complete;
+//
+//         if (storyInfo && storyInfo.length > 0) {
+//             for (let elem of storyInfo){
+//                 searchResult.push(elem); // save message in list
+//             }
+//         } else {
+//             // if the database is not supported, use localstorage
+//             const value = localStorage.getItem(storyNum);
+//             if (value == null)
+//                 console.log('This story is not exits.'); // there are nothing in localstorage
+//             else {
+//                 searchResult.push(value);
+//             }
+//         }
+//     } else {
+//         const value = localStorage.getItem(storyNum);
+//         if (value == null)
+//             console.log('This story is not exits.'); // there are nothing in localstorage
+//         else {
+//             searchResult.push(value);
+//         }
+//     }
+//
+//     return searchResult;
+// }
+// window.getStory= getStory;
