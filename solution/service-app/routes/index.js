@@ -20,4 +20,6 @@ router.get('/get_story_detail', storyController.getStoryDetail);
 
 router.post('/upload_image', assetController.uploadImage);
 
+router.post('/create_story_in_bulk', storyController.createStoryInBulk);
+
 module.exports = router;

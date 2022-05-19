@@ -106,6 +106,55 @@ const createStory = async (req, res) => {
     });
 };
 
+const createStoryInBulk = async (req, res) => {
+  const { story_list } = req.body;
+  // check data format
+  if (!story_list) {
+    requestUtils.buildErrorResponse(res, {
+      status: 400,
+      error: new Error('No data sent!'),
+      message: 'No data sent!',
+    });
+    return;
+  }
+
+  if (!Array.isArray(story_list)) {
+    requestUtils.buildErrorResponse(res, {
+      status: 400,
+      error: new Error('Invalid story_list format'),
+      message: 'Invalid story_list format!',
+    });
+    return;
+  }
+
+  const requiredKeys = ['title', 'author', 'content', 'story_id', 'date', 'photo']
+
+  // insert new story
+  const currentAsset = await assetController.findAssetByPath(params.photo);
+  const newStory = new Story({
+    title: params.title,
+    author: params.author,
+    content: params.content,
+    date: new Date(),
+    photo_id: currentAsset._id,
+  });
+  // save new story to db
+  newStory.save()
+    .then((result) => {
+      requestUtils.buildSuccessResponse(res, {
+        data: {
+          story_id: result._id,
+        }
+      })
+    })
+    .catch((err) => {
+      requestUtils.buildErrorResponse(res, {
+        message: 'Could not insert - probably incorrect data! ',
+        error: err,
+      });
+    });
+};
+
 const getStoryDetail = (req, res) => {
   const params = req.query;
   console.log('--params--\n', params);
@@ -151,4 +200,5 @@ module.exports = {
   getStoryList,
   createStory,
   getStoryDetail,
+  createStoryInBulk,
 };
