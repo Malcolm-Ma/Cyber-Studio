@@ -3,7 +3,7 @@
  * @author Mingze Ma
  */
 
-const globalInit = require('./globalInit');
+import globalInit from './globalInit.js';
 
 window.onload = () => globalInit()
 

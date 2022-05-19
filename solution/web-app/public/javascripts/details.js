@@ -1,4 +1,4 @@
-const globalInit = require('./globalInit');
+import globalInit from './globalInit.js';
 
 // Google Knowledge Graph
 const service_url = 'https://kgsearch.googleapis.com/v1/entities:search';

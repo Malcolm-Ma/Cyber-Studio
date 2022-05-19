@@ -37,4 +37,4 @@ const setNetworkStatusTag = (status) => {
   onlineTag.innerText = status ? 'Online' : 'Offline';
 };
 
-module.exports = globalInit;
+export default globalInit;
