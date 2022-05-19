@@ -22,11 +22,6 @@ async function init() {
   storyInfo.style.display = 'block'
   canvasForm.style.display = 'none'
 
-  // initial all stores of indexedDB
-  await initMessageDB();
-  await initCanvasDB();
-  await initRoomToStoryDB();
-
   // get available old rooms for reuse
   let storyId = connect.dataset.sid
   let ll = await getRoomList(storyId);

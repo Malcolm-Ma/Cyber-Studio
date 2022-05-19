@@ -11,16 +11,16 @@ import * as idb from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
 let db;
 
 // Define the names of databases and object stores
+const STORY_DB_NAME= 'db_story';
 const STORY_STORE_NAME= 'store_story';
-const ROOM_TO_STORY_NAME= 'store_room_to_story';
 
 // Export to the window namespace
+window.STORY_DB_NAME = STORY_DB_NAME;
 window.STORY_STORE_NAME = STORY_STORE_NAME;
-window.ROOM_TO_STORY_NAME = ROOM_TO_STORY_NAME;
 
 // the database receives from the server the following structure
 const storyData = [
-    { title: "IceSnow", author: "Tong", content: "It is a happy ending.", photoId: "ascv123jsfgiu"},//, timestamp}
+    { title: "IceSnow", content: "It is a happy ending.", author: "Tong", photoId: "ascv123jsfgiu", ifUpdate: true},//, timestamp}
 ];
 
 /**
@@ -28,7 +28,7 @@ const storyData = [
  */
 async function initStoryDB(){
     if (!db) {
-        db = await idb.openDB(MSG_DB_NAME, 2, {
+        db = await idb.openDB(STORY_DB_NAME, 2, {
             upgrade(upgradeDb, oldVersion, newVersion) {
 
                 // Check if there exists story database; if not, create a new database for story
@@ -50,10 +50,8 @@ window.initStoryDB= initStoryDB;
  * if the database is not supported, it will use localstorage
  * @param storyObject
  */
-async function storeStory(storyObject) {
+async function storeStoryToDB(storyObject) {
     console.log('inserting: '+JSON.stringify(storyObject));
-    if (!db)
-        await initStoryDB();
     if (db) {
         try{
             let tx = await db.transaction(STORY_STORE_NAME, 'readwrite');
@@ -67,7 +65,7 @@ async function storeStory(storyObject) {
     }
     else localStorage.setItem(storyObject.content, JSON.stringify(storyObject));
 }
-window.storeStory= storeStory;
+window.storeStoryToDB= storeStoryToDB;
 
 /**
  * it retrieves all the information of story
@@ -77,8 +75,6 @@ window.storeStory= storeStory;
  */
 async function getStory(storyNum) {
     let searchResult = []; // return all information about story
-    if (!db)
-        await initStoryDB();
     if (db) {
         console.log('fetching: ' + storyNum);
         let tx = await db.transaction(STORY_STORE_NAME, 'readonly');
