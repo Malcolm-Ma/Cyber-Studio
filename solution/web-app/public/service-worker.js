@@ -57,17 +57,16 @@ self.addEventListener('fetch', function (event) {
       return cache.match(event.request).then(function (response) {
         return fetch(event.request)
           .then(function (response) {
-            cache.put(event.request, response.clone()).catch((err) => {
-              console.error(err);
-            });
+            cache.put(event.request, response.clone()).catch((err) => console.error(err));
+            // fetch response
             return response;
-          }).catch((err) => {
-            console.error(err);
-            return response;
-            // if (response) {
-            //   return response;
-            // }
-            // return cache.match('/offline/not_found');
+          }).catch(() => {
+            // cache response
+            if (response) {
+              return response;
+            }
+            // if no match, return not found page
+            return cache.match('/offline/not_found');
           })
       });
     })
