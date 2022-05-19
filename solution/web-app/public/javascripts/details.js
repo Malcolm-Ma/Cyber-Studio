@@ -1,3 +1,5 @@
+const globalInit = require('./globalInit');
+
 // Google Knowledge Graph
 const service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
 const apiKey = 'AIzaSyAG7w627q-djB4gTTahssufwNOImRqdYKM';
@@ -22,18 +24,12 @@ async function init() {
   storyInfo.style.display = 'block'
   canvasForm.style.display = 'none'
 
-  // initial all stores of indexedDB
-  await initMessageDB();
-  await initCanvasDB();
-  await initRoomToStoryDB();
-  await initStoryDB();
-
   // get available old rooms for reuse
   let storyId = connect.dataset.sid
   let ll = await getRoomList(storyId);
   console.log(ll);
 }
-window.onload = init
+window.onload = () => globalInit(init)
 
 /**
  * called to generate a random room number
@@ -166,7 +162,7 @@ function outputMessage(message) {
   li.classList.add('list-group-item')
   li.classList.add('border-0')
 
-  if (name == message.name) {
+  if (name === message.name) {
     li.classList.add('text-end')
     li.innerHTML = `
     <span class="fs-5 ">${message.text}</span>

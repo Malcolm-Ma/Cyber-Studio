@@ -15,6 +15,7 @@ const filesToCache = [
   'javascripts/index.js',
   'javascripts/details.js',
   'javascripts/canvas.js',
+  'https://cdn.jsdelivr.net/npm/idb@7/+esm',
   'javascripts/indexedDB/messageDB.js',
   'javascripts/indexedDB/storyDB.js',
   'javascripts/indexedDB/room_to_story.js',
