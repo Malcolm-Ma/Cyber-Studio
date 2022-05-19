@@ -100,7 +100,8 @@ submit_btn.addEventListener('click', async (event) => {
       location.reload()
     }
 
-    if (data.story) {
+    if (data.story_id) {
+      console.log('data_story: ', data);
       location.assign('/')
     }
 
