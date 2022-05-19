@@ -20,10 +20,10 @@ window.GRAPH_STORE_NAME = GRAPH_STORE_NAME;
 
 // the database receives from the server the following structure
 const kGraphData = [
-    { roomId: 1, username:'Tong', kGraphNum: 1, content: "Hi, I'm Tong.", time:'11:00 am'},//, time, accountId},
-    { roomId: 1, username:'Mary', kGraphNum: 2, content: "Hi, I'm Mary.", time:'11:01 am'},
-    { roomId: 1, username:'Tong', kGraphNum: 3, content: "Nice to meet you.", time:'11:02 am'},
-    { roomId: 2, username:'Mary', kGraphNum: 1, content: "Hello.", time:'11:03 am'}
+    { roomId: 1, username:'Tong', kGraphNum: 1, color: "rgb(0,0,0)", row: "{...}"},//, time, accountId},
+    { roomId: 1, username:'Mary', kGraphNum: 2, color: "rgb(0,0,0)", row: "{...}"},
+    { roomId: 1, username:'Tong', kGraphNum: 3, color: "rgb(0,0,0)", row: "{...}"},
+    { roomId: 2, username:'Mary', kGraphNum: 1, color: "rgb(0,0,0)", row: "{...}"}
 ];
 
 
@@ -49,6 +49,39 @@ async function initKGraphDB(){
     }
 }
 window.initKGraphDB= initKGraphDB;
+
+/**
+ * it saves the knowledge into the database
+ * if the database is not supported, it will use localstorage
+ * @param roomNo id of room
+ * @param username username
+ * @param color color of border
+ * @param row object of KGraph
+ */
+async function storeKGraph(roomNo, username, color, row) {
+    let addObject = {
+        roomNo: roomNo,
+        username: username,
+        kGraphNum: 1,
+        color: color,
+        row: JSON.stringify(row)
+    }
+
+    if (k_graph_db) {
+        try{
+            let tx = await k_graph_db.transaction(GRAPH_STORE_NAME, 'readwrite');
+            let store = await tx.objectStore(GRAPH_STORE_NAME);
+
+            await store.put(addObject);
+            await  tx.complete;
+            console.log('Added knowledge graph to the store: ' + JSON.stringify(addObject));
+        } catch(error) {
+            console.log('Error: Could not store the knowledge. Reason: '+error);
+        }
+    }
+    else localStorage.setItem(addObject.content, JSON.stringify(addObject));
+}
+window.storeKGraph= storeKGraph;
 
 // /**
 //  * it saves the message into the database

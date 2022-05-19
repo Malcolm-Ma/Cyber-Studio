@@ -250,13 +250,15 @@ function selectItem(event) {
   let row = event.row;
   // document.getElementById('resultImage').src= row.json.image.url;
 
-  chat.emit('emitKGraph', roomNo,row, name, color)
-  let test = JSON.stringify(row)
-  let ob = JSON.parse(test)
-  console.log('row: ', typeof test)
-  console.log('test: ', ob.name, ob.id, ob.rc)
-  console.log('name: ', typeof name)
-  console.log('color: ', typeof color)
+  chat.emit('emitKGraph', roomNo, row, name, color)
+  // let test = JSON.stringify(row)
+  // let ob = JSON.parse(test)
+  // console.log('row: ', typeof test)
+  // console.log('test: ', ob.name, ob.id, ob.rc)
+  // console.log('name: ', typeof name)
+  // console.log('color: ', typeof color)
+  await = storeKGraph(roomNo, row, name, color)
+
 }
 
 function outputKGraph(row, name, color) {
