@@ -41,20 +41,12 @@ async function selectRoomHistory(storyId) {
   let old_room_list = await getRoomList(storyId);
   console.log("list size:", old_room_list.length)
   console.log("story_id:", old_room_list);
-  if (old_room_list.length !== 0) {
-    old_room_list.forEach(id => {
-      var option = document.createElement("option")
-      option.value = id
-      option.text = id
-      roomIdList.add(option)
-    });
-  } else {
+  old_room_list.forEach(id => {
     var option = document.createElement("option")
-    option.value = -1
-    option.text = "you don't have any history in this sotry, please click connect"
-  }
-
-
+    option.value = id
+    option.text = id
+    roomIdList.add(option)
+  });
 }
 
 /**
@@ -93,7 +85,7 @@ const connect = document.querySelector('#connect')
 connect.addEventListener('click', async (e) => {
   e.preventDefault()
   var selected_room_id = 0
-  if (roomIdList.value === -1) {
+  if (roomIdList.value == 1) {
     selected_room_id = roomNo
   } else {
     selected_room_id = roomIdList.value
