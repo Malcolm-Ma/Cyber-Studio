@@ -7,7 +7,7 @@
 
       <!-- It shows Story Information -->
       <div class="container mt-5" id="story_info">
-        <div class="row row-cols-2 row-cols-md-2 row-cols-sm-1">
+        <div class="row row-cols-1 row-cols-sm-2">
           <div class="col card">
             <img id="story_info_image" src="<%= story.photo%>" class="card-img-top" alt="...">
             <div class="card-body">
@@ -42,17 +42,24 @@
                 <p><label for="name"> Your name </label>
                   <input type="text" id="name" name="name">
                 </p>
+
                 <p>
                   <label for="roomNo"> Your room </label>
                   <input type="text" id="roomNo" name="roomNo">
-                  <a id="roomNoGenerator" class="btn btn-warning">Generate Room</a>
+                  <a id="roomNoGenerator" class="btn btn-primary">Generate Room</a>
                 </p>
                 <div id="warning" style="display: none;">
                   <p class="fw-bold text-warning">Room Id cannot be empty</p>
                 </div>
+                <p>
+                  <label for="roomHistory">Room History</label>
+                  <select class="form-select" aria-label="Default select example" id="roomIdList">
+                  </select>
+                </p>
               </div>
-              <div class="card-footer text-end">
-                <a id="connect" class="btn btn-success " data-doc="<%= story.photo %>"
+              <div class="card-footer d-flex justify-content-between">
+                <a href="/" class="btn btn-warning">Cancel</a>
+                <a class="btn btn-success " id="connect" data-doc="<%= story.photo %>"
                   data-sid="<%= story_id %>">Connect</a>
               </div>
             </form>
@@ -67,7 +74,6 @@
           <canvas id="canvas"></canvas>
         </div>
       </div>
-      <!-- It shows chat interface -->
       <div class="container" id="chat_interface">
         <div class="row row-cols-1 row-cols-sm-2">
           <!-- It shows story info without img -->
@@ -139,7 +145,7 @@
       <%- include('./partials/footer.ejs') %>
         <script src="/javascripts/details.js"></script>
         <script src="/javascripts/canvas.js"></script>
-      <%- include('./partials/scripts.ejs') %>
+        <%- include('./partials/scripts.ejs') %>
   </body>
 
 </html>
