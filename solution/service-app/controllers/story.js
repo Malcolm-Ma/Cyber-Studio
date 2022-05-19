@@ -106,9 +106,85 @@ const createStory = async (req, res) => {
     });
 };
 
+const createStoryInBulk = async (req, res) => {
+  const { story_list } = req.body;
+  // check data format
+  if (!story_list) {
+    requestUtils.buildErrorResponse(res, {
+      status: 400,
+      error: new Error('No data sent!'),
+      message: 'No data sent!',
+    });
+    return;
+  }
+
+  if (!Array.isArray(story_list)) {
+    requestUtils.buildErrorResponse(res, {
+      status: 400,
+      error: new Error('Invalid story_list format'),
+      message: 'Invalid story_list format!',
+    });
+    return;
+  }
+
+  const newStoryList = story_list || [];
+
+  // check each new story params in the list
+  const requiredKeys = ['title', 'author', 'content', 'story_id', 'date', 'photo'];
+  const containFullKeys = newStoryList.every((story) => {
+    return JSON.stringify(Object.keys(story).sort()) === JSON.stringify(requiredKeys.sort());
+  });
+  if (!containFullKeys) {
+    requestUtils.buildErrorResponse(res, {
+      status: 400,
+      error: new Error('Invalid object format in story_list. Some objects are lack of fields.'),
+      message: 'Invalid object format in story_list. Some objects are lack of fields.',
+    });
+    return;
+  }
+
+  const storySavingPromise = newStoryList.map(async (story) => {
+    const { title, author, content, date, story_id: _id, photo } = story;
+    const photoId = await assetController.saveImage(photo)
+      .catch((err) => {
+        requestUtils.buildErrorResponse(res, {
+          message: 'Could not insert - probably incorrect data! ',
+          error: err,
+        });
+      });
+    // insert new story
+    const newStory = {
+      _id,
+      title,
+      author,
+      content,
+      date,
+      photo_id: photoId,
+    };
+    return newStory;
+  });
+
+  Promise.all(storySavingPromise).then((response) => {
+    Story.insertMany(response)
+      .then((results) => {
+            requestUtils.buildSuccessResponse(res, {
+              data: {
+                story_id_list: results.map(value => value._id),
+              }
+            })
+          })
+          .catch((err) => {
+            requestUtils.buildErrorResponse(res, {
+              message: 'Could not insert - probably incorrect data! ',
+              error: err,
+            });
+          });
+  });
+
+};
+
 const getStoryDetail = (req, res) => {
   const params = req.query;
-  console.log('--params--\n', params);
   const { story_id: id } = params;
   if (!id) {
     requestUtils.buildErrorResponse(res, {
@@ -151,4 +227,5 @@ module.exports = {
   getStoryList,
   createStory,
   getStoryDetail,
+  createStoryInBulk,
 };
