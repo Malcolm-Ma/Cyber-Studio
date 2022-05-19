@@ -9,9 +9,12 @@ let thickness = 4;
  * it inits the image canvas to draw on. It sets up the events to respond to (click, mouse on, etc.)
  * it is also the place where the data should be sent  via socket.io
  * @param sckt the open socket to register events on
- * @param imageUrl teh image url to download
+ * @param imageUrl the image url to download
+ * @param color color of line
+ * @param roomID id of room used for save draw in database
+ * @param username username used for save draw in database
  */
-function initCanvas(sckt, imageUrl, color) {
+function initCanvas(sckt, imageUrl, color, roomID, username) {
   socket = sckt;
   let flag = false,
     prevX, prevY, currX, currY = 0;
@@ -21,6 +24,9 @@ function initCanvas(sckt, imageUrl, color) {
   let ctx = cvx.getContext('2d');
   img.src = imageUrl;
 
+  // store object of draw
+  let drawObject = [];
+  let drawsNum = 0;
 
   // event on the canvas when the mouse is on it
   canvas.on('mousemove mousedown mouseup mouseout', function (e) {
@@ -28,16 +34,23 @@ function initCanvas(sckt, imageUrl, color) {
     prevY = currY;
     currX = e.clientX - canvas.position().left;
     currY = e.clientY - canvas.position().top;
+
     if (e.type === 'mousedown') {
       flag = true;
     }
     if (e.type === 'mouseup' || e.type === 'mouseout') {
+      // end drawing, send it to database and clear list
+      if (drawObject.length > 0) {
+        drawsNum ++;
+        sendDrawToDB(roomID, username, drawsNum, drawObject);
+      }
+      drawObject = [];
       flag = false;
     }
     // if the flag is up, the movement of the mouse draws on the canvas
     if (e.type === 'mousemove') {
       if (flag) {
-        drawOnCanvas(ctx, canvas.width, canvas.height, prevX, prevY, currX, currY, color, thickness);
+        drawOnCanvas(canvas.width, canvas.height, prevX, prevY, currX, currY, color, thickness);
         // @todo if you draw on the canvas, you may want to let everyone know via socket.io (socket.emit...)  by sending them
         const data = {
           px:prevX,
@@ -46,7 +59,19 @@ function initCanvas(sckt, imageUrl, color) {
           y: currY,
           lineColor: color
         }
-        socket.emit('mouse', data)
+
+        // push into list
+        drawObject.push({
+          canvasWidth: canvas.width,
+          canvasHeight: canvas.height,
+          px: prevX,
+          py: prevY,
+          x: currX,
+          y: currY,
+          lineColor: color,
+          thick: thickness
+        });
+        socket.emit('mouse', data);
       }
     }
   });
@@ -57,7 +82,7 @@ function initCanvas(sckt, imageUrl, color) {
     socketCurrX = data.x
     socketCurrY = data.y
     socketColor = data.lineColor
-    drawOnCanvas(ctx, canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, socketColor, thickness)
+    drawOnCanvas(canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, socketColor, thickness)
   })
 
   // this is code left in case you need to  provide a button clearing the canvas (it is suggested that you implement it)
@@ -138,8 +163,9 @@ function drawImageScaled(img, canvas, ctx) {
  * @param color of the line
  * @param thickness of the line
  */
-function drawOnCanvas(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness) {
+function drawOnCanvas(canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness) {
   //get the ration between the current canvas and the one it has been used to draw on the other comuter
+  ctx = document.getElementById('canvas').getContext('2d');
   let ratioX = canvas.width / canvasWidth;
   let ratioY = canvas.height / canvasHeight;
   // update the value of the points to draw
@@ -153,6 +179,24 @@ function drawOnCanvas(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY
   ctx.strokeStyle = color;
   ctx.lineWidth = thickness;
   ctx.stroke();
+  // console.log(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness)
   ctx.closePath();
+}
+
+/**
+ * send draw as object to indexedDB and save
+ * @param roomID id of current room
+ * @param username username who created this draw
+ * @param drawsNum number of draw in the whole history of this room
+ * @param drawObject object used for draw canvas on image
+ */
+async function sendDrawToDB(roomID, username, drawsNum, drawObject) {
+  console.log(roomID, username, drawsNum, drawObject);
+  await storeCanvas({
+    roomId: roomID,
+    username: username,
+    drawsNum: drawsNum,
+    drawObject: drawObject
+  });
 }
 
