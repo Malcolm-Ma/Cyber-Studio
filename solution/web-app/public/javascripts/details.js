@@ -7,7 +7,6 @@ let roomNo = null
 let name = null
 let color = randomColor()
 
-
 const initForm = document.querySelector('#initial_form')
 const chatInterface = document.querySelector('#chat_interface')
 const storyInfo = document.querySelector('#story_info')
@@ -15,6 +14,8 @@ const canvasForm = document.querySelector('#canvas_form')
 const messagelist = document.getElementById('message-list')
 const messageContainer = document.querySelector("#message-container")
 const canvas = document.querySelector("#canvas")
+
+const roomIdList = document.querySelector('#roomIdList')
 
 async function init() {
   initForm.style.display = 'block'
@@ -24,10 +25,37 @@ async function init() {
 
   // get available old rooms for reuse
   let storyId = connect.dataset.sid
-  let old_room_list = await getRoomList(storyId);
-  console.log(old_room_list);
+  // let old_room_list = await getRoomList(storyId);
+  // console.log(old_room_list);
+  selectRoomHistory(storyId)
 }
 window.onload = () => globalInit(init)
+
+
+/**
+ *  different rooms chated about the same story, 
+ * here is show old room history, and alow user to 
+ * select which room history to show
+ */
+async function selectRoomHistory(storyId) {
+  let old_room_list = await getRoomList(storyId);
+  console.log("list size:", old_room_list.length)
+  console.log("story_id:", old_room_list);
+  if (old_room_list.length !== 0) {
+    old_room_list.forEach(id => {
+      var option = document.createElement("option")
+      option.value = id
+      option.text = id
+      roomIdList.add(option)
+    });
+  } else {
+    var option = document.createElement("option")
+    option.value = -1
+    option.text = "you don't have any history in this sotry, please click connect"
+  }
+
+
+}
 
 /**
  * called to generate a random room number
@@ -50,7 +78,6 @@ function randomColor() {
   return rgb;
 }
 
-
 const roomNoGenerator = document.querySelector('#roomNoGenerator')
 roomNoGenerator.addEventListener('click', (e) => {
   e.preventDefault()
@@ -62,9 +89,15 @@ roomNoGenerator.addEventListener('click', (e) => {
  * used to connect to a room. It gets the user name and room number from the
  * interface
  */
-const connect = document.querySelector('a#connect')
+const connect = document.querySelector('#connect')
 connect.addEventListener('click', async (e) => {
   e.preventDefault()
+  var selected_room_id = 0
+  if (roomIdList.value === -1) {
+    selected_room_id = roomNo
+  } else {
+    selected_room_id = roomIdList.value
+  }
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
@@ -78,14 +111,17 @@ connect.addEventListener('click', async (e) => {
   }
   if (!name) name = 'Unknown-' + Math.random();
 
+
+
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
   // initCanvas(chat, imageUrl, color, roomNo, name);
   hideLoginInterface(roomNo, name);
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
 
+
   // check if the room can be reuse -> show history / clear history
-  await checkRoomAvailable(true, roomNo, storyId)
+  await checkRoomAvailable(true, selected_room_id, storyId)
     .then(async result => {
       // user enter the room with history
       if (result) {
@@ -181,7 +217,7 @@ function outputMessage(message) {
   if (message.name !== "Chat-Bot") {
     getMsgNum(roomNo).then(async messageNum => {
       generateID().then(async result => {
-        console.log("Return result !!! ",result);
+        console.log("Return result !!! ", result);
         storeMessage({ id: result + 1, roomId: roomNo, username: name, isSelf: true, msgNum: messageNum + 1, content: message.text, time: message.time })
           .then(async response => console.log('Inserting message worked!!'))
           .catch(async error => console.log("Error inserting: " + JSON.stringify(error)))
@@ -250,7 +286,7 @@ function selectItem(event) {
   let row = event.row;
   // document.getElementById('resultImage').src= row.json.image.url;
 
-  chat.emit('emitKGraph', roomNo,row, name, color)
+  chat.emit('emitKGraph', roomNo, row, name, color)
 }
 
 function outputKGraph(row, name, color) {
