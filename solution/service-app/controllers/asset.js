@@ -15,9 +15,7 @@ const findAssetByPath = (pathName) => {
   return Asset.findOne({ url: pathName });
 };
 
-const uploadImage = (req, res) => {
-  const { imageBlob } = req.body;
-
+const saveImage = (imageBlob) => {
   const fileName = Math.random().toString(36).slice(-6) + new Date().getTime() + '.png';
 
   const imageBase64 = imageBlob.replace(/^data:image\/\w+;base64,/, "");
@@ -42,7 +40,22 @@ const uploadImage = (req, res) => {
   });
 };
 
+const uploadImage = (req, res) => {
+  const { imageBlob } = req.body;
+
+  if (!imageBlob) {
+    requestUtils.buildErrorResponse(res, {
+      status: 400,
+      error: new Error('No data sent!'),
+      message: 'No data sent!',
+    });
+    return;
+  }
+  saveImage(imageBlob);
+};
+
 module.exports = {
   findAssetByPath,
   uploadImage,
+  saveImage,
 };
