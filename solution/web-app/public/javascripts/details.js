@@ -26,8 +26,8 @@ async function init() {
 
   // get available old rooms for reuse
   let storyId = connect.dataset.sid
-  let ll = await getRoomList(storyId);
-  console.log(ll);
+  let old_room_list = await getRoomList(storyId);
+  console.log(old_room_list);
 }
 window.onload = () => globalInit(init)
 
@@ -82,7 +82,7 @@ connect.addEventListener('click', async (e) => {
 
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
-  initCanvas(chat, imageUrl, color, roomNo, name);
+  // initCanvas(chat, imageUrl, color, roomNo, name);
   hideLoginInterface(roomNo, name);
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
 
@@ -99,10 +99,12 @@ connect.addEventListener('click', async (e) => {
         //   })
         let msgList = await getMessageList(roomNo);
         let canvasList = await getCanvasList(roomNo);
-        outputHistory(msgList, canvasList);
+        outputMsgHistory(msgList);
+        initCanvas(chat, imageUrl, color, roomNo, name, canvasList);
       }
       // user enter a new/empty room
       else {
+        initCanvas(chat, imageUrl, color, roomNo, name, null);
         console.log('Access room ', roomNo, ' successfully.');
 
       }
@@ -210,32 +212,6 @@ function outputMsgHistory(message) {
   hint.innerHTML = `<span class="text-muted">above is history message</span>`
   document.getElementById('message-list').appendChild(hint)
 
-}
-
-/**
- * it outputs the history of draws in specific room
- * @param canvasList canvas history fetched from indexedDB
- */
-function outputDrawsHistory(canvasList){
-  console.log("draw history!!!");
-  for (let draw of canvasList){
-    console.log("draw: ", draw);
-    let obj = draw.drawObject;
-    for (let point of obj){
-      // console.log("point: ", point, point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
-      // drawOnCanvas(point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
-    }
-  }
-}
-
-/**
- * it shows the annotation history includes messages and canvas
- * @param messageList message history fetched from indexedDB
- * @param canvasList canvas history fetched from indexedDB
- */
-function outputHistory(messageList, canvasList){
-  outputMsgHistory(messageList);
-  outputDrawsHistory(canvasList);
 }
 
 

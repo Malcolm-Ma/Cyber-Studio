@@ -13,8 +13,9 @@ let thickness = 4;
  * @param color color of line
  * @param roomID id of room used for save draw in database
  * @param username username used for save draw in database
+ * @param canvasHistory history for re-plot, null for new room
  */
-function initCanvas(sckt, imageUrl, color, roomID, username) {
+function initCanvas(sckt, imageUrl, color, roomID, username, canvasHistory) {
   socket = sckt;
   let flag = false,
     prevX, prevY, currX, currY = 0;
@@ -50,7 +51,7 @@ function initCanvas(sckt, imageUrl, color, roomID, username) {
     // if the flag is up, the movement of the mouse draws on the canvas
     if (e.type === 'mousemove') {
       if (flag) {
-        drawOnCanvas(canvas.width, canvas.height, prevX, prevY, currX, currY, color, thickness);
+        drawOnCanvas(ctx, canvas.width, canvas.height, prevX, prevY, currX, currY, color, thickness);
         // @todo if you draw on the canvas, you may want to let everyone know via socket.io (socket.emit...)  by sending them
         const data = {
           px:prevX,
@@ -82,7 +83,7 @@ function initCanvas(sckt, imageUrl, color, roomID, username) {
     socketCurrX = data.x
     socketCurrY = data.y
     socketColor = data.lineColor
-    drawOnCanvas(canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, socketColor, thickness)
+    drawOnCanvas(ctx, canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, socketColor, thickness)
   })
 
   // this is code left in case you need to  provide a button clearing the canvas (it is suggested that you implement it)
@@ -126,6 +127,11 @@ function initCanvas(sckt, imageUrl, color, roomID, username) {
         // hide the image element as it is not needed
         img.style.display = 'none';
       }
+
+      // after resizing, plot history on image
+      if(canvasHistory){
+        drawCanvasHistory(ctx, canvasHistory);
+      }
     }, 10);
   });
 
@@ -163,9 +169,8 @@ function drawImageScaled(img, canvas, ctx) {
  * @param color of the line
  * @param thickness of the line
  */
-function drawOnCanvas(canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness) {
+function drawOnCanvas(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness) {
   //get the ration between the current canvas and the one it has been used to draw on the other comuter
-  ctx = document.getElementById('canvas').getContext('2d');
   let ratioX = canvas.width / canvasWidth;
   let ratioY = canvas.height / canvasHeight;
   // update the value of the points to draw
@@ -179,7 +184,6 @@ function drawOnCanvas(canvasWidth, canvasHeight, prevX, prevY, currX, currY, col
   ctx.strokeStyle = color;
   ctx.lineWidth = thickness;
   ctx.stroke();
-  // console.log(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness)
   ctx.closePath();
 }
 
@@ -198,5 +202,22 @@ async function sendDrawToDB(roomID, username, drawsNum, drawObject) {
     drawsNum: drawsNum,
     drawObject: drawObject
   });
+}
+
+/**
+ * draw canvas history on image
+ * @param ctx object for current 2d canvas
+ * @param canvasList list of draws
+ */
+function drawCanvasHistory(ctx, canvasList){
+  console.log("Draw history!!!");
+  for (let draw of canvasList){
+    let obj = draw.drawObject;
+
+    // plot point
+    for (let point of obj){
+      drawOnCanvas(ctx, point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
+    }
+  }
 }
 
