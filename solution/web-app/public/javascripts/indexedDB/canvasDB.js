@@ -113,6 +113,27 @@ async function getCanvasList(roomNum) {
 }
 window.getCanvasList= getCanvasList;
 
+/**
+ * it clears canvas history in this room
+ * if this room will be reused
+ * @param roomNum: id of room
+ */
+async function clearCanvasDB(roomNum) {
+    let tx = await canvas_db.transaction(CANVAS_STORE_NAME, 'readwrite');
+    let store = await tx.objectStore(CANVAS_STORE_NAME);
+    let index = await store.index('roomId');
+    let history = await index.getAll(IDBKeyRange.only(roomNum)); // read all canvas history in this room
+
+    // delete the canvas according to id
+    if (history && history.length > 0) {
+        for(let draw of history){
+            console.log('deleting !!! canvas:', draw);
+            await store.delete(draw.id);
+        }
+    }
+}
+window.clearCanvasDB= clearCanvasDB;
+
 
 //
 // /**
@@ -159,23 +180,3 @@ window.getCanvasList= getCanvasList;
 // }
 // window.getMsgNum= getMsgNum;
 //
-// /**
-//  * it clears history messages in this room
-//  * if this room will be reused
-//  * @param roomNum: id of room
-//  */
-// async function clearHistory(roomNum) {
-//     let tx = await db.transaction(MSG_STORE_NAME, 'readwrite');
-//     let store = await tx.objectStore(MSG_STORE_NAME);
-//     let index = await store.index('roomId');
-//     let history = await index.getAll(IDBKeyRange.only(roomNum)); // read all history messages in this room
-//
-//     // delete the messages according to id
-//     if (history && history.length > 0) {
-//         for(let msg of history){
-//             console.log('deleting !!! msg:', msg);
-//             await store.delete(msg.id);
-//         }
-//     }
-// }
-// window.clearHistory= clearHistory;

@@ -6,6 +6,16 @@
 /**
  * service worker registration
  */
+
+async function init() {
+  // initial all stores of indexedDB
+  await initMessageDB();
+  await initCanvasDB();
+  await initRoomToStoryDB();
+  await initStoryDB();
+}
+window.onload = init
+
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js')

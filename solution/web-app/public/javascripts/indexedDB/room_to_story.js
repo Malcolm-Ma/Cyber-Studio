@@ -71,6 +71,7 @@ async function checkRoomAvailable(ifEmpty, roomNum, newStoryId){
                     // story is changed, clear history of room
                     console.log("Ready to clear history")
                     await clearHistory(roomNum);
+                    await clearCanvasDB(roomNum);
                     // update the relationship between room and story
                     await updateRelationship(roomNum, newStoryId);
                     console.log('room already be reused');

@@ -26,6 +26,7 @@ async function init() {
   await initMessageDB();
   await initCanvasDB();
   await initRoomToStoryDB();
+  await initStoryDB();
 
   // get available old rooms for reuse
   let storyId = connect.dataset.sid
@@ -225,7 +226,7 @@ function outputDrawsHistory(canvasList){
     console.log("draw: ", draw);
     let obj = draw.drawObject;
     for (let point of obj){
-      console.log("point: ", point, point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
+      // console.log("point: ", point, point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
       // drawOnCanvas(point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
     }
   }
