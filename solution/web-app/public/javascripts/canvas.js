@@ -179,6 +179,7 @@ function drawOnCanvas(canvasWidth, canvasHeight, prevX, prevY, currX, currY, col
   ctx.strokeStyle = color;
   ctx.lineWidth = thickness;
   ctx.stroke();
+  // console.log(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness)
   ctx.closePath();
 }
 
