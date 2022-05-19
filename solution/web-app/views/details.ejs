@@ -53,8 +53,29 @@
               </div>
               <div class="card-footer d-flex justify-content-between">
                 <a href="/" class="btn btn-warning">Cancel</a>
-                <a id="connect" class="btn btn-success " data-doc="<%= story.photo %>"
-                  data-sid="<%= story_id %>">Connect</a>
+                <a class="btn btn-success " data-bs-toggle="modal" data-bs-target="#staticBackdrop">Confirm</a>
+
+                <!-- Modal -->
+                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
+                  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                  <div class="modal-dialog">
+                    <div class="modal-content">
+                      <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Please select a room history to show</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                        <select class="form-select" aria-label="Default select example" id="roomIdList">
+                        </select>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary" id="connect" data-doc="<%= story.photo %>"
+                          data-sid="<%= story_id %>" data-bs-dismiss="modal">Connect</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
             </form>
           </div>
@@ -139,7 +160,7 @@
       <%- include('./partials/footer.ejs') %>
         <script src="/javascripts/details.js"></script>
         <script src="/javascripts/canvas.js"></script>
-      <%- include('./partials/scripts.ejs') %>
+        <%- include('./partials/scripts.ejs') %>
   </body>
 
 </html>
