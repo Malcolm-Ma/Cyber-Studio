@@ -36,6 +36,9 @@ async function initStoryDB(){
                     let storyDB = upgradeDb.createObjectStore(STORY_STORE_NAME, {
                         keyPath: 'story_id', // story id is unique for each story
                     });
+                    storyDB.createIndex('ifUpdate', 'ifUpdate', {unique: false, multiEntry: true});
+                    storyDB.createIndex('author', 'author', {unique: false, multiEntry: true});
+                    // storyDB.createIndex('date', 'date', {unique: false, multiEntry: true});
                 }
             }
         });
