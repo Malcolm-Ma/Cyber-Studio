@@ -35,7 +35,7 @@ orderByDate.addEventListener('click', (e) => {
   e.preventDefault()
   var des = orderByDate.dataset.doc
   console.log("des", des)
-  if (des === 1) {
+  if (des == 1) {
     window.location.href = "/order_by_date_des"
   } else {
     window.location.href = "/order_by_date"
@@ -49,7 +49,7 @@ orderByAuthor.addEventListener('click', (e) => {
   e.preventDefault()
   var des = orderByAuthor.dataset.doc
   console.log("des", des)
-  if (des === 1) {
+  if (des == 1) {
     window.location.href = "/order_by_author_des"
   } else {
     window.location.href = "/order_by_author"
