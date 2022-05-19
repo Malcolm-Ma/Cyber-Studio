@@ -3,10 +3,8 @@
  * @author Mingze Ma
  */
 
-import globalInit from './globalInit.js';
-
+// Onload action
 window.onload = () => globalInit()
-
 
 /**
  * service worker registration

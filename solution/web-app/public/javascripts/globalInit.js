@@ -36,5 +36,3 @@ const setNetworkStatusTag = (status) => {
   onlineTag.className = `badge text-bg-${status ? 'success' : 'danger'} me-4`;
   onlineTag.innerText = status ? 'Online' : 'Offline';
 };
-
-export default globalInit;
