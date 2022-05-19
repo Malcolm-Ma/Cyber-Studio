@@ -144,17 +144,15 @@ window.storeRelationship= storeRelationship;
  * @param storyNum: id of story
  * @returns data item of story
  */
-async function getRoomNumber(storyNum) {
+async function getRoomList(storyNum) {
     let searchResult = []; // return all eligible room numbers
     if (!db)
         await initRoomToStoryDB();
     if (db) {
-        console.log('fetching rooms of story: ' + storyNum);
         let tx = await db.transaction(ROOM_TO_STORY_NAME, 'readonly');
         let store = await tx.objectStore(ROOM_TO_STORY_NAME);
         let index = await store.index('storyId');
         let roomNums = await index.getAll(IDBKeyRange.only(storyNum)); // search rooms
-        console.log('Room Numbers: ' + JSON.stringify(roomNums));
         await tx.complete;
 
         if (roomNums && roomNums.length > 0) {
@@ -185,7 +183,7 @@ async function getRoomNumber(storyNum) {
 
     return searchResult;
 }
-window.getRoomNumber= getRoomNumber;
+window.getRoomList= getRoomList;
 
 /**
  * it gets the story id which are discussing in the room

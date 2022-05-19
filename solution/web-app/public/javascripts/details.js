@@ -16,11 +16,21 @@ const messagelist = document.getElementById('message-list')
 const messageContainer = document.querySelector("#message-container")
 const canvas = document.querySelector("#canvas")
 
-function init() {
+async function init() {
   initForm.style.display = 'block'
   chatInterface.style.display = 'none'
   storyInfo.style.display = 'block'
   canvasForm.style.display = 'none'
+
+  // initial all stores of indexedDB
+  await initMessageDB();
+  await initCanvasDB();
+  await initRoomToStoryDB();
+
+  // get available old rooms for reuse
+  let storyId = connect.dataset.sid
+  let ll = await getRoomList(storyId);
+  console.log(ll);
 }
 window.onload = init
 
@@ -79,20 +89,20 @@ connect.addEventListener('click', async (e) => {
   hideLoginInterface(roomNo, name);
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
 
-  await initMessageDB();
-  await initCanvasDB();
-  await initRoomToStoryDB();
+  // check if the room can be reuse -> show history / clear history
   await checkRoomAvailable(true, roomNo, storyId)
     .then(async result => {
       // user enter the room with history
-      console.log('Result ', result);
       if (result) {
-        console.log('Access room ', roomNo, ' successfully.');
-        await getMessageList(roomNo)
-          .then(list => {
-            console.log(JSON.stringify(list));
-            outputHistory(list);
-          })
+        console.log('Welcome back to room ', roomNo);
+        // await getMessageList(roomNo)
+        //   .then(list => {
+        //     console.log(JSON.stringify(list));
+        //     outputHistory(list);
+        //   })
+        let msgList = await getMessageList(roomNo);
+        let canvasList = await getCanvasList(roomNo);
+        outputHistory(msgList, canvasList);
       }
       // user enter a new/empty room
       else {
@@ -207,19 +217,28 @@ function outputMsgHistory(message) {
 
 /**
  * it outputs the history of draws in specific room
- * @param test
+ * @param canvasList canvas history fetched from indexedDB
  */
-function outputDrawsHistory(test){
+function outputDrawsHistory(canvasList){
   console.log("draw history!!!");
+  for (let draw of canvasList){
+    console.log("draw: ", draw);
+    let obj = draw.drawObject;
+    for (let point of obj){
+      console.log("point: ", point, point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
+      // drawOnCanvas(point.canvasWidth, point.canvasHeight, point.px, point.py, point.x, point.y, point.lineColor, point.thick);
+    }
+  }
 }
 
 /**
- * it shows the history includes messages and canvas
- * @param message message reviced by socket to append
+ * it shows the annotation history includes messages and canvas
+ * @param messageList message history fetched from indexedDB
+ * @param canvasList canvas history fetched from indexedDB
  */
-function outputHistory(message){
-  outputMsgHistory(message);
-  outputDrawsHistory();
+function outputHistory(messageList, canvasList){
+  outputMsgHistory(messageList);
+  outputDrawsHistory(canvasList);
 }
 
 

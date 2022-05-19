@@ -9,7 +9,10 @@ let thickness = 4;
  * it inits the image canvas to draw on. It sets up the events to respond to (click, mouse on, etc.)
  * it is also the place where the data should be sent  via socket.io
  * @param sckt the open socket to register events on
- * @param imageUrl teh image url to download
+ * @param imageUrl the image url to download
+ * @param color color of line
+ * @param roomID id of room used for save draw in database
+ * @param username username used for save draw in database
  */
 function initCanvas(sckt, imageUrl, color, roomID, username) {
   socket = sckt;
@@ -80,8 +83,6 @@ function initCanvas(sckt, imageUrl, color, roomID, username) {
     socketCurrY = data.y
     socketColor = data.lineColor
     drawOnCanvas(canvas.width, canvas.height, socketPrevX, socketPrevY, socketCurrX, socketCurrY, socketColor, thickness)
-    // storeCanvas({})
-    console.log('hahhhhahah')
   })
 
   // this is code left in case you need to  provide a button clearing the canvas (it is suggested that you implement it)
@@ -178,16 +179,16 @@ function drawOnCanvas(canvasWidth, canvasHeight, prevX, prevY, currX, currY, col
   ctx.strokeStyle = color;
   ctx.lineWidth = thickness;
   ctx.stroke();
+  // console.log(ctx, canvasWidth, canvasHeight, prevX, prevY, currX, currY, color, thickness)
   ctx.closePath();
 }
 
 /**
- * called when it is required to draw the image on the canvas. We have resized the canvas to the same image size
- * so ti is simpler to draw later
- * @param roomID
- * @param username
- * @param drawsNum
- * @param drawObject
+ * send draw as object to indexedDB and save
+ * @param roomID id of current room
+ * @param username username who created this draw
+ * @param drawsNum number of draw in the whole history of this room
+ * @param drawObject object used for draw canvas on image
  */
 async function sendDrawToDB(roomID, username, drawsNum, drawObject) {
   console.log(roomID, username, drawsNum, drawObject);
