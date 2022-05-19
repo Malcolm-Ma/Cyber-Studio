@@ -127,37 +127,64 @@ const createStoryInBulk = async (req, res) => {
     return;
   }
 
-  const requiredKeys = ['title', 'author', 'content', 'story_id', 'date', 'photo']
+  const newStoryList = story_list || [];
 
-  // insert new story
-  const currentAsset = await assetController.findAssetByPath(params.photo);
-  const newStory = new Story({
-    title: params.title,
-    author: params.author,
-    content: params.content,
-    date: new Date(),
-    photo_id: currentAsset._id,
+  // check each new story params in the list
+  const requiredKeys = ['title', 'author', 'content', 'story_id', 'date', 'photo'];
+  const containFullKeys = newStoryList.every((story) => {
+    return JSON.stringify(Object.keys(story).sort()) === JSON.stringify(requiredKeys.sort());
   });
-  // save new story to db
-  newStory.save()
-    .then((result) => {
-      requestUtils.buildSuccessResponse(res, {
-        data: {
-          story_id: result._id,
-        }
-      })
-    })
-    .catch((err) => {
-      requestUtils.buildErrorResponse(res, {
-        message: 'Could not insert - probably incorrect data! ',
-        error: err,
-      });
+  if (!containFullKeys) {
+    requestUtils.buildErrorResponse(res, {
+      status: 400,
+      error: new Error('Invalid object format in story_list. Some objects are lack of fields.'),
+      message: 'Invalid object format in story_list. Some objects are lack of fields.',
     });
+    return;
+  }
+
+  const storySavingPromise = newStoryList.map(async (story) => {
+    const { title, author, content, date, story_id: _id, photo } = story;
+    const photoId = await assetController.saveImage(photo)
+      .catch((err) => {
+        requestUtils.buildErrorResponse(res, {
+          message: 'Could not insert - probably incorrect data! ',
+          error: err,
+        });
+      });
+    // insert new story
+    const newStory = {
+      _id,
+      title,
+      author,
+      content,
+      date,
+      photo_id: photoId,
+    };
+    return newStory;
+  });
+
+  Promise.all(storySavingPromise).then((response) => {
+    Story.insertMany(response)
+      .then((results) => {
+            requestUtils.buildSuccessResponse(res, {
+              data: {
+                story_id_list: results.map(value => value._id),
+              }
+            })
+          })
+          .catch((err) => {
+            requestUtils.buildErrorResponse(res, {
+              message: 'Could not insert - probably incorrect data! ',
+              error: err,
+            });
+          });
+  });
+
 };
 
 const getStoryDetail = (req, res) => {
   const params = req.query;
-  console.log('--params--\n', params);
   const { story_id: id } = params;
   if (!id) {
     requestUtils.buildErrorResponse(res, {

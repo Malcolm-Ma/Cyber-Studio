@@ -15,7 +15,7 @@ const findAssetByPath = (pathName) => {
   return Asset.findOne({ url: pathName });
 };
 
-const saveImage = (imageBlob) => {
+const saveImage = (imageBlob, res) => {
   const fileName = Math.random().toString(36).slice(-6) + new Date().getTime() + '.png';
 
   const imageBase64 = imageBlob.replace(/^data:image\/\w+;base64,/, "");
@@ -27,11 +27,14 @@ const saveImage = (imageBlob) => {
 
   const imageUrl = `${HOSTNAME}${STATIC_IMAGE_PATH}${fileName}`;
 
-  Asset.insertMany([{
+  return Asset.insertMany([{
     file_name: fileName,
     base64: imageBase64,
     url: imageUrl,
-  }]).then(() => {
+  }]).then((results) => {
+    if (!res) {
+      return results[0]._id;
+    }
     requestUtils.buildSuccessResponse(res, {
       data: {
         url: imageUrl,
@@ -51,7 +54,7 @@ const uploadImage = (req, res) => {
     });
     return;
   }
-  saveImage(imageBlob);
+  saveImage(imageBlob, res);
 };
 
 module.exports = {
