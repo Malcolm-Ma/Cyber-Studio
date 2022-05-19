@@ -42,6 +42,7 @@
                 <p><label for="name"> Your name </label>
                   <input type="text" id="name" name="name">
                 </p>
+
                 <p>
                   <label for="roomNo"> Your room </label>
                   <input type="text" id="roomNo" name="roomNo">
@@ -50,32 +51,16 @@
                 <div id="warning" style="display: none;">
                   <p class="fw-bold text-warning">Room Id cannot be empty</p>
                 </div>
+                <p>
+                  <label for="roomHistory">Room History</label>
+                  <select class="form-select" aria-label="Default select example" id="roomIdList">
+                  </select>
+                </p>
               </div>
               <div class="card-footer d-flex justify-content-between">
                 <a href="/" class="btn btn-warning">Cancel</a>
-                <a class="btn btn-success " data-bs-toggle="modal" data-bs-target="#staticBackdrop">Confirm</a>
-
-                <!-- Modal -->
-                <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false"
-                  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                  <div class="modal-dialog">
-                    <div class="modal-content">
-                      <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Please select a room history to show</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                      </div>
-                      <div class="modal-body">
-                        <select class="form-select" aria-label="Default select example" id="roomIdList">
-                        </select>
-                      </div>
-                      <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary" id="connect" data-doc="<%= story.photo %>"
-                          data-sid="<%= story_id %>" data-bs-dismiss="modal">Connect</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <a class="btn btn-success " id="connect" data-doc="<%= story.photo %>"
+                  data-sid="<%= story_id %>">Connect</a>
               </div>
             </form>
           </div>

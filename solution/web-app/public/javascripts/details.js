@@ -110,7 +110,7 @@ connect.addEventListener('click', async (e) => {
     return
   }
   if (!name) name = 'Unknown-' + Math.random();
-
+  console.log("selected room id: ", selected_room_id)
 
 
   //@todo join the chat room
@@ -125,21 +125,21 @@ connect.addEventListener('click', async (e) => {
     .then(async result => {
       // user enter the room with history
       if (result) {
-        console.log('Welcome back to room ', roomNo);
+        console.log('Welcome back to room ', selected_room_id);
         // await getMessageList(roomNo)
         //   .then(list => {
         //     console.log(JSON.stringify(list));
         //     outputHistory(list);
         //   })
-        let msgList = await getMessageList(roomNo);
-        let canvasList = await getCanvasList(roomNo);
+        let msgList = await getMessageList(selected_room_id);
+        let canvasList = await getCanvasList(selected_room_id);
         outputMsgHistory(msgList);
-        initCanvas(chat, imageUrl, color, roomNo, name, canvasList);
+        initCanvas(chat, imageUrl, color, selected_room_id, name, canvasList);
       }
       // user enter a new/empty room
       else {
-        initCanvas(chat, imageUrl, color, roomNo, name, null);
-        console.log('Access room ', roomNo, ' successfully.');
+        initCanvas(chat, imageUrl, color, selected_room_id, name, null);
+        console.log('Access room ', selected_room_id, ' successfully.');
 
       }
     })
