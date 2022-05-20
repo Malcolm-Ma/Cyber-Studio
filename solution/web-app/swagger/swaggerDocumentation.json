@@ -32,7 +32,7 @@
           "story operations"
         ],
         "description": "upload story info to server when user create a new story",
-        "operationId": "story",
+        "operationId": "create story",
         "requestBody": {
           "content": {
             "application/json": {
@@ -63,6 +63,47 @@
                 },
                 "example": {
                   "message": "story_info or image cannot be empty"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_story_list": {
+      "get": {
+        "tags": [
+          "story operations"
+        ],
+        "description": "get story list from MongoDB",
+        "operationId": "get story",
+        "responses": {
+          "0": {
+            "description": "get story list successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/story_list_success"
+                }
+              }
+            }
+          },
+          "1": {
+            "description": "fail to get story list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/story_list_fail"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "fail to get story list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/story_list_fail"
                 }
               }
             }
@@ -115,12 +156,27 @@
       "photo": {
         "type": "string",
         "description": "photo URL of a story",
-        "example": "Bear story. So Sweet!"
+        "example": "/images/landmark03.jpeg"
+      },
+      "date": {
+        "type": "string",
+        "description": "date of creating story",
+        "example": "2022-05-18T16:49:16.281Z"
       },
       "online": {
         "type": "boolean",
         "description": "status of online",
         "example": true
+      },
+      "success_status": {
+        "type": "integer",
+        "description": "status of success or fail",
+        "example": 0
+      },
+      "fail_status": {
+        "type": "integer",
+        "description": "status of success or fail",
+        "example": 1
       },
       "story": {
         "type": "object",
@@ -133,6 +189,9 @@
           },
           "content": {
             "$ref": "#/components/schemas/content"
+          },
+          "photo": {
+            "$ref": "#/components/schemas/photo"
           }
         }
       },
@@ -150,6 +209,32 @@
           },
           "content": {
             "$ref": "#/components/schemas/content"
+          },
+          "photo": {
+            "$ref": "#/components/schemas/photo"
+          }
+        }
+      },
+      "storyWithDate": {
+        "type": "object",
+        "properties": {
+          "story_id": {
+            "$ref": "#/components/schemas/story_id"
+          },
+          "title": {
+            "$ref": "#/components/schemas/title"
+          },
+          "author": {
+            "$ref": "#/components/schemas/author"
+          },
+          "content": {
+            "$ref": "#/components/schemas/content"
+          },
+          "date": {
+            "$ref": "#/components/schemas/date"
+          },
+          "photo": {
+            "$ref": "#/components/schemas/photo"
           }
         }
       },
@@ -168,6 +253,42 @@
         "properties": {
           "online": {
             "$ref": "#/components/schemas/online"
+          }
+        }
+      },
+      "story_list_success": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/success_status"
+          },
+          "message": {
+            "type": "string",
+            "description": "text of status",
+            "example": "success"
+          },
+          "data": {
+            "type": "List",
+            "description": "reason of fail",
+            "example": "story_info or image cannot be empty"
+          }
+        }
+      },
+      "story_list_fail": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/fail_status"
+          },
+          "message": {
+            "type": "string",
+            "description": "text of status",
+            "example": "fail"
+          },
+          "err": {
+            "type": "string",
+            "description": "reason of error",
+            "example": "Invalid parameter Error"
           }
         }
       }
