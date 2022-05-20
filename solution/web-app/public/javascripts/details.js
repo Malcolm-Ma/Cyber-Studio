@@ -167,7 +167,7 @@ sentMsg.addEventListener('click', (e) => {
   e.preventDefault()
   const message = comment.value
   if (message !== '') {
-    var formatMsg = {name: name, time:new Date().getTime(), text: message}
+    var formatMsg = {name: name, time:moment().format('MMMM Do YYYY, h:mm:ss a'), text: message}
     outputMessage(formatMsg)
     messageContainer.scrollTop = messageContainer.scrollHeight
     chat.emit('chatMessage', roomNo, name, message)
@@ -180,7 +180,7 @@ comment.addEventListener('keyup', (e) => {
   e.preventDefault()
   const message = comment.value
   if (e.key === "Enter" && message !== '') {
-    var formatMsg = {name: name, time:new Date(), text: message}
+    var formatMsg = {name: name, time:moment().format('MMMM Do YYYY, h:mm:ss a'), text: message}
     outputMessage(formatMsg)
     messageContainer.scrollTop = messageContainer.scrollHeight
     chat.emit('chatMessage', roomNo, name, message)
