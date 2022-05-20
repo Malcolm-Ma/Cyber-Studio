@@ -1,12 +1,13 @@
 /*
- * @Author: Jipu Li 
- * @Date: 2022-04-16 23:08:17 
+ * @Author: Jipu Li
+ * @Date: 2022-04-16 23:08:17
  * @Last Modified by: Jipu Li
  * @Last Modified time: 2022-05-19 21:28:27
  */
 
 const axios = require('axios');
 const { response } = require('express');
+const moment = require('moment');
 
 // API url from server-app
 let url = 'http://localhost:3100'
@@ -16,7 +17,7 @@ let imageURL = ''
 
 /**
  * index view, will show a list of stories
- * @req request from user  
+ * @req request from user
  * @res response to the user
  */
 const story_index = (req, res) => {
@@ -24,7 +25,17 @@ const story_index = (req, res) => {
     if (response.data.status === 0) {
       var story_list = []
       story_list = response.data
-      res.render('index', { stories: story_list.data, title: "All Stories", des: 1 })
+      res.render('index', {
+        stories: story_list.data.map((story) => {
+          const formatDate = moment(story.date).format('MMMM Do YYYY, h:mm:ss a');
+          return {
+            ...story,
+            date: formatDate
+          };
+        }),
+        title: "All Stories",
+        des: 1
+      })
     } else {
       console.log(response.data.message)
     }
@@ -91,7 +102,7 @@ const story_list_author_des = (req, res) => {
 
 /**
  * redirect to the create_story view
- * @req request from user  
+ * @req request from user
  * @res response to the user
  */
 const story_create_get = (req, res) => {
@@ -100,7 +111,7 @@ const story_create_get = (req, res) => {
 
 /**
  * Create a new Story, and send new story info to server-app
- * @req request from user  
+ * @req request from user
  * @res response to the user
  */
 const story_create_post = (req, res) => {
@@ -132,7 +143,7 @@ const story_create_post = (req, res) => {
 
 /**
  * upload the image with base64 format to server-app
- * @req request from user  
+ * @req request from user
  * @res response to the user
  */
 const upload_image = (req, res) => {
@@ -147,7 +158,7 @@ const upload_image = (req, res) => {
 
 /**
  * Show the story details, include photo, title and content
- * @req request from user  
+ * @req request from user
  * @res response to the user
  */
 const story_details = (req, res) => {
@@ -158,6 +169,7 @@ const story_details = (req, res) => {
     var story = []
     if (response.data.status === 0) {
       story = response.data
+      story.data.date = moment(story.data.date).format('MMMM Do YYYY, h:mm:ss a');
       res.render('details', { story: story.data, story_id: storyId, title: "Story Details" })
     } else {
       console.log(response.data.message)
@@ -169,7 +181,7 @@ const story_details = (req, res) => {
 
 /**
  * Delete the story by id
- * @req request from user  
+ * @req request from user
  * @res response to the user
  */
 const story_delete = (req, res) => {
