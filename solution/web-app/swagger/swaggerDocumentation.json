@@ -83,7 +83,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/story_list_success"
+                  "$ref": "#/components/schemas/get_success"
                 }
               }
             }
@@ -93,7 +93,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/story_list_fail"
+                  "$ref": "#/components/schemas/get_fail"
                 }
               }
             }
@@ -103,7 +103,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/story_list_fail"
+                  "$ref": "#/components/schemas/get_fail"
                 }
               }
             }
@@ -125,6 +125,68 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/online_status"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/get_story_detail": {
+      "get": {
+        "tags": [
+          "story operations"
+        ],
+        "description": "get details of story",
+        "operationId": "get story detail",
+        "responses": {
+          "403": {
+            "description": "fail to get details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_fail"
+                },
+                "example": {
+                  "status": 403,
+                  "error": "Invalid id, please try again.",
+                  "message": "Invalid id, please try again."
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "success to get details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_success"
+                },
+                "example": {
+                  "status": 0,
+                  "message": "success",
+                  "data": {
+                    "story_id": "62867c6189dadfe4854d774a",
+                    "title": "A sweet story",
+                    "author": "Estrella",
+                    "content": "Bear story. So Sweet!",
+                    "photo": "/images/landmark03.jpeg"
+                  }
+                }
+              }
+            }
+          },
+          "201": {
+            "description": "fail to get details",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_fail"
+                },
+                "example": {
+                  "status": 1,
+                  "message": "Invalid data or not found!",
+                  "err": "Invalid data or not found!"
                 }
               }
             }
@@ -258,7 +320,7 @@
           }
         }
       },
-      "story_list_success": {
+      "get_success": {
         "type": "object",
         "properties": {
           "status": {
@@ -270,13 +332,33 @@
             "example": "success"
           },
           "data": {
-            "type": "List",
+            "type": "list",
             "description": "reason of fail",
-            "example": "story_info or image cannot be empty"
+            "example": [{
+              "story_id": "62867c6189dadfe4854d7756",
+              "title": "A sweet story",
+              "author": "Estrella",
+              "content": "Bear story. So Sweet!",
+              "photo": "/images/landmark03.jpeg"
+            },
+              {
+                "story_id": "62867c6189dadfe4854d774a",
+                "title": "A happy story",
+                "author": "Tong",
+                "content": "happy everyday!",
+                "photo": "/images/user99.jpeg"
+              },
+              {
+                "story_id": "62867c6189dadfe4854d75t",
+                "title": "A coding story",
+                "author": "Mike",
+                "content": "I like coding!",
+                "photo": "/images/computer.jpeg"
+              }]
           }
         }
       },
-      "story_list_fail": {
+      "get_fail": {
         "type": "object",
         "properties": {
           "status": {

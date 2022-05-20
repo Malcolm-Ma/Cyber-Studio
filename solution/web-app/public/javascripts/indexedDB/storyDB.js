@@ -110,3 +110,22 @@ async function getOfflineStoryList() {
     return searchResult;
 }
 window.getOfflineStoryList= getOfflineStoryList;
+
+/**
+ * it clears all new story uploaded when offline
+ */
+async function clearOfflineStory() {
+    let tx = await story_db.transaction(STORY_STORE_NAME, 'readwrite');
+    let store = await tx.objectStore(STORY_STORE_NAME);
+    let index = await store.index('ifUpdate');
+    let offlineStories = await index.getAll(IDBKeyRange.only(false)); // search story
+
+    // delete the messages according to id
+    if (offlineStories && offlineStories.length > 0) {
+        for(let s of offlineStories){
+            console.log('deleting !!! story:', s);
+            await store.delete(s.story_id);
+        }
+    }
+}
+window.clearOfflineStory= clearOfflineStory;
