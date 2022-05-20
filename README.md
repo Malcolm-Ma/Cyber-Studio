@@ -10,25 +10,6 @@ Group member
 
 Click to view [Assignemnt Instruction](https://docs.google.com/document/d/1WeQqDfaQUFFxusbZz-vGF-uqEtkz32z1/edit#)
 
-## Project Structure
-
-```
-.
-|-- solution
-    |-- service-app
-    |-- web-app
-```
-
-### web-app
-
-Front end of the project.
-
-### service-app
-
-Back end of the project. 
-
-Connect MongoDB.
-
 ## Get Started
 
 We need to start the project via service-app and web-app separately. 
@@ -36,6 +17,8 @@ We need to start the project via service-app and web-app separately.
 ```shell
 cd solution
 ```
+
+All codes are in the `solution` directory. 
 
 ### Start service-app
 
@@ -46,6 +29,8 @@ npm run initdb
 npm run start
 ```
 
+Please note that this command `npm run initdb` applies to the initialization of the mongoDB database. If you plan to test our functionality, I recommend that you run this command to initialise the database first.
+
 ### Start web-app
 
 ```shell
@@ -53,3 +38,14 @@ cd web-app
 npm install
 npm run start
 ```
+
+
+### web-app
+
+Front end of the project.
+
+### service-app
+
+Back end of the project. 
+
+Connect MongoDB.
