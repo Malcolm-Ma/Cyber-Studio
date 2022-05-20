@@ -89,15 +89,12 @@ async function generateID(){
 
     // get the last id in history in database
     let count = 0;
-    console.log('msg length', messages.length);
     if(messages.length === 0){
         return 0;
     } else {
         for( let msg of messages){
             count++;
-            console.log('Count: ',count);
             if(count === messages.length){
-                console.log('Detect id:', msg.id);
                 return msg.id;
             }
         }
@@ -168,7 +165,6 @@ window.getMsgNum= getMsgNum;
  * @param roomNum: id of room
  */
 async function clearHistory(roomNum) {
-    console.log('msg_db', msg_db);
     let tx = await msg_db.transaction(MSG_STORE_NAME, 'readwrite');
     let store = await tx.objectStore(MSG_STORE_NAME);
     let index = await store.index('roomId');
@@ -177,7 +173,6 @@ async function clearHistory(roomNum) {
     // delete the messages according to id
     if (history && history.length > 0) {
         for(let msg of history){
-            console.log('deleting !!! msg:', msg);
             await store.delete(msg.id);
         }
     }

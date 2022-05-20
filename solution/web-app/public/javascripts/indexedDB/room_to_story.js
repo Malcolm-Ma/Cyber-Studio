@@ -34,18 +34,6 @@ const roomToStoryData = [
  * @return : boolean: return true if story is changed, return false if story isn't changed
  */
 async function checkStoryChange(roomNum, newStoryId){
-    // get old story from roomToStory database
-    /*
-    await getStoryNumber(roomNum)
-        .then(result => {
-            console.log('newstory:', newStoryId);
-            console.log('result:', result);
-            //return result !== newStoryId;
-            return new Promise(resolve => {return 8});
-        })
-        .catch(error => console.log('Error: ' + error))
-
-     */
     let result = await getStoryNumber(roomNum);
     return result !== newStoryId;
 }
@@ -61,7 +49,6 @@ async function checkRoomAvailable(ifEmpty, roomNum, newStoryId){
     return await getStoryNumber(roomNum) // get the id of story which is discussing in room
         .then( async result => {
             if (result === -1) {
-                // console.log("this room is new")
                 await updateRelationship(roomNum, newStoryId);
                 return false; // room is new, user can enter
             } else {

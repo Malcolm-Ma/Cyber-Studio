@@ -26,7 +26,6 @@ window.addEventListener('online', async () => {
   setNetworkStatusTag();
   // update offline story to server
   let offlineStories = await getOfflineStoryList();
-  console.log(offlineStories)
   try{
     const res = await fetch('/create_story_in_bulk', {
       method: 'POST',
@@ -34,7 +33,6 @@ window.addEventListener('online', async () => {
       headers: { 'Content-Type': 'application/json' }
     })
     const offlineresult = await res.json()
-    console.log("fetch result: ", offlineresult)
   }catch (err){
     console.error(err)
     console.log(err.message)
@@ -45,7 +43,6 @@ window.addEventListener('online', async () => {
   // get story list from server
   const response = await fetch('/get_story_list', {method: 'GET'});
   const result = await response.json();
-  console.log(result);
   updateStory(result);
 });
 window.addEventListener('offline', () => {

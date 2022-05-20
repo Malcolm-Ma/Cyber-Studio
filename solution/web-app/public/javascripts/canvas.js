@@ -210,7 +210,6 @@ async function sendDrawToDB(roomID, username, drawsNum, drawObject) {
  * @param canvasList list of draws
  */
 function drawCanvasHistory(ctx, canvasList){
-  console.log("Draw history!!!");
   for (let draw of canvasList){
     let obj = draw.drawObject;
 

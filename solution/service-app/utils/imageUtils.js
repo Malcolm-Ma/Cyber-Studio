@@ -16,7 +16,6 @@ async function imgUrlToBase64(url) {
       var chunks = [];
       var size = 0;
       res.on('data', function (chunk) {
-        console.log('--chunk--\n', chunk);
         chunks.push(chunk);
         size += chunk.length;　　//累加缓冲数据的长度
       });

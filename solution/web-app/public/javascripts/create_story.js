@@ -14,16 +14,6 @@ const content = document.getElementById('content')
 const submit_btn = document.getElementById('submit')
 const story_form = document.getElementById('story_form')
 
-// function offlineCreateStory() {
-//   storeStory({ title: title, author: author, photo: photo_path, content: content })
-//     .then(res =>
-//       console.log('Successfully story a new story in database.')
-//     )
-//     .catch(err =>
-//       console.log('Fail to store this new story')
-//     )
-// }
-
 window.onload = () => globalInit()
 
 /**
@@ -66,7 +56,6 @@ const uploadImage = async (event) => {
   } catch (e) {
     console.log('[IndexedDB] Save image locally');
     tempStoryId = await storeOfflineStory('', '', '', base64);
-    console.log('--tempStoryId--\n', tempStoryId);
   }
 }
 
@@ -76,7 +65,6 @@ const uploadImage = async (event) => {
  */
 photo_path.addEventListener('change', (event) => {
   uploadImage(event).then(result => {
-    console.log("result ", result)
     if (result.status == 413) {
       alert("image size is too large, please upload it again")
       photo_path.value = ''

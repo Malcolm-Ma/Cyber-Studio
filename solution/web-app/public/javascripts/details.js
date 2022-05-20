@@ -120,11 +120,6 @@ connect.addEventListener('click', async (e) => {
       // user enter the room with history
       if (result) {
         console.log('Welcome back to room ', roomNo);
-        // await getMessageList(roomNo)
-        //   .then(list => {
-        //     console.log(JSON.stringify(list));
-        //     outputHistory(list);
-        //   })
         let msgList = await getMessageList(roomNo);
         let canvasList = await getCanvasList(roomNo);
         let knowledgeList = await getKGraphList(roomNo);

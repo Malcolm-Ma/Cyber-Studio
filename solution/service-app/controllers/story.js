@@ -110,7 +110,6 @@ const createStory = async (req, res) => {
 
 const createStoryInBulk = async (req, res) => {
   const { story_list } = req.body;
-  console.log('story_list', story_list)
   // check data format
   if (!story_list) {
     requestUtils.buildErrorResponse(res, {
@@ -170,7 +169,6 @@ const createStoryInBulk = async (req, res) => {
   Promise.all(storySavingPromise).then((response) => {
     Story.insertMany(response)
       .then((results) => {
-        console.log('results', results)
             requestUtils.buildSuccessResponse(res, {
               data: {
                 story_id_list: results.map(value => value.story_id),
@@ -218,7 +216,6 @@ const getStoryDetail = (req, res) => {
     .project(projectionPipeline)
     .exec()
     .then(stories => {
-      console.log('--stories--\n', stories);
       requestUtils.buildSuccessResponse(res, {
         data: stories[0] || {},
       });

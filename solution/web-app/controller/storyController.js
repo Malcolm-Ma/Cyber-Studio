@@ -116,8 +116,6 @@ const story_create_get = (req, res) => {
  */
 const story_create_post = (req, res) => {
   const story_info = req.body
-  console.log("story_info", story_info)
-  console.log("imageURL", imageURL)
 
   if (story_info != null && imageURL != '') {
     axios.post(url + "/create_story", {
