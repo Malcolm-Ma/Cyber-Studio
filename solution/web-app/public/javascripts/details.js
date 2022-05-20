@@ -28,6 +28,8 @@ async function init() {
   // let old_room_list = await getRoomList(storyId);
   // console.log(old_room_list);
   selectRoomHistory(storyId)
+
+
 }
 window.onload = () => globalInit(init)
 
@@ -107,6 +109,11 @@ connect.addEventListener('click', async (e) => {
   }
   if (!name) name = 'Unknown-' + Math.random();
   console.log("selected room id: ", roomNo)
+  if (!window.ONLINE) {
+    document.querySelector('#knowledgeGraphSetType').disabled = true
+  } else {
+    document.querySelector('#knowledgeGraphSetType').disabled = false
+  }
 
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
@@ -167,7 +174,7 @@ sentMsg.addEventListener('click', (e) => {
   e.preventDefault()
   const message = comment.value
   if (message !== '') {
-    var formatMsg = {name: name, time:moment().format('MMMM Do YYYY, h:mm:ss a'), text: message}
+    var formatMsg = { name: name, time: moment().format('MMMM Do YYYY, h:mm:ss a'), text: message }
     outputMessage(formatMsg)
     messageContainer.scrollTop = messageContainer.scrollHeight
     chat.emit('chatMessage', roomNo, name, message)
@@ -180,7 +187,7 @@ comment.addEventListener('keyup', (e) => {
   e.preventDefault()
   const message = comment.value
   if (e.key === "Enter" && message !== '') {
-    var formatMsg = {name: name, time:moment().format('MMMM Do YYYY, h:mm:ss a'), text: message}
+    var formatMsg = { name: name, time: moment().format('MMMM Do YYYY, h:mm:ss a'), text: message }
     outputMessage(formatMsg)
     messageContainer.scrollTop = messageContainer.scrollHeight
     chat.emit('chatMessage', roomNo, name, message)
@@ -248,13 +255,13 @@ function outputMsgHistory(message) {
 
 }
 
-function outputKGraphHistory(kList){
-  kList.forEach( k => {
+function outputKGraphHistory(kList) {
+  kList.forEach(k => {
     outputKGraph(JSON.parse(k.row), k.username, k.color)
   })
 }
 
-function outputHistory(messageHistory, knowledgeHistory){
+function outputHistory(messageHistory, knowledgeHistory) {
   outputMsgHistory(messageHistory);
   outputKGraphHistory(knowledgeHistory);
 }
@@ -300,8 +307,16 @@ async function selectItem(event) {
   chat.emit('emitKGraph', roomNo, row, name, color)
   // save knowledge in indexedDB
   await storeKGraph(roomNo, row, name, color)
-
+  e.preventDefault()
 }
+
+const KGraphSetType = document.querySelector('#knowledgeGraphSetType')
+KGraphSetType.addEventListener('click', (e) => {
+  e.preventDefault()
+  widgetInit()
+})
+
+
 
 function outputKGraph(row, name, color) {
   const result = `
