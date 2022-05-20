@@ -35,6 +35,7 @@ async function initStoryDB(){
                     let storyDB = upgradeDb.createObjectStore(STORY_STORE_NAME, {
                         keyPath: 'story_id', // story id is unique for each story
                     });
+                    storyDB.createIndex('story_id', 'story_id', {unique: true, multiEntry: true});
                     storyDB.createIndex('ifUpdate', 'ifUpdate', {unique: false, multiEntry: true});
                     storyDB.createIndex('author', 'author', {unique: false, multiEntry: true});
                     // storyDB.createIndex('date', 'date', {unique: false, multiEntry: true});
@@ -83,7 +84,7 @@ function generateID(){
 }
 
 async function storeOfflineStory(title, content, author, photo) {
-    await storeStoryToDB(title, content, author, photo, false)
+    return await storeStoryToDB(title, content, author, photo, false)
 }
 window.storeOfflineStory= storeOfflineStory;
 
@@ -131,7 +132,7 @@ async function storeInfoOffline(storyId, title, content, author) {
         let story = await index.get(IDBKeyRange.only(storyId)); // search story
 
         await store.put({
-            storyId,
+            story_id: storyId,
             title: title,
             content: content,
             author: author,
@@ -140,6 +141,7 @@ async function storeInfoOffline(storyId, title, content, author) {
             ifUpdate: false
         });
         await tx.complete;
+        console.log(`[IndexedDB] Save ${storyId} successfully`)
     }
 }
 window.storeInfoOffline= storeInfoOffline;
