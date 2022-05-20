@@ -56,8 +56,9 @@ async function storeStoryToDB(title, content, author, photo, ifUpdate) {
         try{
             let tx = await story_db.transaction(STORY_STORE_NAME, 'readwrite');
             let store = await tx.objectStore(STORY_STORE_NAME);
+            const story_id = generateID();
             await store.put({
-                story_id: generateID(),
+                story_id,
                 title: title,
                 content: content,
                 author: author,
@@ -65,12 +66,13 @@ async function storeStoryToDB(title, content, author, photo, ifUpdate) {
                 ifUpdate: ifUpdate
             });
             await  tx.complete;
-            console.log('added story to the store! '+ JSON.stringify(storyObject));
+            return story_id;
+            // console.log('added story to the store! '+ JSON.stringify(storyObject));
         } catch(error) {
             console.log('error: I could not store the story. Reason: '+error);
         }
     }
-    else localStorage.setItem(storyObject.content, JSON.stringify(storyObject));
+    // else localStorage.setItem(storyObject.content, JSON.stringify(storyObject));
 }
 window.storeStoryToDB= storeStoryToDB;
 
@@ -81,6 +83,7 @@ function generateID(){
 async function storeOfflineStory(title, content, author, photo) {
     await storeStoryToDB(title, content, author, photo, false)
 }
+window.storeOfflineStory= storeOfflineStory;
 
 async function storeOnlineStory(title, content, author, photo) {
     await storeStoryToDB(title, content, author, photo, true)
