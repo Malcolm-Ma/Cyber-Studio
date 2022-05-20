@@ -25,8 +25,6 @@ async function init() {
 
   // get available old rooms for reuse
   let storyId = connect.dataset.sid
-  // let old_room_list = await getRoomList(storyId);
-  // console.log(old_room_list);
   selectRoomHistory(storyId)
 
 
@@ -55,7 +53,6 @@ async function selectRoomHistory(storyId) {
 
 roomIdList.addEventListener('change', (e) => {
   var selected_room_id = roomIdList.value
-  console.log("selected room id ", selected_room_id)
   if (selected_room_id != -1) {
     document.querySelector('#roomNo').value = selected_room_id
   }
@@ -100,15 +97,12 @@ connect.addEventListener('click', async (e) => {
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
   let storyId = connect.dataset.sid
-  console.log("story id: ", storyId)
-  console.log("imageUrl: ", imageUrl)
   if (!roomNo) {
     document.querySelector('#warning').style.display = 'block'
     document.querySelector('#roomNo').focus()
     return
   }
   if (!name) name = 'Unknown-' + Math.random();
-  console.log("selected room id: ", roomNo)
   if (!window.ONLINE) {
     document.querySelector('#knowledgeGraphSetType').disabled = true
   } else {
@@ -340,7 +334,6 @@ function outputKGraph(row, name, color) {
 }
 
 chat.on('KGraph', data => {
-  console.log(data)
   outputKGraph(data.grow, data.gname, data.gcolor)
 })
 
