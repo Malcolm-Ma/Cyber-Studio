@@ -16,30 +16,34 @@ const globalInit = async (customInitMethod) => {
    * set online and offline tag in nav
    */
   // check network status
-  try {
-    await fetch('/offline/check_network', { method: 'GET' });
-    window.ONLINE = true;
-  } catch (e) {
-    window.ONLINE = false;
-  }
-  setNetworkStatusTag(window.ONLINE);
-  window.addEventListener('online', () => {
-    setNetworkStatusTag(window.ONLINE);
-  });
-  window.addEventListener('offline', () => {
-    setNetworkStatusTag(window.ONLINE);
-  });
+  await setNetworkStatusTag();
 
   // run custom init method
   customInitMethod && await customInitMethod();
 };
 
+window.addEventListener('online', () => {
+  setNetworkStatusTag();
+});
+window.addEventListener('offline', () => {
+  setNetworkStatusTag();
+});
+
 /**
  * set Network Status Tag in nav
- * @param status {boolean} true: online; false: offline;
  */
-const setNetworkStatusTag = (status) => {
-  const onlineTag = document.getElementById('online');
-  onlineTag.className = `badge text-bg-${status ? 'success' : 'danger'} me-4`;
-  onlineTag.innerText = status ? 'Online' : 'Offline';
+const setNetworkStatusTag = async () => {
+  const changeTag = (status) => {
+    const onlineTag = document.getElementById('online');
+    onlineTag.className = `badge text-bg-${status ? 'success' : 'danger'} me-4`;
+    onlineTag.innerText = status ? 'Online' : 'Offline';
+  }
+  try {
+    await fetch('/offline/check_network', { method: 'GET' });
+    window.ONLINE = true;
+    changeTag(true);
+  } catch (e) {
+    window.ONLINE = false;
+    changeTag(false);
+  }
 };
