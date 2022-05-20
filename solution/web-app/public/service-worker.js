@@ -12,6 +12,7 @@ const filesToCache = [
   'javascripts/scripts/jquery-3.6.0.min.js',
   'javascripts/scripts/socket.io.min.js',
   'javascripts/scripts/axios.min.js',
+  'javascripts/scripts/moment.min.js',
   'javascripts/index.js',
   'javascripts/details.js',
   'javascripts/canvas.js',
@@ -57,7 +58,6 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', function (event) {
   if (event.request.url === 'http://localhost:3000/offline/check_network') {
     console.log('[Service Worker] Check offline');
-    event.respondWith(fetch(event.request));
     return;
   }
   event.respondWith(caches.open(staticCacheName).then((cache) => {

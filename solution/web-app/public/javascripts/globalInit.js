@@ -15,11 +15,9 @@ const globalInit = async (customInitMethod) => {
   /**
    * set online and offline tag in nav
    */
+  // check network status
   try {
-    const res = await fetch('/offline/check_network', {
-      method: 'GET',
-    });
-    console.log('--res--\n', res);
+    await fetch('/offline/check_network', { method: 'GET' });
     window.ONLINE = true;
   } catch (e) {
     window.ONLINE = false;
