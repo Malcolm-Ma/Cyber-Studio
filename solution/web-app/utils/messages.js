@@ -2,7 +2,7 @@
  * @Author: Jipu Li 
  * @Date: 2022-03-20 00:03:49 
  * @Last Modified by: Jipu Li
- * @Last Modified time: 2022-05-18 16:57:07
+ * @Last Modified time: 2022-05-20 16:16:35
  */
 
 const moment = require('moment')
@@ -17,7 +17,7 @@ function formatMessage(name, text) {
   return {
     name: name,
     text,
-    time: moment().format('h:mm a')
+    time: moment().format('MMMM Do YYYY, h:mm:ss a')
   }
 }
 
