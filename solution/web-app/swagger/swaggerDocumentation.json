@@ -69,6 +69,25 @@
           }
         }
       }
+    },
+    "/check_network": {
+      "get": {
+        "tags": [
+          "Online/Offline operations"
+        ],
+        "description": "pop online status",
+        "operationId": "online",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/online_status"
+              }
+            }
+          },
+          "required": true
+        }
+      }
     }
   },
   "components": {
