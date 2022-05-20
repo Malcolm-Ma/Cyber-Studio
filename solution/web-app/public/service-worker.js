@@ -55,44 +55,26 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', function (event) {
-  if (event.request.destination === 'image') {
-    event.respondWith(caches.open(staticCacheName).then((cache) => {
-      // Go to the cache first
-      return cache.match(event.request.url).then((cachedResponse) => {
-        // Return a cached response if we have one
-        if (cachedResponse) {
-          return cachedResponse;
-        }
-        // Otherwise, hit the network
-        return fetch(event.request).then((fetchedResponse) => {
-          // Add the network response to the cache for later visits
-          cache.put(event.request, fetchedResponse.clone());
-
-          // Return the network response
-          return fetchedResponse;
-        });
-      });
-    }));
+  if (event.request.url === 'http://localhost:3000/offline/check_network') {
+    console.log('[Service Worker] Check offline');
+    event.respondWith(fetch(event.request));
     return;
   }
-  event.respondWith(
-    caches.open(staticCacheName).then(function (cache) {
-      return cache.match(event.request).then(function (response) {
-        return fetch(event.request)
-          .then(function (response) {
-            cache.put(event.request, response.clone()).catch((err) => console.error(err));
-            // fetch response
-            return response;
-          }).catch((err) => {
-            // cache response
-            if (response) {
-              return response;
-            }
-            // if no match, return not found page
-            console.error('fetch(event.request): ', event.request.url, err);
-            return cache.match('/offline/not_found');
-          })
+  event.respondWith(caches.open(staticCacheName).then((cache) => {
+    // Go to the cache first
+    return cache.match(event.request.url).then((cachedResponse) => {
+      // Return a cached response if we have one
+      if (cachedResponse) {
+        return cachedResponse;
+      }
+      // Otherwise, hit the network
+      return fetch(event.request).then((fetchedResponse) => {
+        // Add the network response to the cache for later visits
+        cache.put(event.request, fetchedResponse.clone());
+
+        // Return the network response
+        return fetchedResponse;
       });
-    })
-  );
+    });
+  }));
 });

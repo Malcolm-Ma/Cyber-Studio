@@ -15,19 +15,21 @@ const globalInit = async (customInitMethod) => {
   /**
    * set online and offline tag in nav
    */
-  setNetworkStatusTag(navigator.onLine);
-  window.ONLINE = navigator.onLine;
+  try {
+    const res = await fetch('/offline/check_network', {
+      method: 'GET',
+    });
+    console.log('--res--\n', res);
+    window.ONLINE = true;
+  } catch (e) {
+    window.ONLINE = false;
+  }
+  setNetworkStatusTag(window.ONLINE);
   window.addEventListener('online', () => {
-    if (!window.ONLINE) {
-      setNetworkStatusTag(navigator.onLine);
-      window.ONLINE = true;
-    }
+    setNetworkStatusTag(window.ONLINE);
   });
   window.addEventListener('offline', () => {
-    if (window.ONLINE) {
-      setNetworkStatusTag(navigator.onLine);
-      window.ONLINE = false;
-    }
+    setNetworkStatusTag(window.ONLINE);
   });
 
   // run custom init method
