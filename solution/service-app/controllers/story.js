@@ -14,14 +14,7 @@ const assetController = require('./asset');
 const projectionPipeline = {
   _id: 0,
   story_id: {
-    $cond:
-      {
-        if: {
-          "$in": ["$current_operator", [null, ""]]
-        },
-        then: "$_id",
-        else: "$story_id",
-      }
+    $ifNull: ['$story_id', '$_id']
   },
   title: 1,
   content: 1,
