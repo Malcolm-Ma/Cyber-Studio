@@ -39,15 +39,25 @@ window.onload = () => globalInit(init)
  */
 async function selectRoomHistory(storyId) {
   let old_room_list = await getRoomList(storyId);
-  console.log("list size:", old_room_list.length)
-  console.log("story_id:", old_room_list);
-  old_room_list.forEach(id => {
-    var option = document.createElement("option")
-    option.value = id
-    option.text = id
-    roomIdList.add(option)
-  });
+  if (old_room_list == 0) {
+    roomIdList.options[0].innerHTML = "you do not have any history chat session for this story"
+  } else {
+    old_room_list.forEach(id => {
+      var option = document.createElement("option")
+      option.value = id
+      option.text = id
+      roomIdList.add(option)
+    });
+  }
 }
+
+roomIdList.addEventListener('change', (e) => {
+  var selected_room_id = roomIdList.value
+  console.log("selected room id ", selected_room_id)
+  if (selected_room_id != -1) {
+    document.querySelector('#roomNo').value = selected_room_id
+  }
+})
 
 /**
  * called to generate a random room number
@@ -84,12 +94,6 @@ roomNoGenerator.addEventListener('click', (e) => {
 const connect = document.querySelector('#connect')
 connect.addEventListener('click', async (e) => {
   e.preventDefault()
-  var selected_room_id = 0
-  if (roomIdList.value == 1) {
-    selected_room_id = roomNo
-  } else {
-    selected_room_id = roomIdList.value
-  }
   roomNo = document.getElementById('roomNo').value;
   name = document.getElementById('name').value;
   let imageUrl = connect.dataset.doc
@@ -102,36 +106,33 @@ connect.addEventListener('click', async (e) => {
     return
   }
   if (!name) name = 'Unknown-' + Math.random();
-  console.log("selected room id: ", selected_room_id)
-
+  console.log("selected room id: ", roomNo)
 
   //@todo join the chat room
   chat.emit('create or join', roomNo, name)
   // initCanvas(chat, imageUrl, color, roomNo, name);
   hideLoginInterface(roomNo, name);
   canvas.setAttribute('style', `border-width: 2px; border-style: solid; border-color: ${color};`)
-
-
   // check if the room can be reuse -> show history / clear history
-  await checkRoomAvailable(true, selected_room_id, storyId)
+  await checkRoomAvailable(true, roomNo, storyId)
     .then(async result => {
       // user enter the room with history
       if (result) {
-        console.log('Welcome back to room ', selected_room_id);
+        console.log('Welcome back to room ', roomNo);
         // await getMessageList(roomNo)
         //   .then(list => {
         //     console.log(JSON.stringify(list));
         //     outputHistory(list);
         //   })
-        let msgList = await getMessageList(selected_room_id);
-        let canvasList = await getCanvasList(selected_room_id);
+        let msgList = await getMessageList(roomNo);
+        let canvasList = await getCanvasList(roomNo);
         outputMsgHistory(msgList);
-        initCanvas(chat, imageUrl, color, selected_room_id, name, canvasList);
+        initCanvas(chat, imageUrl, color, roomNo, name, canvasList);
       }
       // user enter a new/empty room
       else {
-        initCanvas(chat, imageUrl, color, selected_room_id, name, null);
-        console.log('Access room ', selected_room_id, ' successfully.');
+        initCanvas(chat, imageUrl, color, roomNo, name, null);
+        console.log('Access room ', roomNo, ' successfully.');
 
       }
     })
