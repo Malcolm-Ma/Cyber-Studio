@@ -22,8 +22,12 @@ const globalInit = async (customInitMethod) => {
   customInitMethod && await customInitMethod();
 };
 
-window.addEventListener('online', () => {
+window.addEventListener('online', async () => {
   setNetworkStatusTag();
+  const response = await fetch('/get_story_list', {method: 'GET'});
+  const result = await response.json();
+  console.log(result);
+  updateStory(result);
 });
 window.addEventListener('offline', () => {
   setNetworkStatusTag();

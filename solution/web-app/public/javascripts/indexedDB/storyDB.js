@@ -148,12 +148,10 @@ window.storeInfoOffline= storeInfoOffline;
 
 
 /**
- * it detect all the story which is not update in indexedDB
- * @param stories: list of ids of story of all stories
- * @return unUpdateList: list of ids of all un-updated stories
+ * it detects the stories which is not update in indexedDB
+ * @param stories: list all stories
  */
-async function getUnUpdateStory(stories) {
-    let unUpdateList = [];
+async function updateStory(stories) {
     if (story_db) {
         let tx = await story_db.transaction(STORY_STORE_NAME, 'readwrite');
         let store = await tx.objectStore(STORY_STORE_NAME);
@@ -162,12 +160,10 @@ async function getUnUpdateStory(stories) {
         for (let story of stories) {
             let storyData = await index.get(IDBKeyRange.only(story.story_id));
             if(storyData == null || storyData.length === 0){
-                unUpdateList.push(story.story_id)
+                await store.put(story);
             }
         }
         await tx.complete;
-
-        return unUpdateList;
     }
 }
-window.getUnUpdateStory= getUnUpdateStory;
+window.updateStory= updateStory;

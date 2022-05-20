@@ -179,6 +179,20 @@ const story_details = (req, res) => {
   })
 }
 
+const story_list = (req, res) => {
+  axios.get(url + '/get_story_list').then(response => {
+    if (response.data.status === 0) {
+      var story_list = []
+      story_list = response.data
+      res.json(story_list.data);
+    } else {
+      console.log(response.data.message)
+    }
+  }).catch(err => {
+    console.log(err.message)
+  })
+}
+
 /**
  * Delete the story by id
  * @req request from user
@@ -199,4 +213,5 @@ module.exports = {
   sotry_list_author,
   story_list_date_des,
   story_list_author_des,
+  story_list,
 }

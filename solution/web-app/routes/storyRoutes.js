@@ -10,6 +10,7 @@ var router = express.Router()
 const storyController = require('../controller/storyController')
 
 router.get('/', storyController.story_index)
+router.get('/get_story_list', storyController.story_list)
 router.get('/order_by_date', storyController.story_list_date)
 router.get('/order_by_author', storyController.sotry_list_author)
 router.get('/order_by_date_des', storyController.story_list_date_des)
