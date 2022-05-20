@@ -9,7 +9,7 @@
       <div class="container mt-5" id="story_info">
         <div class="row row-cols-1 row-cols-sm-2">
           <div class="col card">
-            <img id="story_info_image" src="<%= story.photo%>" class="card-img-top" alt="...">
+            <img id="story_info_image" src="<%=story.photo%>" class="card-img-top" alt="...">
             <div class="card-body">
               <h5 class="card-title">
                 <%= story.title %>
@@ -39,12 +39,11 @@
             </div>
             <form>
               <div class="card-body">
-                <p><label for="name"> Your name </label>
+                <p><label for="name"> Your name: </label>
                   <input type="text" id="name" name="name">
                 </p>
-
                 <p>
-                  <label for="roomNo"> Your room </label>
+                  <label for="roomNo"> New room: </label>
                   <input type="text" id="roomNo" name="roomNo">
                   <a id="roomNoGenerator" class="btn btn-primary">Generate Room</a>
                 </p>
@@ -52,9 +51,12 @@
                   <p class="fw-bold text-warning">Room Id cannot be empty</p>
                 </div>
                 <p>
-                  <label for="roomHistory">Room History</label>
+                  <label for="roomNo"> Or :</label>
                   <select class="form-select" aria-label="Default select example" id="roomIdList">
+                    <option value="-1">Select a room you have used</option>
                   </select>
+                <p><small>If you chatted in different rooms for this story, you can choose which room session to
+                    see</small></p>
                 </p>
               </div>
               <div class="card-footer d-flex justify-content-between">
