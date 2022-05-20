@@ -1,6 +1,6 @@
 /*
- * @Author: Jipu Li 
- * @Date: 2022-03-17 13:42:49 
+ * @Author: Jipu Li
+ * @Date: 2022-03-17 13:42:49
  * @Last Modified by: Jipu Li
  * @Last Modified time: 2022-05-18 16:06:30
  */
@@ -15,7 +15,7 @@ router.get('/order_by_author', storyController.sotry_list_author)
 router.get('/order_by_date_des', storyController.story_list_date_des)
 router.get('/order_by_author_des', storyController.story_list_author_des)
 router.get('/create', storyController.story_create_get)
-router.post('/create', storyController.story_create_post)
+router.post('/create_story', storyController.story_create_post)
 router.post('/upload_image', storyController.upload_image)
 router.get('/details/:id', storyController.story_details)
 router.delete('/stories/:id', storyController.story_delete)

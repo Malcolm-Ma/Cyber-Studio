@@ -86,7 +86,7 @@ submit_btn.addEventListener('click', async (event) => {
   const author = story_form.author.value
   const content = story_form.content.value
   try {
-    const response = await fetch('/create', {
+    const response = await fetch('/create_story', {
       method: 'POST',
       body: JSON.stringify({ title, author, content }),
       headers: { 'Content-Type': 'application/json' }
@@ -111,7 +111,7 @@ submit_btn.addEventListener('click', async (event) => {
     }
 
   } catch (err) {
-    console.log(err.message)
+    console.error(err)
   }
 })
 
