@@ -13,7 +13,16 @@ const assetController = require('./asset');
 
 const projectionPipeline = {
   _id: 0,
-  story_id: '$_id',
+  story_id: {
+    $cond:
+      {
+        if: {
+          "$in": ["$current_operator", [null, ""]]
+        },
+        then: "$_id",
+        else: "$story_id",
+      }
+  },
   title: 1,
   content: 1,
   author: 1,
@@ -144,7 +153,7 @@ const createStoryInBulk = async (req, res) => {
   }
 
   const storySavingPromise = newStoryList.map(async (story) => {
-    const { title, author, content, date, story_id: _id, photo } = story;
+    const { title, author, content, date, story_id, photo } = story;
     const photoId = await assetController.saveImage(photo)
       .catch((err) => {
         requestUtils.buildErrorResponse(res, {
@@ -154,7 +163,7 @@ const createStoryInBulk = async (req, res) => {
       });
     // insert new story
     const newStory = {
-      _id,
+      story_id,
       title,
       author,
       content,
@@ -169,7 +178,7 @@ const createStoryInBulk = async (req, res) => {
       .then((results) => {
             requestUtils.buildSuccessResponse(res, {
               data: {
-                story_id_list: results.map(value => value._id),
+                story_id_list: results.map(value => value.story_id),
               }
             })
           })
@@ -194,11 +203,15 @@ const getStoryDetail = (req, res) => {
     });
     return;
   }
+  let match = {};
+  if (mongoose.Types.ObjectId.isValid(id)) {
+    match = { _id: mongoose.Types.ObjectId(id) };
+  } else {
+    match = { story_id: id };
+  }
   // search and aggregate
   Story.aggregate()
-    .match({
-      _id: mongoose.Types.ObjectId(id),
-    })
+    .match(match)
     // join Assets
     .lookup({
       from: 'assets',
