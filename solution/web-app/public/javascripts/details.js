@@ -301,7 +301,6 @@ async function selectItem(event) {
   chat.emit('emitKGraph', roomNo, row, name, color)
   // save knowledge in indexedDB
   await storeKGraph(roomNo, row, name, color)
-  e.preventDefault()
 }
 
 const KGraphSetType = document.querySelector('#knowledgeGraphSetType')
