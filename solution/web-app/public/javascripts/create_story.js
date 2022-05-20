@@ -101,15 +101,15 @@ submit_btn.addEventListener('click', async (event) => {
     }
 
     if (data.story_id) {
-      console.log('data_story: ', data);
-      await storeStoryToDB({
-        story_id: data.story_id,
-        title: data.title,
-        content: data.content,
-        author: data.author,
-        photo: data.photo,
-        ifUpdate: true
-      });
+      // console.log('data_story: ', data);
+      // await storeStoryToDB({
+      //   story_id: data.story_id,
+      //   title: data.title,
+      //   content: data.content,
+      //   author: data.author,
+      //   photo: data.photo,
+      //   ifUpdate: true
+      // });
       location.assign('/')
     }
 

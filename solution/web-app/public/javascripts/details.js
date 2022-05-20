@@ -126,7 +126,8 @@ connect.addEventListener('click', async (e) => {
         //   })
         let msgList = await getMessageList(roomNo);
         let canvasList = await getCanvasList(roomNo);
-        outputMsgHistory(msgList);
+        let knowledgeList = await getKGraphList(roomNo);
+        outputHistory(msgList, knowledgeList);
         initCanvas(chat, imageUrl, color, roomNo, name, canvasList);
       }
       // user enter a new/empty room
@@ -241,6 +242,17 @@ function outputMsgHistory(message) {
 
 }
 
+function outputKGraphHistory(kList){
+  kList.forEach( k => {
+    outputKGraph(JSON.parse(k.row), k.username, k.color)
+  })
+}
+
+function outputHistory(messageHistory, knowledgeHistory){
+  outputMsgHistory(messageHistory);
+  outputKGraphHistory(knowledgeHistory);
+}
+
 
 /**
  * it inits the widget by selecting the type from the field myType
@@ -275,11 +287,14 @@ function widgetInit() {
  * callback called when an element in the widget is selected
  * @param event the Google Graph widget event {@link https://developers.google.com/knowledge-graph/how-tos/search-widget}
  */
-function selectItem(event) {
+async function selectItem(event) {
   let row = event.row;
   // document.getElementById('resultImage').src= row.json.image.url;
 
   chat.emit('emitKGraph', roomNo, row, name, color)
+  // save knowledge in indexedDB
+  await storeKGraph(roomNo, row, name, color)
+
 }
 
 function outputKGraph(row, name, color) {
