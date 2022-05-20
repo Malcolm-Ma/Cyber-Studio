@@ -78,6 +78,14 @@ function generateID(){
     return Math.random().toString(36).slice(-6) + new Date().getTime();
 }
 
+async function storeOfflineStory(title, content, author, photo) {
+    await storeStoryToDB(title, content, author, photo, false)
+}
+
+async function storeOnlineStory(title, content, author, photo) {
+    await storeStoryToDB(title, content, author, photo, true)
+}
+
 /**
  * it retrieves all the information of story
  * if the database is not supported, it will use localstorage
