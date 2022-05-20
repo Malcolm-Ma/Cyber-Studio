@@ -78,7 +78,7 @@
         "description": "get story list from MongoDB",
         "operationId": "get story",
         "responses": {
-          "0": {
+          "200": {
             "description": "get story list successfully",
             "content": {
               "application/json": {
@@ -88,7 +88,7 @@
               }
             }
           },
-          "1": {
+          "201": {
             "description": "fail to get story list",
             "content": {
               "application/json": {
@@ -118,15 +118,17 @@
         ],
         "description": "pop online status",
         "operationId": "online",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/online_status"
+        "responses": {
+          "200": {
+            "description": "pop online status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/online_status"
+                }
               }
             }
-          },
-          "required": true
+          }
         }
       }
     }

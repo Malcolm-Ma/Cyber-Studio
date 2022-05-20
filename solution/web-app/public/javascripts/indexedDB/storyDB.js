@@ -50,15 +50,20 @@ window.initStoryDB= initStoryDB;
 /**
  * it saves a new story into the database
  * if the database is not supported, it will use localstorage
- * @param storyObject
  */
-async function storeStoryToDB(storyObject) {
-    console.log('inserting: '+JSON.stringify(storyObject));
+async function storeStoryToDB(title, content, author, photo, ifUpdate) {
     if (story_db) {
         try{
             let tx = await story_db.transaction(STORY_STORE_NAME, 'readwrite');
             let store = await tx.objectStore(STORY_STORE_NAME);
-            await store.put(storyObject);
+            await store.put({
+                story_id: generateID(),
+                title: title,
+                content: content,
+                author: author,
+                photo: photo,
+                ifUpdate: ifUpdate
+            });
             await  tx.complete;
             console.log('added story to the store! '+ JSON.stringify(storyObject));
         } catch(error) {
@@ -69,45 +74,31 @@ async function storeStoryToDB(storyObject) {
 }
 window.storeStoryToDB= storeStoryToDB;
 
-// /**
-//  * it retrieves all the information of story
-//  * if the database is not supported, it will use localstorage
-//  * @param storyNum: id of story
-//  * @returns data item of story
-//  */
-// async function getStory(storyNum) {
-//     let searchResult = []; // return all information about story
-//     if (story_db) {
-//         console.log('fetching: ' + storyNum);
-//         let tx = await story_db.transaction(STORY_STORE_NAME, 'readonly');
-//         let store = await tx.objectStore(STORY_STORE_NAME);
-//         let index = await store.index('storyId');
-//         let storyInfo = await index.getAll(IDBKeyRange.only(storyNum)); // search story
-//         console.log('Story: ' + JSON.stringify(storyInfo));
-//         await tx.complete;
-//
-//         if (storyInfo && storyInfo.length > 0) {
-//             for (let elem of storyInfo){
-//                 searchResult.push(elem); // save message in list
-//             }
-//         } else {
-//             // if the database is not supported, use localstorage
-//             const value = localStorage.getItem(storyNum);
-//             if (value == null)
-//                 console.log('This story is not exits.'); // there are nothing in localstorage
-//             else {
-//                 searchResult.push(value);
-//             }
-//         }
-//     } else {
-//         const value = localStorage.getItem(storyNum);
-//         if (value == null)
-//             console.log('This story is not exits.'); // there are nothing in localstorage
-//         else {
-//             searchResult.push(value);
-//         }
-//     }
-//
-//     return searchResult;
-// }
-// window.getStory= getStory;
+function generateID(){
+    return Math.random().toString(36).slice(-6) + new Date().getTime();
+}
+
+/**
+ * it retrieves all the information of story
+ * if the database is not supported, it will use localstorage
+ * @returns data item of stories
+ */
+async function getOfflineStoryList() {
+    let searchResult = []; // return all information about story
+    if (story_db) {
+        let tx = await story_db.transaction(STORY_STORE_NAME, 'readonly');
+        let store = await tx.objectStore(STORY_STORE_NAME);
+        let index = await store.index('ifUpdate');
+        let storyInfo = await index.getAll(IDBKeyRange.only(false)); // search story
+        console.log('Un-update Story: ' + JSON.stringify(storyInfo));
+        await tx.complete;
+
+        if (storyInfo && storyInfo.length > 0) {
+            for (let elem of storyInfo){
+                searchResult.push(elem); // save message in list
+            }
+        }
+    }
+    return searchResult;
+}
+window.getOfflineStoryList= getOfflineStoryList;
