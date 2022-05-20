@@ -199,7 +199,7 @@ function outputMessage(message) {
   li.classList.add('list-group-item')
   li.classList.add('border-0')
 
-  if (name === message.name) {
+  if (name == message.name) {
     li.classList.add('text-end')
     li.innerHTML = `
     <span class="fs-5 ">${message.text}</span>
