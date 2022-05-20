@@ -45,7 +45,7 @@
         },
         "responses": {
           "201": {
-            "description": "Correct store story in MongoDB",
+            "description": "store story in MongoDB successfully",
             "content": {
               "application/json": {
                 "schema": {
@@ -114,7 +114,7 @@
     "/check_network": {
       "get": {
         "tags": [
-          "Online/Offline operations"
+          "online/offline operations"
         ],
         "description": "pop online status",
         "operationId": "online",
@@ -148,7 +148,7 @@
                   "$ref": "#/components/schemas/get_fail"
                 },
                 "example": {
-                  "status": 403,
+                  "status": 1,
                   "error": "Invalid id, please try again.",
                   "message": "Invalid id, please try again."
                 }
@@ -187,6 +187,49 @@
                   "status": 1,
                   "message": "Invalid data or not found!",
                   "err": "Invalid data or not found!"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/upload_image": {
+      "post": {
+        "tags": [
+          "image operations"
+        ],
+        "description": "upload image",
+        "operationId": "upload image",
+        "responses": {
+          "200": {
+            "description": "success to upload image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_success"
+                },
+                "example": {
+                  "status": 0,
+                  "message": "success",
+                  "data": {
+                    "url": "/images/landmark03.jpeg"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "fail to upload image",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/get_fail"
+                },
+                "example": {
+                  "status": 1,
+                  "message": "No data sent!",
+                  "err": "No data sent!"
                 }
               }
             }
