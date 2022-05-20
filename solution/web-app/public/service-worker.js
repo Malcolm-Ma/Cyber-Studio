@@ -84,12 +84,12 @@ self.addEventListener('fetch', function (event) {
             // fetch response
             return response;
           }).catch((err) => {
-            console.error('fetch(event.request)', err);
             // cache response
             if (response) {
               return response;
             }
             // if no match, return not found page
+            console.error('fetch(event.request): ', event.request.url, err);
             return cache.match('/offline/not_found');
           })
       });

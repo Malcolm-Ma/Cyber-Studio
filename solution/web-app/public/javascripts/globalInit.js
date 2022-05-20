@@ -4,6 +4,7 @@
  */
 
 const globalInit = async (customInitMethod) => {
+  console.log('[Global Init] resource onload');
   // initial all stores of indexedDB
   await initMessageDB();
   await initCanvasDB();
@@ -14,14 +15,19 @@ const globalInit = async (customInitMethod) => {
   /**
    * set online and offline tag in nav
    */
-  window.addEventListener('load', () => {
-    setNetworkStatusTag(navigator.onLine);
-  });
+  setNetworkStatusTag(navigator.onLine);
+  window.ONLINE = navigator.onLine;
   window.addEventListener('online', () => {
-    setNetworkStatusTag(navigator.onLine);
+    if (!window.ONLINE) {
+      setNetworkStatusTag(navigator.onLine);
+      window.ONLINE = true;
+    }
   });
   window.addEventListener('offline', () => {
-    setNetworkStatusTag(navigator.onLine);
+    if (window.ONLINE) {
+      setNetworkStatusTag(navigator.onLine);
+      window.ONLINE = false;
+    }
   });
 
   // run custom init method
