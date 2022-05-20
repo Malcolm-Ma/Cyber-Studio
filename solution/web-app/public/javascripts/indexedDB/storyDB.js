@@ -4,7 +4,6 @@
  */
 
 import * as idb from 'https://cdn.jsdelivr.net/npm/idb@7/+esm';
-//import * as idb from './idb/index.js';
 
 
 ////////////////// DATABASE //////////////////
@@ -67,6 +66,7 @@ async function storeStoryToDB(title, content, author, photo, ifUpdate) {
                 content: content,
                 author: author,
                 photo: photo,
+                date: new Date(),
                 ifUpdate: ifUpdate
             });
             await  tx.complete;
@@ -136,6 +136,7 @@ async function storeInfoOffline(storyId, title, content, author) {
             content: content,
             author: author,
             photo: story.photo,
+            date: story.date,
             ifUpdate: false
         });
         await tx.complete;
