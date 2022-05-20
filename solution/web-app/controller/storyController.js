@@ -193,6 +193,20 @@ const story_list = (req, res) => {
   })
 }
 
+const create_story_bulk = (req, res) => {
+  console.log('body', req.body);
+  const storyList = req.body
+  axios.post(url + "/create_story_in_bulk", {
+    story_list: storyList,
+  }).then((response) => {
+    const result = response.data
+    console.log('result',result)
+    res.json(result)
+  }).catch((err) => {
+    console.error(err);
+  });
+}
+
 /**
  * Delete the story by id
  * @req request from user
@@ -214,4 +228,5 @@ module.exports = {
   story_list_date_des,
   story_list_author_des,
   story_list,
+  create_story_bulk,
 }

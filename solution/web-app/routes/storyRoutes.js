@@ -20,5 +20,7 @@ router.post('/create_story', storyController.story_create_post)
 router.post('/upload_image', storyController.upload_image)
 router.get('/details/:id', storyController.story_details)
 router.delete('/stories/:id', storyController.story_delete)
+router.post('/create_story_in_bulk', storyController.create_story_bulk);
+
 
 module.exports = router;

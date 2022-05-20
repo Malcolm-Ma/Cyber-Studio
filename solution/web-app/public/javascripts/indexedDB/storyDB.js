@@ -84,12 +84,12 @@ function generateID(){
 }
 
 async function storeOfflineStory(title, content, author, photo) {
-    await storeStoryToDB(title, content, author, photo, false)
+    return await storeStoryToDB(title, content, author, photo, "false")
 }
 window.storeOfflineStory= storeOfflineStory;
 
 async function storeOnlineStory(title, content, author, photo) {
-    await storeStoryToDB(title, content, author, photo, true)
+    return await storeStoryToDB(title, content, author, photo, "true")
 }
 
 /**
@@ -103,7 +103,7 @@ async function getOfflineStoryList() {
         let tx = await story_db.transaction(STORY_STORE_NAME, 'readonly');
         let store = await tx.objectStore(STORY_STORE_NAME);
         let index = await store.index('ifUpdate');
-        let storyInfo = await index.getAll(IDBKeyRange.only(false)); // search story
+        let storyInfo = await index.getAll(IDBKeyRange.only("false")); // search story
         console.log('Un-update Story: ' + JSON.stringify(storyInfo));
         await tx.complete;
 
@@ -126,6 +126,7 @@ window.getOfflineStoryList= getOfflineStoryList;
  */
 async function storeInfoOffline(storyId, title, content, author) {
     if (story_db) {
+        console.log(storyId);
         let tx = await story_db.transaction(STORY_STORE_NAME, 'readwrite');
         let store = await tx.objectStore(STORY_STORE_NAME);
         let index = await store.index('story_id');
@@ -138,7 +139,7 @@ async function storeInfoOffline(storyId, title, content, author) {
             author: author,
             photo: story.photo,
             date: story.date,
-            ifUpdate: false
+            ifUpdate: "false"
         });
         await tx.complete;
         console.log(`[IndexedDB] Save ${storyId} successfully`)

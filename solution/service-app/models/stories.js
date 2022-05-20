@@ -14,6 +14,7 @@ const storySchema = new Schema(
     content: String,
     date: Date,
     photo_id: { type: Schema.Types.ObjectId, required: true },
+    story_id: String,
   },
 );
 

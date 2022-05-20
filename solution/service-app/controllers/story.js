@@ -110,6 +110,7 @@ const createStory = async (req, res) => {
 
 const createStoryInBulk = async (req, res) => {
   const { story_list } = req.body;
+  console.log('story_list', story_list)
   // check data format
   if (!story_list) {
     requestUtils.buildErrorResponse(res, {
@@ -132,7 +133,7 @@ const createStoryInBulk = async (req, res) => {
   const newStoryList = story_list || [];
 
   // check each new story params in the list
-  const requiredKeys = ['title', 'author', 'content', 'story_id', 'date', 'photo'];
+  const requiredKeys = ['title', 'author', 'content', 'story_id', 'date', 'photo', 'ifUpdate'];
   const containFullKeys = newStoryList.every((story) => {
     return JSON.stringify(Object.keys(story).sort()) === JSON.stringify(requiredKeys.sort());
   });
@@ -169,6 +170,7 @@ const createStoryInBulk = async (req, res) => {
   Promise.all(storySavingPromise).then((response) => {
     Story.insertMany(response)
       .then((results) => {
+        console.log('results', results)
             requestUtils.buildSuccessResponse(res, {
               data: {
                 story_id_list: results.map(value => value.story_id),
