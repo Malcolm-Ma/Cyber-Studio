@@ -26,14 +26,10 @@ exports.init = function (io) {
           }
           chat.to(roomNo).emit('KGraph', data)
         })
+        socket.on('chatMessage', (roomNo, name, msg) => {
+          socket.broadcast.to(roomNo).emit('message', formatMessage(name, msg))
+        })
       })
-
-      socket.on('chatMessage', (roomNo, name, msg) => {
-        chat.to(roomNo).emit('message', formatMessage(name, msg))
-      })
-
-
-
     } catch (e) {
       console.log(e.message)
     }
