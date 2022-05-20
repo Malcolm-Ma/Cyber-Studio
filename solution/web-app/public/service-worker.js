@@ -16,9 +16,11 @@ const filesToCache = [
   'javascripts/details.js',
   'javascripts/canvas.js',
   'https://cdn.jsdelivr.net/npm/idb@7/+esm',
-  'javascripts/indexedDB/messageDB.js',
   'javascripts/indexedDB/storyDB.js',
+  'javascripts/indexedDB/messageDB.js',
+  'javascripts/indexedDB/canvasDB.js',
   'javascripts/indexedDB/room_to_story.js',
+  'javascripts/indexedDB/KGraphDB.js',
   'stylesheets/bootstrap.min.css',
   'stylesheets/store_detail.css',
   'stylesheets/style.css',
@@ -53,6 +55,26 @@ self.addEventListener('activate', event => {
 });
 
 self.addEventListener('fetch', function (event) {
+  if (event.request.destination === 'image') {
+    event.respondWith(caches.open(staticCacheName).then((cache) => {
+      // Go to the cache first
+      return cache.match(event.request.url).then((cachedResponse) => {
+        // Return a cached response if we have one
+        if (cachedResponse) {
+          return cachedResponse;
+        }
+        // Otherwise, hit the network
+        return fetch(event.request).then((fetchedResponse) => {
+          // Add the network response to the cache for later visits
+          cache.put(event.request, fetchedResponse.clone());
+
+          // Return the network response
+          return fetchedResponse;
+        });
+      });
+    }));
+    return;
+  }
   event.respondWith(
     caches.open(staticCacheName).then(function (cache) {
       return cache.match(event.request).then(function (response) {
@@ -61,7 +83,8 @@ self.addEventListener('fetch', function (event) {
             cache.put(event.request, response.clone()).catch((err) => console.error(err));
             // fetch response
             return response;
-          }).catch(() => {
+          }).catch((err) => {
+            console.error('fetch(event.request)', err);
             // cache response
             if (response) {
               return response;

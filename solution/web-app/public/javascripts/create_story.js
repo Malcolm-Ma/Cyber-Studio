@@ -1,6 +1,6 @@
 /*
- * @Author: Jipu Li 
- * @Date: 2022-05-02 22:40:44 
+ * @Author: Jipu Li
+ * @Date: 2022-05-02 22:40:44
  * @Last Modified by: Jipu Li
  * @Last Modified time: 2022-05-18 16:55:42
  */
@@ -22,15 +22,12 @@ const story_form = document.getElementById('story_form')
 //     )
 // }
 
-async function init() {
-  await initStoryDB();
-}
-window.onload = init
+window.onload = () => globalInit()
 
 /**
  * it can convert image file to base64 data
  * @param {*} file image file
- * @returns 
+ * @returns
  */
 const convertBase64 = (file) => {
   return new Promise((resolve, reject) => {
@@ -48,7 +45,7 @@ const convertBase64 = (file) => {
 }
 
 /**
- * upload image by base64 
+ * upload image by base64
  */
 const uploadImage = async (event) => {
   const file = event.target.files[0]
@@ -66,7 +63,7 @@ const uploadImage = async (event) => {
 }
 
 /**
- * when click upload img button 
+ * when click upload img button
  * it will send base 64 image file to server , and return a img url to web-app
  */
 photo_path.addEventListener('change', (event) => {
@@ -120,7 +117,7 @@ submit_btn.addEventListener('click', async (event) => {
 
 /**
  * post data to server
- * @param data 
+ * @param data
  * @returns response json data
  */
 async function postData(data) {
