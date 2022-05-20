@@ -49,7 +49,11 @@ window.initStoryDB= initStoryDB;
 
 /**
  * it saves a new story into the database
- * if the database is not supported, it will use localstorage
+ * @param title: title of story
+ * @param content: content of story
+ * @param author: author of story
+ * @param photo: photo url of story
+ * @param ifUpdate: update status of story
  */
 async function storeStoryToDB(title, content, author, photo, ifUpdate) {
     if (story_db) {
@@ -67,12 +71,10 @@ async function storeStoryToDB(title, content, author, photo, ifUpdate) {
             });
             await  tx.complete;
             return story_id;
-            // console.log('added story to the store! '+ JSON.stringify(storyObject));
         } catch(error) {
             console.log('error: I could not store the story. Reason: '+error);
         }
     }
-    // else localStorage.setItem(storyObject.content, JSON.stringify(storyObject));
 }
 window.storeStoryToDB= storeStoryToDB;
 
@@ -113,3 +115,30 @@ async function getOfflineStoryList() {
     return searchResult;
 }
 window.getOfflineStoryList= getOfflineStoryList;
+
+/**
+ * it saves the text information of the story when offline
+ * @param storyId: id of story
+ * @param title: title of story
+ * @param content: content of story
+ * @param author: author of story
+ */
+async function storeInfoOffline(storyId, title, content, author) {
+    if (story_db) {
+        let tx = await story_db.transaction(STORY_STORE_NAME, 'readwrite');
+        let store = await tx.objectStore(STORY_STORE_NAME);
+        let index = await store.index('story_id');
+        let story = await index.get(IDBKeyRange.only(storyId)); // search story
+
+        await store.put({
+            storyId,
+            title: title,
+            content: content,
+            author: author,
+            photo: story.photo,
+            ifUpdate: false
+        });
+        await tx.complete;
+    }
+}
+window.storeInfoOffline= storeInfoOffline;
