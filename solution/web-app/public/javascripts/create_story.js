@@ -5,6 +5,8 @@
  * @Last Modified time: 2022-05-18 16:55:42
  */
 
+let tempStoryId = '';
+
 const title = document.getElementById('title')
 const author = document.getElementById('author')
 const photo_path = document.getElementById('formFile')
@@ -52,14 +54,20 @@ const uploadImage = async (event) => {
   const base64 = await convertBase64(file)
   var data = { imageBlob: base64 }
   console.log(data)
-  const response = await fetch('http://localhost:3000/upload_image', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(data)
-  })
-  return response
+  try {
+    const response = await fetch('http://localhost:3000/upload_image', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    })
+    return response
+  } catch (e) {
+    console.log('[IndexedDB] Save image locally');
+    tempStoryId = await storeOfflineStory('', '', '', base64);
+    console.log('--tempStoryId--\n', tempStoryId);
+  }
 }
 
 /**
@@ -73,6 +81,8 @@ photo_path.addEventListener('change', (event) => {
       alert("image size is too large, please upload it again")
       photo_path.value = ''
     }
+  }).catch(e => {
+    console.log("uploadImage: No internet");
   })
 })
 
@@ -111,7 +121,9 @@ submit_btn.addEventListener('click', async (event) => {
     }
 
   } catch (err) {
-    console.error(err)
+    console.log('[IndexedDB] Save story info locally');
+    await storeInfoOffline(tempStoryId, title, content, author);
+    location.assign('/');
   }
 })
 
